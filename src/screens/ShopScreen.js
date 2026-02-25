@@ -48,7 +48,8 @@ async function printAll() {
 
 }
 
-export default function ShopScreen({navigation}) {
+export default function ShopScreen({route}) {
+    const navigation = useNavigation();
     return(
         <SafeAreaView>
             <Text>~ Shop ~</Text>
