@@ -1,12 +1,13 @@
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
-import { SafeAreaView } from 'react-native/types_generated/index';
+import { StyleSheet, Text, View, SafeAreaView, Button } from 'react-native';
 
-import styles from '../styles';
+import {styles} from '../styles';
+import { useNavigation } from '@react-navigation/native';
 
-export default function WelcomeScreen() {
+export default function WelcomeScreen({navigation}) {
     return(
         <SafeAreaView>
             <Text>~ Welcome! ~</Text>
+            <Button title="Shop Screen" onPress={navigation.navigate("shop")}/>
         </SafeAreaView>
     );
 }
