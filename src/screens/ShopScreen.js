@@ -6,6 +6,7 @@ import {
   getDocs,
   query,
   setDoc,
+  updateDoc,
   where,
 } from "firebase/firestore";
 
@@ -48,17 +49,34 @@ async function printAll() {
 
 }
 
+async function purchaseItem(item) {
+    console.log("Purchased: ", item.name);
+
+    const currentRoom = {}; //Would probably have a getCurrentRoom method to get active room
+
+    const updatedRoom = {
+        ... currentRoom,
+        ownedItems:[ ...ownedItems, item]
+    };
+
+    //save/overwrite room in firestore (not working)
+    const docRef = doc(db, "rooms", "CqW2zX4ZCwqUtSjjUR8I");
+    await updateDoc(docRef, {
+        project: "AKSJH"
+    });
+}
+
 export default function ShopScreen({route}) {
-    const navigation = useNavigation();
+    // const navigation = useNavigation();
     return(
         <SafeAreaView>
             <Text>~ Shop ~</Text>
-            {/* <TouchableOpacity onPress={addRoom}>
+            <TouchableOpacity onPress={addRoom}>
                 <Text>Add Room</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={printAll}>
                 <Text>Console all</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <FlatList
                 data={shopList}
                 keyExtractor={item => item.item.id}
@@ -68,7 +86,9 @@ export default function ShopScreen({route}) {
                             <Text>{item.item.name}</Text>
                             <Text>${item.cost}</Text>
                         </View>
-                        <TouchableOpacity><Text>Purchase?</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => purchaseItem(item.item)}>
+                            <Text>Purchase?</Text>
+                        </TouchableOpacity>
                     </View>
                 )}
             />
