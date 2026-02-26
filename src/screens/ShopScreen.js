@@ -14,6 +14,7 @@ import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import {db} from '../firebaseConfig'
 import { shopList } from '../shopItems';
+import { useEffect } from 'react';
 
 // Experimenting w data structures
 const roomItem = {
@@ -22,58 +23,51 @@ const roomItem = {
     imgSrc:"..." //path to the image file
 };
 
-const room = {
-    project:"project_name", // the room's id - linked to the name of the project which should be uniqe anyways
-    ownedItems: [], //Array of roomItems that can be used to populate the room
-    roomSetup: { // Object populated with roomItems controlling the layout of the room
-        wallpaper: roomItem,
-        flooring: roomItem,
-    }
-};
-
-async function addRoom(){
-    try{
-        const docRef = await doc(collection(db, 'rooms'));
-        setDoc(docRef, room);
-        console.log("Document written with ID: ", docRef.id);
-    } catch (e){
-        console.error("Error", e);
-    }
+const log1 = {
+    date:"",
+    img:"",
+    text:""
 }
 
+
+
 async function printAll() {
-    const querySnapshot = await getDocs(collection(db, "rooms"));
+    const querySnapshot = await getDocs(collection(db, "projects"));
     querySnapshot.forEach((doc) => {
         console.log(doc.id, "=>", doc.data());
     });
 
 }
 
-async function purchaseItem(item) {
-    console.log("Purchased: ", item.name);
+async function purchaseItem(item, id) {
+    const currentProj = test_proj; //Would probably have a getCurrentRoom method to get active room
 
-    const currentRoom = {}; //Would probably have a getCurrentRoom method to get active room
+    if(currentProj.minutes < item.cost){
+        console.log("POOR!");
+        return;
+    }
+    currentProj.minutes = currentProj.minutes - item.cost;
+    console.log("purchased", item.item.name, "- You have $", currentProj.minutes, " remaining");
 
-    const updatedRoom = {
-        ... currentRoom,
+    const updatedProj = {
+        ...currentProj,
         ownedItems:[ ...ownedItems, item]
     };
 
     //save/overwrite room in firestore (not working)
-    const docRef = doc(db, "rooms", "CqW2zX4ZCwqUtSjjUR8I");
+    const docRef = doc(db, "projects", id);
     await updateDoc(docRef, {
-        project: "AKSJH"
+        minutes: currentProj.minutes
     });
 }
 
 export default function ShopScreen({route}) {
-    // const navigation = useNavigation();
+    const navigation = useNavigation();
+    const {project} = route.params;
+
     return(
         <SafeAreaView>
             <Text>~ Shop ~</Text>
-            <TouchableOpacity onPress={addRoom}>
-                <Text>Add Room</Text>
-            </TouchableOpacity>
             <TouchableOpacity onPress={printAll}>
                 <Text>Console all</Text>
             </TouchableOpacity>
@@ -86,7 +80,7 @@ export default function ShopScreen({route}) {
                             <Text>{item.item.name}</Text>
                             <Text>${item.cost}</Text>
                         </View>
-                        <TouchableOpacity onPress={() => purchaseItem(item.item)}>
+                        <TouchableOpacity onPress={() => purchaseItem(item, project)}>
                             <Text>Purchase?</Text>
                         </TouchableOpacity>
                     </View>
