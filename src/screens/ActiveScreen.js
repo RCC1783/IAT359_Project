@@ -61,13 +61,15 @@ export default function ActiveScreen() {
       <Text>~ Active ~</Text>
       {/*Text to display the stopwatch for the user*/}
       <Text>{time}</Text>
-      {/*displaying the timer itself*/}
-      {/*For Pausing and Resuming the stopwatch; also added reset and Start*/}
+
       {/*check if the stopwatch is running*/}
       {running ? (
-        <TouchableOpacity onPress={pauseStopWatch}>
-          <Text>Pause</Text>
-        </TouchableOpacity>
+        <View>
+          <Text>Working...</Text>
+          <TouchableOpacity onPress={pauseStopWatch}>
+            <Text>Pause</Text>
+          </TouchableOpacity>
+        </View>
       ) : (
         <>
           <TouchableOpacity onPress={startStopWatch}>
