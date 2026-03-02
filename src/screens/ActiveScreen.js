@@ -10,12 +10,19 @@ import { useState, useRef } from "react";
 
 import { styles } from "../styles";
 import { useNavigation } from "@react-navigation/native";
+import { mod } from "firebase/firestore/pipelines";
 
 //For making the stopwatch I got help from geeksforgeeks.org/react-native/create-a-stop-watch-using-react-native/
+
+//for displaying the minutes on the timer that have gone by.
+let minutes = 0;
+//to check whether to display an extra zero for the seconds if its a single digit number
 
 export default function ActiveScreen() {
   //For updating the time displaying on the stopwatch
   const [time, setTime] = useState(0);
+  //for resetting the visual seconds for the user when a minute counts up
+  let displayTime = 0;
   //To keep track if the timer is running
   const [running, setRunning] = useState(false);
   //Store the interval ID
@@ -55,12 +62,24 @@ export default function ActiveScreen() {
     setRunning(true);
   };
 
+  const updateMinutes = () => {
+    minutes = Math.floor(time / 60);
+    if (time >= 60) {
+      setTime(0);
+      startStopWatch();
+    }
+  };
+
+  updateMinutes();
+
   const navigation = useNavigation();
   return (
     <View>
       <Text>~ Active ~</Text>
       {/*Text to display the stopwatch for the user*/}
-      <Text>{time}</Text>
+      <Text>
+        {minutes}:{time}
+      </Text>
 
       {/*check if the stopwatch is running*/}
       {running ? (
