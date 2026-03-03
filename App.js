@@ -1,7 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { auth } from "./src/firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
+
 
 import WelcomeScreen from './src/screens/WelcomeScreen';
 import LoginScreen from './src/screens/LoginScreen'
@@ -17,12 +21,22 @@ import ActiveScreen from './src/screens/ActiveScreen';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => { // code from week 6
+      console.log("user", user);
+      setUser(user);
+    });
+  }, []);
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName='welcome'>
         <Stack.Screen
           name="welcome"
           component={WelcomeScreen}
+          initialParams= {{ user: user }}
         />
         <Stack.Screen
           name="login"
