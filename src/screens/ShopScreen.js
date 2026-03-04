@@ -53,6 +53,8 @@ async function updateProj(project, projectID) {
 }
 
 function purchaseItem(item, projectID, project) {
+    if(item.owned) return;
+    item.owned = true;
 
     if(project.minutes < item.cost){
         console.log("POOR!");
@@ -73,7 +75,7 @@ export default function ShopScreen({route}) {
     const navigation = useNavigation();
     const {projectID} = route.params;
 
-    const [project, setCurrentProj] = useState();
+    const [currentProject, setCurrentProj] = useState();
     const [updator, updateProj] = useState();
 
     useEffect(() => {
@@ -83,6 +85,17 @@ export default function ShopScreen({route}) {
                 const project = await getDoc(projectRef);
                 setCurrentProj(project.data());
                 console.log("current proj:", project);
+
+                // Not my *favourite* way to do this but c'est la vie.
+                // On update, checks every item in the owned items array against
+                //  the shop items and marks them as owned if they are in both
+                project.data().ownedItems.forEach((ownedItem) => {
+                    shopList.forEach((shopItem) => {
+                        if(shopItem.item.id == ownedItem.id){
+                            shopItem.owned = true;
+                        }
+                    })
+                })
             } catch (e){
                 console.error("Failed to fetch project", e);
             }
@@ -93,7 +106,7 @@ export default function ShopScreen({route}) {
     return(
         <SafeAreaView>
             <Text>~ Shop ~</Text>
-            <Text>minutes: {project != undefined ? project.minutes : "loading"}</Text>
+            <Text>minutes: {currentProject != undefined ? currentProject.minutes : "loading"}</Text>
             <TouchableOpacity onPress={printAll}>
                 <Text>Console all</Text>
             </TouchableOpacity>
@@ -107,8 +120,8 @@ export default function ShopScreen({route}) {
                             <Text>{item.item.name}</Text>
                             <Text>${item.cost}</Text>
                         </View>
-                        <TouchableOpacity onPress={() => updateProj(purchaseItem(item, projectID, project))}>
-                            <Text>Purchase?</Text>
+                        <TouchableOpacity onPress={() => updateProj(purchaseItem(item, projectID, currentProject))}>
+                            <Text>{item.owned ? "Owned" : "Purchase?"}</Text>
                         </TouchableOpacity>
                     </View>
                 )}
