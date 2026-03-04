@@ -72,7 +72,7 @@ export default function ActiveScreen() {
       <Text>~ Active ~</Text>
       {/*Text to display the stopwatch for the user*/}
       <Text>
-        {minutes}:{time % 60}
+        {minutes}:{time % 60 < 10 ? `0${time % 60}` : time % 60}
       </Text>
 
       {/*check if the stopwatch is running*/}
