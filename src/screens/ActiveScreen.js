@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   Button,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { useState, useRef } from "react";
 
@@ -28,6 +29,8 @@ export default function ActiveScreen() {
 
   let minutes = 0;
 
+  const navigation = useNavigation();
+
   const startStopWatch = () => {
     //set the start time
     startTimeRef.current = Date.now() - time * 1000;
@@ -45,10 +48,23 @@ export default function ActiveScreen() {
     setRunning(false);
   };
 
-  const resetStopWatch = () => {
-    clearInterval(intervalRef.current);
-    setTime(0);
-    setRunning(false);
+  const endStopWatch = () => {
+    //prompt the user with an alert to check if they want to quit their session
+    Alert.alert("End Session", "Are you sure", [
+      {
+        text: "Yes",
+        onPress: () => {
+          clearInterval(intervalRef.current);
+          setTime(0);
+          setRunning(false);
+          navigation.goBack();
+        },
+      },
+      {
+        text: "No",
+        onPress: () => console.log("Session Continued"),
+      },
+    ]);
   };
 
   const resumeStopWatch = () => {
@@ -66,7 +82,6 @@ export default function ActiveScreen() {
 
   updateTimer();
 
-  const navigation = useNavigation();
   return (
     <View>
       <Text>~ Active ~</Text>
@@ -89,8 +104,8 @@ export default function ActiveScreen() {
           <TouchableOpacity onPress={startStopWatch}>
             <Text>Start</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={resetStopWatch}>
-            <Text>Reset</Text>
+          <TouchableOpacity onPress={endStopWatch}>
+            <Text>End Session</Text>
           </TouchableOpacity>
         </>
       )}
