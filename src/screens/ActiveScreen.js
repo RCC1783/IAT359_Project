@@ -54,10 +54,25 @@ export default function ActiveScreen() {
       {
         text: "Yes",
         onPress: () => {
-          clearInterval(intervalRef.current);
-          setTime(0);
-          setRunning(false);
-          navigation.goBack();
+          Alert.alert(
+            "Update Your Progress",
+            "Would you like to log any progress or add an image?",
+            [
+              {
+                text: "Yes",
+                onPress: () => console.log("Yes"),
+              },
+              {
+                text: "Maybe, Next Time",
+                onPress: () => {
+                  clearInterval(intervalRef.current);
+                  setTime(0);
+                  setRunning(false);
+                  navigation.goBack();
+                },
+              },
+            ],
+          );
         },
       },
       {
