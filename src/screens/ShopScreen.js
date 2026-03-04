@@ -59,6 +59,7 @@ function purchaseItem(item, projectID, project) {
         return;
     }
     project.minutes = project.minutes - item.cost;
+    project.ownedItems = [...project.ownedItems, item.item];
     console.log("purchased", item.item.name, "- You have $", project.minutes, " remaining");
 
     updateProj(project, projectID);
