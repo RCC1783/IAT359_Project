@@ -61,14 +61,7 @@ export default function ActiveScreen() {
   };
 
   const updateTimer = () => {
-    // if (time < 10 ) {
-    //   belowTen = false;
-    // }
-    if (time == 60) {
-      minutes += 1;
-      setTime(0);
-      startStopWatch();
-    }
+    time >= 1 ? minutes = Math.floor(time / 60): 0;
   };
 
   updateTimer();
@@ -79,7 +72,7 @@ export default function ActiveScreen() {
       <Text>~ Active ~</Text>
       {/*Text to display the stopwatch for the user*/}
       <Text>
-        {minutes}:{time}
+        {minutes}:{time % 60}
       </Text>
 
       {/*check if the stopwatch is running*/}
