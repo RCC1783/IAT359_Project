@@ -17,5 +17,14 @@ export const styles = StyleSheet.create({
     margin: 5,
     padding: 10,
     borderRadius: 15
+  },
+
+  homeButton: {
+    backgroundColor: "#ffffff",
+    borderColor: '#6ac1ff',
+    borderWidth: 3,
+    padding: 5,
+    borderRadius: 5,
+    margin: 5,
   }
 });

@@ -23,6 +23,7 @@ export default function LoginScreen({navigation}) {
 
             console.log(response);
             alert('User: ' + email + 'successfully signed up.');
+            navigation.navigate('home');            
         } catch (error) {
             console.log(error.message);
             alert(error.message);
@@ -34,10 +35,15 @@ export default function LoginScreen({navigation}) {
             const response = await signInWithEmailAndPassword(fbAuth, email, password);
 
             alert('User: ' + email + ' signed in.');
+            navigation.navigate('home');  
         } catch (error) {
             console.log(error.message);
             alert(error.message);
         }
+    }
+
+    function debugHome() { //login without needing to make a account
+        navigation.navigate('home');
     }
  
     return(
@@ -62,15 +68,11 @@ export default function LoginScreen({navigation}) {
                 autoCapitalize='none'
             />
 
-            <View style={styles.buttonContainer}>
-                <Button title="Sign Up" onPress={signUp} />
-            </View>
+            <Button title="Sign Up" onPress={signUp} />
 
-            <View style={styles.buttonContainer}>
-                <Button title="Sign In" onPress={signIn} />
-            </View>
+            <Button title="Sign In" onPress={signIn} />
 
-            <Button title="Home Screen" onPress={() => navigation.navigate("home")}/>
+            <Button title="Home Screen" onPress={debugHome}/>
         </SafeAreaView>
     );
 }

@@ -10,7 +10,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import WelcomeScreen from './src/screens/WelcomeScreen';
 import LoginScreen from './src/screens/LoginScreen'
 import HomeScreen from './src/screens/HomeScreen';
-// import SettingsScreen from './src/screens/Settings';
+import SettingsScreen from './src/screens/SettingsScreen';
 import AllImagesScreen from './src/screens/AllImagesScreen';
 import ProjectsScreen from './src/screens/ProjectsScreen';
 import SelectedProjectScreen from './src/screens/SelectedProjectScreen';
@@ -46,10 +46,10 @@ export default function App() {
           name="home"
           component={HomeScreen}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
           name="settings"
           component={SettingsScreen}
-        /> */}
+        />
         <Stack.Screen
           name="allImages"
           component={AllImagesScreen}
