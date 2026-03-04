@@ -38,7 +38,7 @@ export default function ProjectsScreen() {
     const [projectList, setProjectList] = useState([]);
 
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchProjects = async() => {
             const querySnapshot = await getDocs(collection(db, "projects"));
 
             let allDocs = [];
@@ -52,7 +52,7 @@ export default function ProjectsScreen() {
             setProjectList(allDocs);
         }
 
-        fetchData();
+        fetchProjects();
     }, []);
 
     return(

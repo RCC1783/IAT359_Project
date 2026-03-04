@@ -3,6 +3,7 @@ import {
   and,
   collection,
   doc,
+  getDoc,
   getDocs,
   query,
   setDoc,
@@ -14,7 +15,7 @@ import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import {db} from '../firebaseConfig'
 import { shopList } from '../shopItems';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // Experimenting w data structures
 const roomItem = {
@@ -39,35 +40,59 @@ async function printAll() {
 
 }
 
-async function purchaseItem(item, id) {
-    const currentProj = test_proj; //Would probably have a getCurrentRoom method to get active room
+async function updateProj(project, projectID) {
+    //save/overwrite room in firestore (not working)
+    try{
+        const projectRef = doc(db, "projects", projectID);
+        await updateDoc(projectRef, {
+            ...project
+        });
+    } catch (e){
+        console.error(e);
+    }
+}
 
-    if(currentProj.minutes < item.cost){
+function purchaseItem(item, projectID, project) {
+
+    if(project.minutes < item.cost){
         console.log("POOR!");
         return;
     }
-    currentProj.minutes = currentProj.minutes - item.cost;
-    console.log("purchased", item.item.name, "- You have $", currentProj.minutes, " remaining");
+    project.minutes = project.minutes - item.cost;
+    console.log("purchased", item.item.name, "- You have $", project.minutes, " remaining");
 
-    const updatedProj = {
-        ...currentProj,
-        ownedItems:[ ...ownedItems, item]
-    };
+    updateProj(project, projectID);
 
-    //save/overwrite room in firestore (not working)
-    const docRef = doc(db, "projects", id);
-    await updateDoc(docRef, {
-        minutes: currentProj.minutes
-    });
+    return project;
+
+    // updateProj(project);
 }
 
 export default function ShopScreen({route}) {
     const navigation = useNavigation();
-    const {project} = route.params;
+    const {projectID} = route.params;
+
+    const [project, setCurrentProj] = useState();
+    const [updator, updateProj] = useState();
+
+    useEffect(() => {
+        const fetchProject = async() => {
+            try{
+                const projectRef = doc(db, "projects", projectID);
+                const project = await getDoc(projectRef);
+                setCurrentProj(project.data());
+                console.log("current proj:", project);
+            } catch (e){
+                console.error("Failed to fetch project", e);
+            }
+        }
+        fetchProject();
+    }, [updator]);
 
     return(
         <SafeAreaView>
             <Text>~ Shop ~</Text>
+            <Text>minutes: {project != undefined ? project.minutes : "loading"}</Text>
             <TouchableOpacity onPress={printAll}>
                 <Text>Console all</Text>
             </TouchableOpacity>
@@ -80,7 +105,7 @@ export default function ShopScreen({route}) {
                             <Text>{item.item.name}</Text>
                             <Text>${item.cost}</Text>
                         </View>
-                        <TouchableOpacity onPress={() => purchaseItem(item, project)}>
+                        <TouchableOpacity onPress={() => updateProj(purchaseItem(item, projectID, project))}>
                             <Text>Purchase?</Text>
                         </TouchableOpacity>
                     </View>
