@@ -98,6 +98,7 @@ export default function ShopScreen({route}) {
                 <Text>Console all</Text>
             </TouchableOpacity>
             <FlatList
+            // Technically you can buy multiples of the same item atm...
                 data={shopList}
                 keyExtractor={item => item.item.id}
                 renderItem={({item}) => (
