@@ -29,6 +29,17 @@ export default function SettingsScreen() {
         }
     };
 
+    async function signOut() {
+        try {
+            await AsyncStorage.removeItem('uid');
+
+            alert('User signed out.');
+            navigation.navigate('welcome');  
+        } catch (error) {
+            console.error('error signing out', error);
+        }
+    }
+
     useEffect(() => {
         loadSettings();
     }, []);
@@ -48,6 +59,10 @@ export default function SettingsScreen() {
 
             <Text>TEST SETTING </Text>
             <Switch value = {testSetting} onValueChange = {setTestSetting} />
+
+            <Pressable style = {styles.homeButton} onPress = {signOut}>
+                <Text>Sign Out</Text>
+            </Pressable> 
 
             <Pressable style = {styles.homeButton} onPress = {saveSettings}>
                 <Text>SAVE SETTINGS</Text>

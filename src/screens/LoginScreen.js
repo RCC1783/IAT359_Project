@@ -38,7 +38,7 @@ export default function LoginScreen({navigation}) {
 
             alert('User: ' + email + ' signed in.');
             await AsyncStorage.setItem('uid', JSON.stringify(response.user.uid));
-            navigation.navigate('home', );  
+            navigation.navigate('home');  
         } catch (error) {
             console.log(error.message);
             alert(error.message);
