@@ -3,11 +3,15 @@ import { useState, useEffect } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
+import { auth } from '../firebaseConfig';
 
 export default function SettingsScreen() {
     const [testSetting, setTestSetting] = useState(false);
+    const fbAuth = auth;
+    const user = fbAuth.currentUser;
 
     const saveSettings = async () => {
+
         try {
             await AsyncStorage.setItem('test', JSON.stringify(testSetting));
         } catch (error) {
@@ -38,7 +42,11 @@ export default function SettingsScreen() {
         <SafeAreaView>
             <Text>~ Settings ~</Text>
 
-            <Text>TEST</Text>
+            <Text>{ user ? `Logged in as: ${user.email}` : 'Not Loogged in... how...?'}</Text>
+
+            <Text></Text>
+
+            <Text>TEST SETTING </Text>
             <Switch value = {testSetting} onValueChange = {setTestSetting} />
 
             <Pressable style = {styles.homeButton} onPress = {saveSettings}>

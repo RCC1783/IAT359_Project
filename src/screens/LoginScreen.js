@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, Button, TextInput } from 'react-native';
 
 import { useState } from 'react';
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { auth } from '../firebaseConfig';
@@ -22,6 +22,8 @@ export default function LoginScreen({navigation}) {
             );
 
             console.log(response);
+
+            await AsyncStorage.setItem('uid', JSON.stringify(response.user.uid));
             alert('User: ' + email + 'successfully signed up.');
             navigation.navigate('home');            
         } catch (error) {
@@ -35,18 +37,15 @@ export default function LoginScreen({navigation}) {
             const response = await signInWithEmailAndPassword(fbAuth, email, password);
 
             alert('User: ' + email + ' signed in.');
-            navigation.navigate('home');  
+            await AsyncStorage.setItem('uid', JSON.stringify(response.user.uid));
+            navigation.navigate('home', );  
         } catch (error) {
             console.log(error.message);
             alert(error.message);
         }
     }
-
-    function debugHome() { //login without needing to make a account
-        navigation.navigate('home');
-    }
  
-    return(
+    return (
         <SafeAreaView styles = {styles.container}>
             <Text>~ Login ~</Text>
 
@@ -71,8 +70,6 @@ export default function LoginScreen({navigation}) {
             <Button title="Sign Up" onPress={signUp} />
 
             <Button title="Sign In" onPress={signIn} />
-
-            <Button title="Home Screen" onPress={debugHome}/>
         </SafeAreaView>
     );
 }

@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, Button, Pressable } from 'react-native';
-
+import { useState, useEffect } from 'react';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 
