@@ -11,14 +11,29 @@ const default_walls = {
     type: "wallpaper", 
     imgSrc:"..."
 }
+const rainbow_walls = {
+    id:"rainbow_walls", 
+    name: "Rainbow Walls",
+    type: "wallpaper", 
+    imgSrc:"..."
+}
+
 const default_floors = {
     id:"default_floors", 
     name: "Default Floors",
     type: "flooring", 
     imgSrc:"..."
 }
+const rainbow_floors = {
+    id:"rainbow_floors", 
+    name: "Rainbow Floors",
+    type: "flooring", 
+    imgSrc: require("./images/room_items/icon.png")
+}
 
 export const shopList = [
     {owned: false, cost: 200, item: default_walls},
     {owned: false, cost: 300, item: default_floors},
+    {owned: false, cost: 300, item: rainbow_floors},
+    {owned: false, cost: 300, item: rainbow_walls},
 ]

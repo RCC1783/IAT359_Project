@@ -40,6 +40,12 @@ export const styles = StyleSheet.create({
     borderRadius: 15
   },
 
+  roomImage:{
+    width:'100%',
+    height: undefined,
+    aspectRatio: 1
+  },
+
   homeButton: {
     backgroundColor: "#ffffff",
     borderColor: '#6ac1ff',
@@ -47,5 +53,15 @@ export const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 5,
     margin: 5,
+  }, 
+
+  popupView: {
+    position: 'absolute',
+    backgroundColor: '#b1b1b1',
+    zIndex: 99,
+    margin: 10,
+    padding: 20,
+    width: '95%',
+    height: '50%'
   }
 });
