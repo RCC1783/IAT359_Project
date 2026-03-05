@@ -8,6 +8,10 @@ export default function ActiveScreen() {
     return(
         <SafeAreaView>
             <Text>~ Active ~</Text>
+
+            <View>
+                <Text>ASDKJ</Text>
+            </View>
         </SafeAreaView>
     );
 }
