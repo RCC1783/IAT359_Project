@@ -105,13 +105,16 @@ export default function ShopScreen({route}) {
 
     return(
         <SafeAreaView>
-            <Text>~ Shop ~</Text>
-            <Text>minutes: {currentProject != undefined ? currentProject.minutes : "loading"}</Text>
-            <TouchableOpacity onPress={printAll}>
+            <View style={styles.shopHeader}>
+                {/* <Text>~ Shop ~</Text> */}
+                <Text style={styles.minutesDisplay}>minutes: {currentProject != undefined ? currentProject.minutes : "loading"}</Text>
+            </View>
+            {/* <TouchableOpacity onPress={printAll}>
                 <Text>Console all</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+
             <FlatList
-            // Technically you can buy multiples of the same item atm...
+                style={styles.shopList}
                 data={shopList}
                 keyExtractor={item => item.item.id}
                 renderItem={({item}) => (

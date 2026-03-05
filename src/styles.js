@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { shopList } from './shopItems';
 
 export const styles = StyleSheet.create({
   container: {
@@ -8,6 +9,26 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
+  shopHeader: {
+    flex: 1,
+    // justifyContent: "space-between",
+    alignItems: 'flex-end',
+    margin: 5,
+    padding: 5,
+    minHeight: '30%',
+    backgroundColor: '#656565'
+  },
+  minutesDisplay: {
+    color: 'white',
+    fontSize: 16,
+    backgroundColor: 'black',
+    padding: 5,
+    borderRadius: 10,
+  },
+  shopList: {
+    height: '70%',
+    margin: 10
+  },
   shopItem: {
     flex: 1,
     flexDirection: 'row',
