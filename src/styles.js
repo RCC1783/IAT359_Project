@@ -40,10 +40,19 @@ export const styles = StyleSheet.create({
     borderRadius: 15
   },
 
+  roomContainer:{
+    width: '100%',
+    height: undefined,
+    aspectRatio: 1,
+    backgroundColor: '#ffe7e7'
+  },
   roomImage:{
     width:'100%',
     height: undefined,
-    aspectRatio: 1
+    aspectRatio: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
   },
 
   homeButton: {
@@ -62,6 +71,6 @@ export const styles = StyleSheet.create({
     margin: 10,
     padding: 20,
     width: '95%',
-    height: '50%'
+    height: 200
   }
 });
