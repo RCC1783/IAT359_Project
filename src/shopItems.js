@@ -22,13 +22,13 @@ const default_floors = {
     id:"default_floors", 
     name: "Default Floors",
     type: "flooring", 
-    imgSrc:"..."
+    imgSrc: require("./images/room_items/icon.png")
 }
 const rainbow_floors = {
     id:"rainbow_floors", 
     name: "Rainbow Floors",
     type: "flooring", 
-    imgSrc: require("./images/room_items/icon.png")
+    imgSrc: require("./images/room_items/stars.png")
 }
 
 export const shopList = [

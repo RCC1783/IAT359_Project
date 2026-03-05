@@ -88,11 +88,12 @@ export default function SelectedProjectScreen({route}) {
                 </View>
             )}
 
+            {/* May put this into its own function so it can be reused (once I figure out how...) */}
             <View>
                 <Text>{currentProject != undefined ? currentProject.roomSetup.flooring.imgSrc : "Loading"}</Text>
                 <Image 
                     style={styles.roomImage}
-                    source={require('../images/room_items/icon.png') }/>
+                    source={currentProject != undefined ? currentProject.roomSetup.flooring.imgSrc : "..."}/>
                 
             </View>
 
