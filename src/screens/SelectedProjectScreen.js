@@ -10,7 +10,7 @@ export default function SelectedProjectScreen({route}) {
     return(
         <SafeAreaView>
             <Text>~ selected project ~</Text>
-            <Button title="Shop Screen" onPress={() => navigation.navigate("shop", {project: projectID})}/>
+            <Button title="Shop Screen" onPress={() => navigation.navigate("shop", {projectID: projectID})}/>
         </SafeAreaView>
     );
 }

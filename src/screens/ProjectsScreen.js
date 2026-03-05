@@ -6,6 +6,19 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { useEffect, useState } from 'react';
 
+
+class project{
+    constructor(name, minutes = 0){
+        name = this.name;
+        minutes = 0;
+        logs = [];
+        ownedItems = [];
+        roomSetup = {
+            wallpaper: {},
+            flooring: {},
+        };
+    }
+}
 const test_proj = {
     name:"test project", // Display name of the project
     minutes: 500,
@@ -38,7 +51,7 @@ export default function ProjectsScreen() {
     const [projectList, setProjectList] = useState([]);
 
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchProjects = async() => {
             const querySnapshot = await getDocs(collection(db, "projects"));
 
             let allDocs = [];
@@ -52,20 +65,20 @@ export default function ProjectsScreen() {
             setProjectList(allDocs);
         }
 
-        fetchData();
+        fetchProjects();
     }, []);
 
     return(
         <SafeAreaView>
             <Text>~ Projects ~</Text>
             <TouchableOpacity onPress={addProj}>
-                <Text>Add Room</Text>
+                <Text>New Project</Text>
             </TouchableOpacity>
             <FlatList
                 data={projectList}
                 keyExtractor={item => item.id}
                 renderItem={({item}) => (
-                    <View>
+                    <View style={styles.shopItem}>
                         <TouchableOpacity onPress={() => navigation.navigate("selectedProject", {projectID: item.id})}>
                             <Text>{item.name}</Text>
                         </TouchableOpacity>
