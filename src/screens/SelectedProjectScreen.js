@@ -93,10 +93,10 @@ export default function SelectedProjectScreen({route}) {
                 <Text>{currentProject != undefined ? currentProject.roomSetup.flooring.imgSrc : "Loading"}</Text>
                 <Image 
                     style={styles.roomImage}
-                    source={currentProject != undefined ? currentProject.roomSetup.wallpaper.imgSrc : "..."}/>
+                    source={currentProject != undefined ? currentProject.roomSetup.wallpaper.imgSrc : null}/>
                 <Image 
                     style={styles.roomImage}
-                    source={currentProject != undefined ? currentProject.roomSetup.flooring.imgSrc : "..."}/>
+                    source={currentProject != undefined ? currentProject.roomSetup.flooring.imgSrc : null}/>
                 
             </View>
 

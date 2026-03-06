@@ -1,31 +1,32 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, FlatList, TouchableOpacity, TextInput } from 'react-native';
 
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, setDoc, doc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { useEffect, useState } from 'react';
 
 
-class project{
+class Project{
+    name = 'unnamed_project';
+    minutes = 0;
+    logs = [];
+    ownedItems = [];
+    roomSetup = {
+        wallpaper: {},
+        flooring: {},
+    };
     constructor(name, minutes = 0){
-        name = this.name;
-        minutes = 0;
-        logs = [];
-        ownedItems = [];
-        roomSetup = {
-            wallpaper: {},
-            flooring: {},
-        };
+        this.name = name;
+        this.minutes = minutes;
     }
 }
 const test_proj = {
     name:"test project", // Display name of the project
     minutes: 500,
 
-    logs:[ // array containing log objects
-        {}
-    ],
+    // array containing log objects
+    logs:[],
 
     ownedItems: [], //Array of roomItems that can be used to populate the room
 
@@ -35,20 +36,14 @@ const test_proj = {
     },
 };
 
-async function addProj(){
-    try{
-        const docRef = await doc(collection(db, 'projects'));
-        setDoc(docRef, test_proj);
-        console.log("Document written with ID: ", docRef.id);
-    } catch (e){
-        console.error("Error", e);
-    }
-}
 
 export default function ProjectsScreen() {
     const navigation = useNavigation();
 
     const [projectList, setProjectList] = useState([]);
+    const [createMenuOpen, setCreateMenu] = useState(false);
+    const [newProjectName, setNewProjectName] = useState('');
+    const [newProject, setNewProject] = useState(null);
 
     useEffect(() => {
         const fetchProjects = async() => {
@@ -66,12 +61,45 @@ export default function ProjectsScreen() {
         }
 
         fetchProjects();
-    }, []);
+    }, [createMenuOpen]);
+
+    useEffect(() => {
+        const createNewProject = async() => {
+            if(newProject == null || newProjectName == '') return;
+            try{
+                const docRef = doc(collection(db, 'projects'));
+                setDoc(docRef, {
+                    ...newProject
+                });
+                console.log("project created with ID:", docRef.id);
+                setNewProjectName('');
+                setCreateMenu(false);
+            } catch (e){
+                console.error("Failed to create a new project.", e);
+            }
+        }
+
+        createNewProject();
+    }, [newProject]);
+
+    // async function createNewProject(){
+    //     try{
+    //         const docRef = doc(collection(db, 'projects'));
+    //         setNewProject(new Project(newProjectName));
+    //         setDoc(docRef, newProject);
+    //         console.log("project created with ID:", docRef.id);
+    //         setNewProjectName('');
+    //         setNewProject(null);
+    //         setCreateMenu(false);
+    //     } catch (e){
+    //         console.error("Failed to create a new project.", e);
+    //     }
+    // }
 
     return(
         <SafeAreaView>
             <Text>~ Projects ~</Text>
-            <TouchableOpacity onPress={addProj}>
+            <TouchableOpacity onPress={() => setCreateMenu(true)}>
                 <Text>New Project</Text>
             </TouchableOpacity>
             <FlatList
@@ -85,6 +113,18 @@ export default function ProjectsScreen() {
                     </View>
                 )}
             />
+            {createMenuOpen && (
+                <View style={styles.popupView}>
+                    <TextInput
+                        placeholder='Name your project'
+                        value={newProjectName}
+                        onChangeText={setNewProjectName}
+                    />
+                    <TouchableOpacity onPress={() => setNewProject(new Project(newProjectName))}>
+                        <Text>Create Project</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
         </SafeAreaView>
     );
 }
