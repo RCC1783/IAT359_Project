@@ -17,6 +17,17 @@ import { mod } from "firebase/firestore/pipelines";
 
 let belowTen = true;
 
+function ModalScreen() {
+  const navigation = useNavigation();
+
+  return (
+    <View>
+      <Text>This is a Modal</Text>
+      <Button onPress={() => navigation.goBack()}>Dimiss</Button>
+    </View>
+  );
+}
+
 export default function ActiveScreen() {
   //For updating the time displaying on the stopwatch
   const [time, setTime] = useState(0);
@@ -30,6 +41,10 @@ export default function ActiveScreen() {
   let minutes = 0;
 
   const navigation = useNavigation();
+
+  const openLogger = () => {
+    navigation.navigate("MyModal");
+  };
 
   const startStopWatch = () => {
     //set the start time
@@ -60,7 +75,7 @@ export default function ActiveScreen() {
             [
               {
                 text: "Yes",
-                onPress: () => console.log("Yes"),
+                onPress: () => openLogger(),
               },
               {
                 text: "Maybe, Next Time",
