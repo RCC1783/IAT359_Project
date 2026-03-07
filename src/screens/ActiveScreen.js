@@ -10,20 +10,31 @@ import {
 import { useState, useRef } from "react";
 
 import { styles } from "../styles";
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { mod } from "firebase/firestore/pipelines";
+
+import SelectedProjectScreen from "./SelectedProjectScreen";
 
 //For making the stopwatch I got help from geeksforgeeks.org/react-native/create-a-stop-watch-using-react-native/
 
 let belowTen = true;
 
-function ModalScreen() {
+export function ModalScreen(route) {
   const navigation = useNavigation();
 
   return (
     <View>
-      <Text>This is a Modal</Text>
-      <Button onPress={() => navigation.goBack()}>Dimiss</Button>
+      <Text>Type your notes here</Text>
+      <Button
+        title="Dismiss"
+        onPress={() =>
+          navigation.dispatch({
+            ...CommonActions.goBack(),
+            source: route.key,
+            target: navigation.getState().key,
+          })
+        }
+      />
     </View>
   );
 }

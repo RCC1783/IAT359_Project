@@ -13,6 +13,8 @@ import SelectedProjectScreen from "./src/screens/SelectedProjectScreen";
 import ShopScreen from "./src/screens/ShopScreen";
 import ProjectImagesScreen from "./src/screens/ProjectImagesScreen";
 import ActiveScreen from "./src/screens/ActiveScreen";
+//to import the modal from the active screen
+import { ModalScreen } from "./src/screens/ActiveScreen";
 
 const Stack = createNativeStackNavigator();
 
