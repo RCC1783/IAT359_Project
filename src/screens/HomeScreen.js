@@ -17,6 +17,10 @@ export default function HomeScreen() {
             <Pressable style = {styles.homeButton} onPress={() => navigation.navigate('settings')}>
                 <Text>Settings</Text>
             </Pressable>
+
+            <Pressable onPress={() => navigation.navigate('allImages')}>
+                <Text>Image Gallery</Text>
+            </Pressable>
         </SafeAreaView>
     );
 }
