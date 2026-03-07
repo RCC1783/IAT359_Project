@@ -7,36 +7,33 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import { styles } from "../styles";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { mod } from "firebase/firestore/pipelines";
 
 import SelectedProjectScreen from "./SelectedProjectScreen";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, collection } from "firebase/firestore";
 
 //For making the stopwatch I got help from geeksforgeeks.org/react-native/create-a-stop-watch-using-react-native/
 //https://firebase.google.com/docs/firestore/manage-data/add-data For adding data to Firebase
-let belowTen = true;
-
-//to update the minutes variable in the data
-//It should trigger anytime that the minutes variable gets changed
-// useEffect() {
-// await setDoc(doc(db, "projects", "test project"), {
-//   minutes: { addedMin },
-// });
-// }
 
 useEffect(() => {
-  const fetchProject = async () => {
-    try {
-      const projectRef = doc(db, "projects", projectID);
-    } catch (e) {
-      console.error("Failed to fetch project", e);
-    }
+  const updateTotalMinutes = () => {
+    setInterval(() => {
+      //add the current time variable to the total minutes variable
+    }, 1000);
   };
-});
+
+  // const fetchProject = async () => {
+  //   try {
+  //     const projectRef = doc(db, "projects", projectID);
+  //   } catch (e) {
+  //     console.error("Failed to fetch project", e);
+  //   }
+  // };
+}, [minutes]);
 
 export function ModalScreen(route) {
   const navigation = useNavigation();
@@ -44,7 +41,7 @@ export function ModalScreen(route) {
   return (
     <View>
       <Text>Type your notes here</Text>
-      <Button title="Save" onPress={saveLog()} />
+      {/* <Button title="Save" onPress={saveLog()} /> */}
       <Button
         title="Dismiss"
         onPress={() =>
