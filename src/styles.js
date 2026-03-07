@@ -65,12 +65,23 @@ export const styles = StyleSheet.create({
   }, 
 
   popupView: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+
     position: 'absolute',
     backgroundColor: '#b1b1b1',
     zIndex: 99,
-    margin: 10,
-    padding: 20,
+    
+    borderColor: 'black',
+    borderWidth: 3,
+    borderRadius: 20,
+
     width: '95%',
-    height: 200
+    height: 200,
+    margin: 10,
+    padding: 40,
+    gap: 10
   }
 });

@@ -82,20 +82,6 @@ export default function ProjectsScreen() {
         createNewProject();
     }, [newProject]);
 
-    // async function createNewProject(){
-    //     try{
-    //         const docRef = doc(collection(db, 'projects'));
-    //         setNewProject(new Project(newProjectName));
-    //         setDoc(docRef, newProject);
-    //         console.log("project created with ID:", docRef.id);
-    //         setNewProjectName('');
-    //         setNewProject(null);
-    //         setCreateMenu(false);
-    //     } catch (e){
-    //         console.error("Failed to create a new project.", e);
-    //     }
-    // }
-
     return(
         <SafeAreaView>
             <Text>~ Projects ~</Text>
@@ -122,6 +108,9 @@ export default function ProjectsScreen() {
                     />
                     <TouchableOpacity onPress={() => setNewProject(new Project(newProjectName))}>
                         <Text>Create Project</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {setCreateMenu(false); setNewProjectName('');}}>
+                        <Text>Cancel</Text>
                     </TouchableOpacity>
                 </View>
             )}
