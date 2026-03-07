@@ -14,10 +14,29 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import { mod } from "firebase/firestore/pipelines";
 
 import SelectedProjectScreen from "./SelectedProjectScreen";
+import { doc, setDoc } from "firebase/firestore";
 
 //For making the stopwatch I got help from geeksforgeeks.org/react-native/create-a-stop-watch-using-react-native/
-
+//https://firebase.google.com/docs/firestore/manage-data/add-data For adding data to Firebase
 let belowTen = true;
+
+//to update the minutes variable in the data
+//It should trigger anytime that the minutes variable gets changed
+// useEffect() {
+// await setDoc(doc(db, "projects", "test project"), {
+//   minutes: { addedMin },
+// });
+// }
+
+useEffect(() => {
+  const fetchProject = async () => {
+    try {
+      const projectRef = doc(db, "projects", projectID);
+    } catch (e) {
+      console.error("Failed to fetch project", e);
+    }
+  };
+});
 
 export function ModalScreen(route) {
   const navigation = useNavigation();
@@ -25,6 +44,7 @@ export function ModalScreen(route) {
   return (
     <View>
       <Text>Type your notes here</Text>
+      <Button title="Save" onPress={saveLog()} />
       <Button
         title="Dismiss"
         onPress={() =>
@@ -39,7 +59,10 @@ export function ModalScreen(route) {
   );
 }
 
-export default function ActiveScreen() {
+export default function ActiveScreen({ route }) {
+  //receiving the ProjectId
+  const { projectID } = route.params;
+
   //For updating the time displaying on the stopwatch
   const [time, setTime] = useState(0);
   //To keep track if the timer is running
@@ -80,20 +103,25 @@ export default function ActiveScreen() {
       {
         text: "Yes",
         onPress: () => {
+          //Prompt the user with a second alert to check if they would like to log anything
           Alert.alert(
             "Update Your Progress",
             "Would you like to log any progress or add an image?",
             [
               {
+                //Yes then it will open the modal using openLogger
                 text: "Yes",
                 onPress: () => openLogger(),
               },
               {
+                //Will send the user back to the project screen, but it will still save how many minutes they worked.
                 text: "Maybe, Next Time",
                 onPress: () => {
                   clearInterval(intervalRef.current);
-                  setTime(0);
+                  // setTime(0);
                   setRunning(false);
+                  //retrieve the total minutes and add the new time
+
                   navigation.goBack();
                 },
               },

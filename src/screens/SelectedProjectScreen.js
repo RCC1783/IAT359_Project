@@ -18,7 +18,7 @@ export default function SelectedProjectScreen({ route }) {
       {/* //Button for starting to work on your project */}
       <Button
         title="Jump Back In!"
-        onPress={() => navigation.navigate("active")}
+        onPress={() => navigation.navigate("active", { projectID: projectID })}
       />
     </SafeAreaView>
   );
