@@ -19,22 +19,6 @@ import { doc, setDoc, collection } from "firebase/firestore";
 //For making the stopwatch I got help from geeksforgeeks.org/react-native/create-a-stop-watch-using-react-native/
 //https://firebase.google.com/docs/firestore/manage-data/add-data For adding data to Firebase
 
-useEffect(() => {
-  const updateTotalMinutes = () => {
-    setInterval(() => {
-      //add the current time variable to the total minutes variable
-    }, 1000);
-  };
-
-  // const fetchProject = async () => {
-  //   try {
-  //     const projectRef = doc(db, "projects", projectID);
-  //   } catch (e) {
-  //     console.error("Failed to fetch project", e);
-  //   }
-  // };
-}, [minutes]);
-
 export function ModalScreen(route) {
   const navigation = useNavigation();
 
@@ -69,9 +53,32 @@ export default function ActiveScreen({ route }) {
   //Store the start time in ms
   const startTimeRef = useRef(0);
 
-  let minutes = 0;
+  let addedMinutes = 0;
 
   const navigation = useNavigation();
+
+  useEffect(
+    (projectID) => {
+      console.log("useEffect working");
+      const updateTotalMinutes = async () => {
+        console.log("works before try");
+        try {
+          setInterval(() => {
+            //add the current time variable to the total minutes variable every minute
+            console.log("total minutes is" + { projectID.minutes });
+            setDoc(doc(db, "projects", projectID), {
+              projectID,
+              minutes: minutes + addedMinutes,
+            });
+          }, 1000);
+        } catch (e) {
+          console.error("Failed to fetch project", e);
+        }
+      };
+      updateTotalMinutes();
+    },
+    [time],
+  );
 
   const openLogger = () => {
     navigation.navigate("MyModal");
@@ -143,7 +150,7 @@ export default function ActiveScreen({ route }) {
   };
 
   const updateTimer = () => {
-    time >= 1 ? (minutes = Math.floor(time / 60)) : 0;
+    time >= 1 ? (addedMinutes = Math.floor(time / 60)) : 0;
   };
 
   updateTimer();
@@ -153,7 +160,7 @@ export default function ActiveScreen({ route }) {
       <Text>~ Active ~</Text>
       {/*Text to display the stopwatch for the user*/}
       <Text>
-        {minutes < 10 ? `0${minutes}` : minutes}:
+        {addedMinutes < 10 ? `0${addedMinutes}` : addedMinutes}:
         {time % 60 < 10 ? `0${time % 60}` : time % 60}
       </Text>
 
