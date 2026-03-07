@@ -40,6 +40,21 @@ export const styles = StyleSheet.create({
     borderRadius: 15
   },
 
+  roomContainer:{
+    width: '100%',
+    height: undefined,
+    aspectRatio: 1,
+    backgroundColor: '#ffe7e7'
+  },
+  roomImage:{
+    width:'100%',
+    height: undefined,
+    aspectRatio: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+
   homeButton: {
     backgroundColor: "#ffffff",
     borderColor: '#6ac1ff',
@@ -47,5 +62,26 @@ export const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 5,
     margin: 5,
+  }, 
+
+  popupView: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+
+    position: 'absolute',
+    backgroundColor: '#b1b1b1',
+    zIndex: 99,
+    
+    borderColor: 'black',
+    borderWidth: 3,
+    borderRadius: 20,
+
+    width: '95%',
+    height: 200,
+    margin: 10,
+    padding: 40,
+    gap: 10
   }
 });

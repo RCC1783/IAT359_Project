@@ -9,16 +9,31 @@ const default_walls = {
     id:"default_walls", 
     name: "Default Walls",
     type: "wallpaper", 
-    imgSrc:"..."
+    imgSrc: require("./images/room_items/gray_walls.png")
 }
-const default_floors = {
+const blue_walls = {
+    id:"blue_walls", 
+    name: "Blue Walls",
+    type: "wallpaper", 
+    imgSrc: require("./images/room_items/blue_walls.png")
+}
+
+const wood_floors = {
     id:"default_floors", 
     name: "Default Floors",
     type: "flooring", 
-    imgSrc:"..."
+    imgSrc: require("./images/room_items/wood_floor.png")
+}
+const rainbow_floors = {
+    id:"rainbow_floors", 
+    name: "Rainbow Floors",
+    type: "flooring", 
+    imgSrc: require("./images/room_items/rainbow_floor.png")
 }
 
 export const shopList = [
     {owned: false, cost: 200, item: default_walls},
-    {owned: false, cost: 300, item: default_floors},
+    {owned: false, cost: 300, item: wood_floors},
+    {owned: false, cost: 300, item: rainbow_floors},
+    {owned: false, cost: 300, item: blue_walls},
 ]
