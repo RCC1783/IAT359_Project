@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, FlatList, Image } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, FlatList, Image, Pressable, TextInput } from 'react-native';
 
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
@@ -8,6 +8,12 @@ export default function AllImagesScreen() {
     const navigation = useNavigation();
 
     const [images, setImages] = useState([]);
+    const [selectedImages, setSelectedImages] = useState([]);
+
+    const [selectImagePopup, toggleSelectImagePopup] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+
+    let pageNum = 1;
 
     useEffect(() => {
         fetchUnsplash();
@@ -16,30 +22,49 @@ export default function AllImagesScreen() {
     async function fetchUnsplash() {
         // const unsplashKey = process.env.UNSPLASH_ACESS;
         const unsplashKey = "SNmzkWnLsnTfNnc3wIGUZ5YhdbyuquKWw9JEIz_jw-Y";
-        console.log(unsplashKey);
-        try{
-            const response = await fetch(`https://api.unsplash.com/photos/?client_id=${unsplashKey}`,);
-            const data = await response.json();
 
-            if(response.ok){
-                setImages(data);
-                // console.log("Unsplash Data:", data);
-            } else{
-                console.error("FAIL");
+        if(searchQuery != ''){
+            try{
+                const response = await fetch(`https://api.unsplash.com/search/photos/?client_id=${unsplashKey}&query=${searchQuery}&per_page=12&page=${pageNum}`,);
+                const data = await response.json();
+
+                if(response.ok){
+                    setImages(data.results);
+                    // console.log("Unsplash Data:", data);
+                } else{
+                    console.error("FAIL");
+                }
+            } catch (e) {
+                console.error("ERROR: Failed to Unsplash.", e);
             }
-        } catch (e) {
-            console.error("ERROR: Failed to Unsplash.", e)
+        }else{
+            try{
+                const response = await fetch(`https://api.unsplash.com/photos/?client_id=${unsplashKey}&per_page=12&page=${pageNum}`,);
+                const data = await response.json();
+
+                if(response.ok){
+                    setImages(data);
+                    // console.log("Unsplash Data:", data);
+                } else{
+                    console.error("FAIL");
+                }
+            } catch (e) {
+                console.error("ERROR: Failed to Unsplash.", e);
+            }
         }
     }
 
     return(
         <SafeAreaView>
             <Text>~ All Images ~</Text>
+            <Pressable onPress={() => toggleSelectImagePopup(true)}>
+                <Text>Add Images</Text>
+            </Pressable>
             <FlatList
-                data={images != undefined ? images : null}
+                data={selectedImages}
                 keyExtractor={item => item.id}
                 renderItem={({item}) => (
-                    <View style={{flex: 1, flexDirection: 'column', margin: 2}}>
+                    <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', margin: 2}}>
                         <Image 
                             style={{width: 100, height: 100}}
                             source={{uri: item.urls.thumb}}
@@ -49,6 +74,38 @@ export default function AllImagesScreen() {
                 )}
                 numColumns={3}
             />
+
+            {selectImagePopup && (
+                <View style={styles.popupView}> 
+                    <View style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', width: '80%'}}>
+                        <Pressable onPress={() => toggleSelectImagePopup(false)}><Text>Close</Text></Pressable>
+                        <Pressable><Text>Save</Text></Pressable>
+                    </View>
+
+                    {/* https://stackoverflow.com/questions/67098132/how-to-call-function-on-enter-press-in-textinput-react-native */}
+                    <TextInput onSubmitEditing={() => fetchUnsplash()} placeholder='Search' onChangeText={setSearchQuery}/>
+
+                    <FlatList
+                        data={images != undefined ? images : null}
+                        keyExtractor={item => item.id}
+                        renderItem={({item}) => (
+                            <Pressable style={{flex: 1, flexDirection: 'column', alignItems: 'center',margin: 2}}>
+                                <Image 
+                                    style={{width: 100, height: 100, borderRadius: 10, borderColor: '#656565', borderWidth: 3}}
+                                    source={{uri: item.urls.thumb}}
+                                />
+                            </Pressable>
+                        )}
+                        numColumns={3}
+                        style={{width: '100%'}}
+                    />
+
+                    <View style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', width: '80%'}}>
+                        <Pressable><Text>{`<-`}</Text></Pressable>
+                        <Pressable><Text>{`->`}</Text></Pressable>
+                    </View>
+                </View>
+            )}
         </SafeAreaView>
     );
 }
