@@ -1,12 +1,75 @@
-import { StyleSheet, Text, View, SafeAreaView, Button } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, TextInput } from 'react-native';
 
+import { useState } from 'react';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
+import { auth } from '../firebaseConfig';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function LoginScreen({navigation}) {
-    return(
-        <SafeAreaView>
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const fbAuth = auth;
+
+    async function signUp() {
+        try {
+            const response = await createUserWithEmailAndPassword(
+                fbAuth,
+                email,
+                password,
+            );
+
+            console.log(response);
+
+            await AsyncStorage.setItem('uid', JSON.stringify(response.user.uid));
+            alert('User: ' + email + 'successfully signed up.');
+            navigation.navigate('home');            
+        } catch (error) {
+            console.log(error.message);
+            alert(error.message);
+        }
+    }
+
+    async function signIn() {
+        try {
+            const response = await signInWithEmailAndPassword(fbAuth, email, password);
+
+            alert('User: ' + email + ' signed in.');
+            await AsyncStorage.setItem('uid', JSON.stringify(response.user.uid));
+            navigation.navigate('home');  
+        } catch (error) {
+            console.log(error.message);
+            alert(error.message);
+        }
+    }
+ 
+    return (
+        <SafeAreaView styles = {styles.container}>
             <Text>~ Login ~</Text>
+
+            <TextInput
+                style={styles.input}
+                placeholder="Email"
+                keyboardType="email-address"
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+            />
+
+            <TextInput
+                style={styles.input}
+                placeholder="Password"
+                secureTextEntry={true}
+                value={password}
+                onChangeText={setPassword}
+                autoCapitalize='none'
+            />
+
+            <Button title="Sign Up" onPress={signUp} />
+
+            <Button title="Sign In" onPress={signIn} />
         </SafeAreaView>
     );
 }
