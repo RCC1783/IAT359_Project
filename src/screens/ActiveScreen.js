@@ -14,10 +14,33 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import { mod } from "firebase/firestore/pipelines";
 
 import SelectedProjectScreen from "./SelectedProjectScreen";
-import { doc, setDoc, collection } from "firebase/firestore";
+import { doc, setDoc, collection, getDoc } from "firebase/firestore";
+import { db } from "../firebaseConfig";
 
 //For making the stopwatch I got help from geeksforgeeks.org/react-native/create-a-stop-watch-using-react-native/
 //https://firebase.google.com/docs/firestore/manage-data/add-data For adding data to Firebase
+
+//This section I'm going to try exactly what Roan did
+
+async function updateProj(project, projectID) {
+  try {
+    const projectRef = doc(db, "projects", projectID);
+    await updateDoc(projectRef, { ...project });
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function updateTotalMinutes(projectID, project) {
+  console.log(project);
+  // project.minutes = project.minutes + addedMinutes;
+  // updateProj(project, projectID);
+
+  // return project;
+  const projectRef = doc(db, "projects", projectID);
+  setDoc(projectRef, { minutes: projectID.minutes + addedMinutes });
+}
+//section ends here
 
 export function ModalScreen(route) {
   const navigation = useNavigation();
@@ -53,32 +76,58 @@ export default function ActiveScreen({ route }) {
   //Store the start time in ms
   const startTimeRef = useRef(0);
 
+  //from Roan's code so that it knows which project data to look at
+  const [currentProject, setCurrentProj] = useState();
+  const [updator, updateProj] = useState();
+
   let addedMinutes = 0;
 
   const navigation = useNavigation();
 
-  useEffect(
-    (projectID) => {
-      console.log("useEffect working");
-      const updateTotalMinutes = async () => {
-        console.log("works before try");
-        try {
-          setInterval(() => {
-            //add the current time variable to the total minutes variable every minute
-            console.log("total minutes is" + { projectID.minutes });
-            setDoc(doc(db, "projects", projectID), {
-              projectID,
-              minutes: minutes + addedMinutes,
-            });
-          }, 1000);
-        } catch (e) {
-          console.error("Failed to fetch project", e);
-        }
-      };
-      updateTotalMinutes();
-    },
-    [time],
-  );
+  useEffect(() => {
+    const fetchProject = async () => {
+      try {
+        const projectRef = doc(db, "projects", projectID);
+        const project = await getDoc(projectRef);
+        setCurrentProj(project.data());
+        console.log("current proj:", project);
+      } catch (e) {
+        console.error("failed to fetch project", e);
+      }
+    };
+    fetchProject();
+    setInterval(updateTotalMinutes(projectID, currentProject), 100);
+    //
+    //attempt 1:
+    // console.log("useEffect working");
+    // const updateTotalMinutes = async () => {
+    //   console.log("works before try");
+    //   try {
+    //     setInterval(() => {
+    //       //add the current time variable to the total minutes variable every minute
+    //       console.log("total minutes is" + { minutes });
+    //       setDoc(doc(db, "projects", projectID), {
+    //         ...projectID,
+    //         minutes: minutes + addedMinutes,
+    //       });
+    //     }, 1000);
+    //   } catch (e) {
+    //     console.error("Failed to fetch project", e);
+    //   }
+    // };
+    //
+    //attempt 2:
+    // updateTotalMinutes();
+    // const updateTotalMinutes = (projectID) => {
+    //   collRef = doc(db, `projects`, projectID);
+    //   collRef.update({
+    //     minutes: firebase.firestore.FieldValue.increment(addedMinutes),
+    //     //should increment or add the addedminutes to the current minutes variable
+    //   });
+    // };
+    // //run the updateTotal Minutes with a delay
+    // setInterval(updateTotalMinutes, 1000);
+  }, [time]);
 
   const openLogger = () => {
     navigation.navigate("MyModal");
