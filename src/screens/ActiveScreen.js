@@ -71,7 +71,8 @@ export default function ActiveScreen({ route }) {
   const [currentProject, setCurrentProj] = useState();
   // const [updator, updateProj] = useState();
 
-  const [addedMinutes, setMinutes] = useState(0);
+  const [workedMinutes, setWorkedMinutes] = useState(0);
+  const [minutesToAdd, setMinutesToAdd] = useState(0);
 
   const navigation = useNavigation();
 
@@ -87,7 +88,11 @@ export default function ActiveScreen({ route }) {
       }
     };
     fetchProject();
-  }, [addedMinutes]);
+  }, [running]);
+
+  useEffect(() => {
+    updateTotalMinutes(projectID, currentProject);
+  }, [minutesToAdd])
 
   function updateTotalMinutes(projectID, project) {
     if (project == undefined) {
@@ -95,8 +100,10 @@ export default function ActiveScreen({ route }) {
       return;
     } else {
       console.log(project);
-      project.minutes = project.minutes + addedMinutes;
+      project.minutes = project.minutes + minutesToAdd - workedMinutes;
       
+      setWorkedMinutes(minutesToAdd);
+      // console.log(`minutes to add: ${minutesToAdd}, worked min: ${workedMinutes}`);
       updateProj(project, projectID);
 
       return project;
@@ -175,8 +182,8 @@ export default function ActiveScreen({ route }) {
   };
 
   const updateTimer = () => {
-    if(time > 0 && Math.floor(time/10) > addedMinutes){
-      setMinutes(Math.floor(time/10));
+    if(time > 0 && Math.floor(time/60) > minutesToAdd){
+      setMinutesToAdd(Math.floor(time/60));
     }
   };
 
@@ -187,15 +194,10 @@ export default function ActiveScreen({ route }) {
       <Text>~ Active ~</Text>
       {/*Text to display the stopwatch for the user*/}
       <Text>
-        {addedMinutes < 10 ? `0${addedMinutes}` : addedMinutes}:
+        {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:
         {time % 60 < 10 ? `0${time % 60}` : time % 60}
       </Text>
 
-      <TouchableOpacity
-        onPress={() => updateTotalMinutes(projectID, currentProject)}
-      >
-        <Text>Update my total time</Text>
-      </TouchableOpacity>
 
       {/*check if the stopwatch is running*/}
       {running ? (
