@@ -13,7 +13,9 @@ export default function AllImagesScreen() {
     const [selectImagePopup, toggleSelectImagePopup] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
 
-    let pageNum = 1;
+    const [pageNum, setPageNum] = useState(1);
+
+    const [fullscreenImage, setFullscreenImage] = useState(null)
 
     useEffect(() => {
         fetchUnsplash();
@@ -99,10 +101,10 @@ export default function AllImagesScreen() {
                         numColumns={3}
                         style={{width: '100%'}}
                     />
-
+                    <Text>Powered by Unsplash</Text>
                     <View style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', width: '80%'}}>
-                        <Pressable><Text>{`<-`}</Text></Pressable>
-                        <Pressable><Text>{`->`}</Text></Pressable>
+                        <Pressable onPress={() => { pageNum > 1 ? setPageNum(pageNum - 1) : null; fetchUnsplash()}}><Text>{`<-`}</Text></Pressable>
+                        <Pressable onPress={() => { setPageNum(pageNum + 1); fetchUnsplash() }}><Text>{`->`}</Text></Pressable>
                     </View>
                 </View>
             )}
