@@ -33,12 +33,12 @@ async function updateProj(project, projectID) {
 
 async function updateTotalMinutes(projectID, project) {
   console.log(project);
-  // project.minutes = project.minutes + addedMinutes;
-  // updateProj(project, projectID);
+  project.minutes = project.minutes + addedMinutes;
+  updateProj(project, projectID);
 
-  // return project;
-  const projectRef = doc(db, "projects", projectID);
-  setDoc(projectRef, { minutes: projectID.minutes + addedMinutes });
+  return project;
+  // const projectRef = doc(db, "projects", project);
+  // setDoc(projectRef, { minutes: project.minutes + addedMinutes });
 }
 //section ends here
 
@@ -127,7 +127,7 @@ export default function ActiveScreen({ route }) {
     // };
     // //run the updateTotal Minutes with a delay
     // setInterval(updateTotalMinutes, 1000);
-  }, [time]);
+  }, [updator]);
 
   const openLogger = () => {
     navigation.navigate("MyModal");
