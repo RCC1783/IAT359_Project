@@ -6,6 +6,7 @@ import {
   Button,
   TouchableOpacity,
   Alert,
+  TextInput,
 } from "react-native";
 import { useState, useRef, useEffect } from "react";
 
@@ -20,7 +21,29 @@ import { db } from "../firebaseConfig";
 //For making the stopwatch I got help from geeksforgeeks.org/react-native/create-a-stop-watch-using-react-native/
 //https://firebase.google.com/docs/firestore/manage-data/add-data For adding data to Firebase
 
-//This section I'm going to try exactly what Roan did
+//Class for storing/making a new log that will then get updated to the firebase data
+class Log {
+  date = "";
+  note = "";
+  img = 0;
+  constructor(date = new Date().now, note) {
+    this.date = date;
+    this.note = note;
+  }
+}
+
+async function saveLog() {
+  if (newLog == null) return;
+  try {
+    const docRef = await doc(collection(db, "projects/logs"));
+    setDoc(docRef, {
+      ...newLog,
+    });
+    console.log(`new log created with ID: ${docRef.id}`);
+  } catch (e) {
+    console.error("An error occurred while trying to save", e);
+  }
+}
 
 async function updateProj(project, projectID) {
   try {
@@ -31,15 +54,38 @@ async function updateProj(project, projectID) {
   }
 }
 
-//section ends here
-
 export function ModalScreen(route) {
   const navigation = useNavigation();
 
+  //store the string that the user inputs into the text variable
+  const [text, onChangeText] = useState("");
+  //variable to create a newLog object
+  const [newLog, setNewLog] = useState(null);
+
+  useEffect(() => {
+    const saveLog = async () => {
+      if (newLog == null) return;
+      try {
+        const docRef = await doc(collection(db, "projects/logs"));
+        setDoc(docRef, {
+          ...newLog,
+        });
+        console.log(`new log created with ID: ${docRef.id}`);
+      } catch (e) {
+        console.error("An error occurred while trying to save", e);
+      }
+    };
+  }, [newLog]);
+
   return (
     <View>
-      <Text>Type your notes here</Text>
-      {/* <Button title="Save" onPress={saveLog()} /> */}
+      <Text>Write your Notes here</Text>
+      <TextInput
+        placeholder="Today I drew..."
+        value={text}
+        onChangeText={onChangeText}
+      />
+      <Button title="Save" onPress={() => setNewLog(new Log({ text }))} />
       <Button
         title="Dismiss"
         onPress={() =>
@@ -92,7 +138,7 @@ export default function ActiveScreen({ route }) {
 
   useEffect(() => {
     updateTotalMinutes(projectID, currentProject);
-  }, [minutesToAdd])
+  }, [minutesToAdd]);
 
   function updateTotalMinutes(projectID, project) {
     if (project == undefined) {
@@ -101,7 +147,7 @@ export default function ActiveScreen({ route }) {
     } else {
       console.log(project);
       project.minutes = project.minutes + minutesToAdd - workedMinutes;
-      
+
       setWorkedMinutes(minutesToAdd);
       // console.log(`minutes to add: ${minutesToAdd}, worked min: ${workedMinutes}`);
       updateProj(project, projectID);
@@ -182,8 +228,8 @@ export default function ActiveScreen({ route }) {
   };
 
   const updateTimer = () => {
-    if(time > 0 && Math.floor(time/60) > minutesToAdd){
-      setMinutesToAdd(Math.floor(time/60));
+    if (time > 0 && Math.floor(time / 60) > minutesToAdd) {
+      setMinutesToAdd(Math.floor(time / 60));
     }
   };
 
@@ -197,7 +243,6 @@ export default function ActiveScreen({ route }) {
         {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:
         {time % 60 < 10 ? `0${time % 60}` : time % 60}
       </Text>
-
 
       {/*check if the stopwatch is running*/}
       {running ? (
