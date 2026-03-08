@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, Pressable } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, Pressable, ImageBackground } from 'react-native';
 import { useState, useEffect } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {styles} from '../styles';
@@ -8,14 +8,21 @@ export default function HomeScreen() {
     const navigation = useNavigation();
     return(
         <SafeAreaView>
-            <Text>~ Welcome! ~</Text>
-            {/* <Button title="Shop Screen" onPress={() => navigation.navigate("shop")}/> */}
+            <Text style = {styles.btnText}>~ Welcome! ~</Text>
+            {/*<Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('shop')}>
+                <Text style = {styles.btnText}>Shop</Text>
+            </Pressable> */}
 
-            <Button title="Projects" onPress={() => navigation.navigate("projects")}/>
-            <Button title="Home Screen" onPress={() => navigation.navigate("home")}/>
+            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('projects')}>
+                <Text style = {styles.btnText}>Projects</Text>
+            </Pressable>
 
-            <Pressable style = {styles.homeButton} onPress={() => navigation.navigate('settings')}>
-                <Text>Settings</Text>
+            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('home')}>
+                <Text style = {styles.btnText}>Home</Text>
+            </Pressable>
+
+            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('settings')}>
+                <Text style = {styles.btnText}>Settings</Text>
             </Pressable>
         </SafeAreaView>
     );

@@ -44,8 +44,48 @@ export const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderColor: '#6ac1ff',
     borderWidth: 3,
-    padding: 5,
+    padding: 15,
     borderRadius: 5,
+    margin: 10,
+    
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+
+  btnText: {
+    textAlign: 'center',
+  }, 
+
+  boxShadow: {
+    shadowColor: '#333333',
+    shadowOffset: { 
+      width: 6,
+      height: 6
+    },
+    shadowOpacity: 0.6,
+    shadowRadius: 4,
+  },
+
+  androidBoxShdw: {
+    elevation: 10,
+  },
+
+  setSwitch: {
+    flexDirection: 'row',
+    alignItems: 'center',
+
+    padding: 15,
+    borderRadius: 5,
+    margin: 10,
+
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+
+  input: {
     margin: 5,
+    borderWidth: 1,
+
+    backgroundColor: 'white',
   }
 });

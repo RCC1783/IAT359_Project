@@ -21,6 +21,14 @@ import ActiveScreen from './src/screens/ActiveScreen';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log("user", user);
+      setUser(user);
+    });
+  }, []);
 
   return (
     <NavigationContainer>
