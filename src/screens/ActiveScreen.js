@@ -31,15 +31,6 @@ async function updateProj(project, projectID) {
   }
 }
 
-async function updateTotalMinutes(projectID, project) {
-  console.log(project);
-  project.minutes = project.minutes + addedMinutes;
-  updateProj(project, projectID);
-
-  return project;
-  // const projectRef = doc(db, "projects", project);
-  // setDoc(projectRef, { minutes: project.minutes + addedMinutes });
-}
 //section ends here
 
 export function ModalScreen(route) {
@@ -84,6 +75,8 @@ export default function ActiveScreen({ route }) {
 
   const navigation = useNavigation();
 
+  updateTotalMinutes(projectID, currentProject);
+
   useEffect(() => {
     const fetchProject = async () => {
       try {
@@ -96,7 +89,6 @@ export default function ActiveScreen({ route }) {
       }
     };
     fetchProject();
-    setInterval(updateTotalMinutes(projectID, currentProject), 100);
     //
     //attempt 1:
     // console.log("useEffect working");
@@ -127,7 +119,22 @@ export default function ActiveScreen({ route }) {
     // };
     // //run the updateTotal Minutes with a delay
     // setInterval(updateTotalMinutes, 1000);
-  }, [updator]);
+  }, [addedMinutes]);
+
+  function updateTotalMinutes(projectID, project) {
+    if (project == undefined) {
+      console.log("loading");
+      return;
+    } else {
+      console.log(project);
+      project.minutes = project.minutes + addedMinutes;
+      updateProj(project, projectID);
+
+      return project;
+    }
+    // const projectRef = doc(db, "projects", project);
+    // setDoc(projectRef, { minutes: project.minutes + addedMinutes });
+  }
 
   const openLogger = () => {
     navigation.navigate("MyModal");
