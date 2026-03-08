@@ -22,23 +22,24 @@ class Project{
     }
 }
 const test_proj = {
-    name:"test project", // Display name of the project
-    minutes: 500,
+  name: "test project", // Display name of the project
+  minutes: 500,
 
     // array containing log objects
     logs:[],
 
-    ownedItems: [], //Array of roomItems that can be used to populate the room
+  ownedItems: [], //Array of roomItems that can be used to populate the room
 
-    roomSetup: { // Object populated with roomItems controlling the layout of the room
-        wallpaper: {},
-        flooring: {},
-    },
+  roomSetup: {
+    // Object populated with roomItems controlling the layout of the room
+    wallpaper: {},
+    flooring: {},
+  },
 };
 
 
 export default function ProjectsScreen() {
-    const navigation = useNavigation();
+  const navigation = useNavigation();
 
     const [projectList, setProjectList] = useState([]);
     const [createMenuOpen, setCreateMenu] = useState(false);
@@ -49,16 +50,16 @@ export default function ProjectsScreen() {
         const fetchProjects = async() => {
             const querySnapshot = await getDocs(collection(db, "projects"));
 
-            let allDocs = [];
-            querySnapshot.forEach((doc) => {
-                allDocs.push({
-                    ...doc.data(),
-                    id: doc.id
-                });
-            });
+      let allDocs = [];
+      querySnapshot.forEach((doc) => {
+        allDocs.push({
+          ...doc.data(),
+          id: doc.id,
+        });
+      });
 
-            setProjectList(allDocs);
-        }
+      setProjectList(allDocs);
+    };
 
         fetchProjects();
     }, [createMenuOpen]);

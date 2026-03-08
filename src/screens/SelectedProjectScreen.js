@@ -103,6 +103,11 @@ export default function SelectedProjectScreen({route}) {
             <Button title='Edit Room' onPress={() => setRoomEditorOpen(true)}/>
 
             <Button title="Shop Screen" onPress={() => navigation.navigate("shop", {projectID: projectID})}/>
+
+            <Button
+              title="Jump Back In!"
+              onPress={() => navigation.navigate("active", { projectID: projectID })}
+            />
         </SafeAreaView>
     );
 }
