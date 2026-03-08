@@ -71,11 +71,9 @@ export default function ActiveScreen({ route }) {
   const [currentProject, setCurrentProj] = useState();
   const [updator, updateProj] = useState();
 
-  let addedMinutes = 0;
+  const [addedMinutes, updateMinutes] = useState(0);
 
   const navigation = useNavigation();
-
-  updateTotalMinutes(projectID, currentProject);
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -206,7 +204,7 @@ export default function ActiveScreen({ route }) {
   };
 
   const updateTimer = () => {
-    time >= 1 ? (addedMinutes = Math.floor(time / 60)) : 0;
+    time >= 1 ? setMinutes(Math.floor(time / 60)) : 0;
   };
 
   updateTimer();
@@ -235,6 +233,11 @@ export default function ActiveScreen({ route }) {
           </TouchableOpacity>
           <TouchableOpacity onPress={endStopWatch}>
             <Text>End Session</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={updateTotalMinutes(projectID, currentProject)}
+          >
+            <Text>Update my total time</Text>
           </TouchableOpacity>
         </>
       )}
