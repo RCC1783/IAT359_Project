@@ -17,6 +17,7 @@ import SelectedProjectScreen from './src/screens/SelectedProjectScreen';
 import ShopScreen from './src/screens/ShopScreen';
 import ProjectImagesScreen from './src/screens/ProjectImagesScreen';
 import ActiveScreen from './src/screens/ActiveScreen';
+import { ModalScreen } from "./src/screens/ActiveScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -61,18 +62,17 @@ export default function App() {
           name="selectedProject"
           component={SelectedProjectScreen}
         />
-        <Stack.Screen
-          name="shop"
-          component={ShopScreen}
-        />
-        <Stack.Screen
-          name="projectImages"
-          component={ProjectImagesScreen}
-        />
-        <Stack.Screen
-          name="active"
-          component={ActiveScreen}
-        />
+        <Stack.Screen name="shop" component={ShopScreen} />
+        <Stack.Screen name="projectImages" component={ProjectImagesScreen} />
+        <Stack.Group navigationKey="ActiveS">
+          <Stack.Screen name="active" component={ActiveScreen} />
+        </Stack.Group>
+        <Stack.Group
+          navigationKey="Modal"
+          screenOptions={{ presentation: "modal" }}
+        >
+          <Stack.Screen name="MyModal" component={ModalScreen} />
+        </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
   );

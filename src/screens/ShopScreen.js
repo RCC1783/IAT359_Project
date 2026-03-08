@@ -41,7 +41,6 @@ async function printAll() {
 }
 
 async function updateProj(project, projectID) {
-    //save/overwrite room in firestore (not working)
     try{
         const projectRef = doc(db, "projects", projectID);
         await updateDoc(projectRef, {
