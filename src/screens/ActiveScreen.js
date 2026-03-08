@@ -23,25 +23,12 @@ import { db } from "../firebaseConfig";
 
 //Class for storing/making a new log that will then get updated to the firebase data
 class Log {
-  date = "";
+  date = new Date();
   note = "";
   img = 0;
-  constructor(date = new Date().now, note) {
+  constructor(date, note) {
     this.date = date;
     this.note = note;
-  }
-}
-
-async function saveLog() {
-  if (newLog == null) return;
-  try {
-    const docRef = await doc(collection(db, "projects/logs"));
-    setDoc(docRef, {
-      ...newLog,
-    });
-    console.log(`new log created with ID: ${docRef.id}`);
-  } catch (e) {
-    console.error("An error occurred while trying to save", e);
   }
 }
 
@@ -54,8 +41,9 @@ async function updateProj(project, projectID) {
   }
 }
 
-export function ModalScreen(route) {
+export function ModalScreen({ route }) {
   const navigation = useNavigation();
+  const { projectID } = route.params;
 
   //store the string that the user inputs into the text variable
   const [text, onChangeText] = useState("");
@@ -63,18 +51,21 @@ export function ModalScreen(route) {
   const [newLog, setNewLog] = useState(null);
 
   useEffect(() => {
+    console.log(newLog);
     const saveLog = async () => {
       if (newLog == null) return;
       try {
-        const docRef = await doc(collection(db, "projects/logs"));
+        const docRef = await doc(db, "projects", projectID);
         setDoc(docRef, {
-          ...newLog,
+          logs: { ...newLog },
         });
         console.log(`new log created with ID: ${docRef.id}`);
       } catch (e) {
         console.error("An error occurred while trying to save", e);
       }
     };
+
+    saveLog();
   }, [newLog]);
 
   return (
@@ -85,7 +76,10 @@ export function ModalScreen(route) {
         value={text}
         onChangeText={onChangeText}
       />
-      <Button title="Save" onPress={() => setNewLog(new Log({ text }))} />
+      <Button
+        title="Save"
+        onPress={() => setNewLog(new Log(new Date().now, { text }))}
+      />
       <Button
         title="Dismiss"
         onPress={() =>
@@ -159,7 +153,7 @@ export default function ActiveScreen({ route }) {
   }
 
   const openLogger = () => {
-    navigation.navigate("MyModal");
+    navigation.navigate("MyModal", { projectID: projectID });
   };
 
   const startStopWatch = () => {
