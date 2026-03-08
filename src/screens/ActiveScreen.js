@@ -14,7 +14,7 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import { mod } from "firebase/firestore/pipelines";
 
 import SelectedProjectScreen from "./SelectedProjectScreen";
-import { doc, setDoc, collection, getDoc } from "firebase/firestore";
+import { doc, setDoc, collection, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 
 //For making the stopwatch I got help from geeksforgeeks.org/react-native/create-a-stop-watch-using-react-native/
@@ -69,9 +69,9 @@ export default function ActiveScreen({ route }) {
 
   //from Roan's code so that it knows which project data to look at
   const [currentProject, setCurrentProj] = useState();
-  const [updator, updateProj] = useState();
+  // const [updator, updateProj] = useState();
 
-  const [addedMinutes, updateMinutes] = useState(0);
+  const [addedMinutes, setMinutes] = useState(0);
 
   const navigation = useNavigation();
 
@@ -87,36 +87,6 @@ export default function ActiveScreen({ route }) {
       }
     };
     fetchProject();
-    //
-    //attempt 1:
-    // console.log("useEffect working");
-    // const updateTotalMinutes = async () => {
-    //   console.log("works before try");
-    //   try {
-    //     setInterval(() => {
-    //       //add the current time variable to the total minutes variable every minute
-    //       console.log("total minutes is" + { minutes });
-    //       setDoc(doc(db, "projects", projectID), {
-    //         ...projectID,
-    //         minutes: minutes + addedMinutes,
-    //       });
-    //     }, 1000);
-    //   } catch (e) {
-    //     console.error("Failed to fetch project", e);
-    //   }
-    // };
-    //
-    //attempt 2:
-    // updateTotalMinutes();
-    // const updateTotalMinutes = (projectID) => {
-    //   collRef = doc(db, `projects`, projectID);
-    //   collRef.update({
-    //     minutes: firebase.firestore.FieldValue.increment(addedMinutes),
-    //     //should increment or add the addedminutes to the current minutes variable
-    //   });
-    // };
-    // //run the updateTotal Minutes with a delay
-    // setInterval(updateTotalMinutes, 1000);
   }, [addedMinutes]);
 
   function updateTotalMinutes(projectID, project) {
@@ -126,6 +96,7 @@ export default function ActiveScreen({ route }) {
     } else {
       console.log(project);
       project.minutes = project.minutes + addedMinutes;
+      
       updateProj(project, projectID);
 
       return project;
@@ -204,7 +175,9 @@ export default function ActiveScreen({ route }) {
   };
 
   const updateTimer = () => {
-    time >= 1 ? setMinutes(Math.floor(time / 60)) : 0;
+    if(time > 0 && Math.floor(time/10) > addedMinutes){
+      setMinutes(Math.floor(time/10));
+    }
   };
 
   updateTimer();
@@ -217,6 +190,12 @@ export default function ActiveScreen({ route }) {
         {addedMinutes < 10 ? `0${addedMinutes}` : addedMinutes}:
         {time % 60 < 10 ? `0${time % 60}` : time % 60}
       </Text>
+
+      <TouchableOpacity
+        onPress={() => updateTotalMinutes(projectID, currentProject)}
+      >
+        <Text>Update my total time</Text>
+      </TouchableOpacity>
 
       {/*check if the stopwatch is running*/}
       {running ? (
@@ -233,11 +212,6 @@ export default function ActiveScreen({ route }) {
           </TouchableOpacity>
           <TouchableOpacity onPress={endStopWatch}>
             <Text>End Session</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={updateTotalMinutes(projectID, currentProject)}
-          >
-            <Text>Update my total time</Text>
           </TouchableOpacity>
         </>
       )}
