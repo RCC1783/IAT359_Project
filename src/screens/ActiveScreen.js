@@ -56,7 +56,6 @@ export default function ActiveScreen({ route }) {
 
   //from Roan's code so that it knows which project data to look at
   const [currentProject, setCurrentProj] = useState();
-  // const [updator, updateProj] = useState();
 
   const [workedMinutes, setWorkedMinutes] = useState(0);
   const [minutesToAdd, setMinutesToAdd] = useState(0);
@@ -107,25 +106,33 @@ export default function ActiveScreen({ route }) {
     // setDoc(projectRef, { minutes: project.minutes + addedMinutes });
   }
 
+  //This useEffect will save the notes that the user inputted
   useEffect(() => {
     console.log(newLog);
-    const saveLog = async () => {
-      //if there's nothing in the text input just return
-      if (newLog == null) return;
-      try {
-        const docRef = await doc(db, "projects", projectID);
-        updateDoc(docRef, {
-          logs: project.logs,
-        });
-        console.log(`new log created with ID: ${docRef.id}`);
-        updateProj(project, projectID);
-      } catch (e) {
-        console.error("An error occurred while trying to save", e);
-      }
-    };
-
-    saveLog();
+    saveLog(projectID, currentProject);
   }, [newLog]);
+
+  // setProject({
+  //   ...project,
+  //   logs: [...project.logs, { ...newLog }],
+  // });
+
+  async function saveLog(projectID, project) {
+    //if there's nothing in the text input just return
+    if (newLog == null) return;
+    try {
+      const docRef = await doc(db, "projects", projectID);
+      updateDoc(docRef, {
+        logs: project.logs,
+      });
+      console.log(`new log created with ID: ${docRef.id}`);
+      updateProj(project, projectID);
+
+      return project;
+    } catch (e) {
+      console.error("An error occurred while trying to save", e);
+    }
+  }
 
   const openLogger = () => {
     //set showModal to true to check if it should display the new popup
