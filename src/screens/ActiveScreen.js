@@ -41,66 +41,6 @@ async function updateProj(project, projectID) {
   }
 }
 
-export function ModalScreen({ route }) {
-  const navigation = useNavigation();
-  const { projectID } = route.params;
-
-  //store the string that the user inputs into the text variable
-  const [text, onChangeText] = useState("");
-  //variable to create a newLog object
-  const [newLog, setNewLog] = useState(null);
-
-  // setProject({
-  //   ...project,
-  //   logs: [...project.logs, { ...newLog }],
-  // });
-
-  useEffect(() => {
-    console.log(newLog);
-    const saveLog = async () => {
-      //if there's nothing in the text input just return
-      if (newLog == null) return;
-      try {
-        const docRef = await doc(db, "projects", projectID);
-        updateDoc(docRef, {
-          logs: project.logs,
-        });
-        console.log(`new log created with ID: ${docRef.id}`);
-        updateProj(project, projectID);
-      } catch (e) {
-        console.error("An error occurred while trying to save", e);
-      }
-    };
-
-    saveLog();
-  }, [newLog]);
-
-  return (
-    <View>
-      <Text>Write your Notes here</Text>
-      <TextInput
-        placeholder="Today I drew..."
-        value={text}
-        onChangeText={onChangeText}
-      />
-      <Button
-        title="Save"
-        onPress={() => setNewLog(new Log(text, new Date()))}
-      />
-      <Button
-        title="Dismiss"
-        onPress={() =>
-          navigation.dispatch({
-            ...CommonActions.goBack(),
-            source: route.key,
-            target: navigation.getState().key,
-          })
-        }
-      />
-    </View>
-  );
-}
-
 export default function ActiveScreen({ route }) {
   //receiving the ProjectId
   const { projectID } = route.params;
@@ -120,6 +60,14 @@ export default function ActiveScreen({ route }) {
 
   const [workedMinutes, setWorkedMinutes] = useState(0);
   const [minutesToAdd, setMinutesToAdd] = useState(0);
+
+  //store the string that the user inputs into the text variable
+  const [text, onChangeText] = useState("");
+  //variable to create a newLog object
+  const [newLog, setNewLog] = useState(null);
+
+  //For toggling the modal popup for the user to input a log
+  const [showModal, setShowModal] = useState(false);
 
   const navigation = useNavigation();
 
@@ -159,8 +107,30 @@ export default function ActiveScreen({ route }) {
     // setDoc(projectRef, { minutes: project.minutes + addedMinutes });
   }
 
+  useEffect(() => {
+    console.log(newLog);
+    const saveLog = async () => {
+      //if there's nothing in the text input just return
+      if (newLog == null) return;
+      try {
+        const docRef = await doc(db, "projects", projectID);
+        updateDoc(docRef, {
+          logs: project.logs,
+        });
+        console.log(`new log created with ID: ${docRef.id}`);
+        updateProj(project, projectID);
+      } catch (e) {
+        console.error("An error occurred while trying to save", e);
+      }
+    };
+
+    saveLog();
+  }, [newLog]);
+
   const openLogger = () => {
-    navigation.navigate("MyModal", { projectID: projectID });
+    //set showModal to true to check if it should display the new popup
+    setShowModal(true);
+    // navigation.navigate("MyModal", { projectID: projectID });
   };
 
   const startStopWatch = () => {
@@ -238,35 +208,65 @@ export default function ActiveScreen({ route }) {
 
   return (
     <View>
-      <Text>~ Active ~</Text>
-      {/*Text to display the stopwatch for the user*/}
-      <Text>
-        {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:
-        {time % 60 < 10 ? `0${time % 60}` : time % 60}
-      </Text>
-
-      {/*check if the stopwatch is running*/}
-      {running ? (
+      {showModal ? (
         <View>
-          <Text>Working...</Text>
-          <TouchableOpacity onPress={pauseStopWatch} style={styles.homeButton}>
-            <Text>Pause</Text>
-          </TouchableOpacity>
+          <Text>Write your Notes here</Text>
+          <TextInput
+            placeholder="Today I drew..."
+            value={text}
+            onChangeText={onChangeText}
+          />
+          <Button
+            title="Save"
+            onPress={() => setNewLog(new Log(text, new Date()))}
+          />
+          <Button title="Dismiss" onPress={() => setShowModal(false)} />
         </View>
       ) : (
-        <>
-          <TouchableOpacity onPress={startStopWatch} style={styles.homeButton}>
-            <Text>Start</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={endStopWatch} style={styles.homeButton}>
-            <Text>End Session</Text>
-          </TouchableOpacity>
-        </>
-      )}
-      {!running && (
-        <TouchableOpacity onPress={resumeStopWatch} style={styles.homeButton}>
-          <Text>Resume</Text>
-        </TouchableOpacity>
+        <View>
+          <Text>~ Active ~</Text>
+          {/*Text to display the stopwatch for the user*/}
+          <Text>
+            {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:
+            {time % 60 < 10 ? `0${time % 60}` : time % 60}
+          </Text>
+
+          {/*check if the stopwatch is running*/}
+          {running ? (
+            <View>
+              <Text>Working...</Text>
+              <TouchableOpacity
+                onPress={pauseStopWatch}
+                style={styles.homeButton}
+              >
+                <Text>Pause</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <>
+              <TouchableOpacity
+                onPress={startStopWatch}
+                style={styles.homeButton}
+              >
+                <Text>Start</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={endStopWatch}
+                style={styles.homeButton}
+              >
+                <Text>End Session</Text>
+              </TouchableOpacity>
+            </>
+          )}
+          {!running && (
+            <TouchableOpacity
+              onPress={resumeStopWatch}
+              style={styles.homeButton}
+            >
+              <Text>Resume</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       )}
     </View>
   );
