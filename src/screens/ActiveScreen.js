@@ -50,16 +50,23 @@ export function ModalScreen({ route }) {
   //variable to create a newLog object
   const [newLog, setNewLog] = useState(null);
 
+  // setProject({
+  //   ...project,
+  //   logs: [...project.logs, { ...newLog }],
+  // });
+
   useEffect(() => {
     console.log(newLog);
     const saveLog = async () => {
+      //if there's nothing in the text input just return
       if (newLog == null) return;
       try {
         const docRef = await doc(db, "projects", projectID);
         updateDoc(docRef, {
-          logs: [...logs, newLog],
+          logs: project.logs,
         });
         console.log(`new log created with ID: ${docRef.id}`);
+        updateProj(project, projectID);
       } catch (e) {
         console.error("An error occurred while trying to save", e);
       }
@@ -242,22 +249,22 @@ export default function ActiveScreen({ route }) {
       {running ? (
         <View>
           <Text>Working...</Text>
-          <TouchableOpacity onPress={pauseStopWatch}>
+          <TouchableOpacity onPress={pauseStopWatch} style={styles.homeButton}>
             <Text>Pause</Text>
           </TouchableOpacity>
         </View>
       ) : (
         <>
-          <TouchableOpacity onPress={startStopWatch}>
+          <TouchableOpacity onPress={startStopWatch} style={styles.homeButton}>
             <Text>Start</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={endStopWatch}>
+          <TouchableOpacity onPress={endStopWatch} style={styles.homeButton}>
             <Text>End Session</Text>
           </TouchableOpacity>
         </>
       )}
       {!running && (
-        <TouchableOpacity onPress={resumeStopWatch}>
+        <TouchableOpacity onPress={resumeStopWatch} style={styles.homeButton}>
           <Text>Resume</Text>
         </TouchableOpacity>
       )}
