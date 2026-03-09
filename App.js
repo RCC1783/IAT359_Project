@@ -18,6 +18,7 @@ import ShopScreen from './src/screens/ShopScreen';
 import ProjectImagesScreen from './src/screens/ProjectImagesScreen';
 import ActiveScreen from './src/screens/ActiveScreen';
 import { ModalScreen } from "./src/screens/ActiveScreen";
+import CameraScreen from './src/screens/CameraScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -65,6 +66,8 @@ export default function App() {
         >
           <Stack.Screen name="MyModal" component={ModalScreen} />
         </Stack.Group>
+
+        <Stack.Screen name='Camera' component={CameraScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
