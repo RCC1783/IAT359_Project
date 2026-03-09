@@ -23,12 +23,12 @@ import { db } from "../firebaseConfig";
 
 //Class for storing/making a new log that will then get updated to the firebase data
 class Log {
-  date = new Date();
-  note = "";
+  date = "";
+  text = "";
   img = 0;
-  constructor(date, note) {
+  constructor(text, date) {
     this.date = date;
-    this.note = note;
+    this.text = text;
   }
 }
 
@@ -56,8 +56,8 @@ export function ModalScreen({ route }) {
       if (newLog == null) return;
       try {
         const docRef = await doc(db, "projects", projectID);
-        setDoc(docRef, {
-          logs: { ...newLog },
+        updateDoc(docRef, {
+          logs: [...logs, newLog],
         });
         console.log(`new log created with ID: ${docRef.id}`);
       } catch (e) {
@@ -78,7 +78,7 @@ export function ModalScreen({ route }) {
       />
       <Button
         title="Save"
-        onPress={() => setNewLog(new Log(new Date().now, { text }))}
+        onPress={() => setNewLog(new Log(text, new Date()))}
       />
       <Button
         title="Dismiss"
