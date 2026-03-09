@@ -106,9 +106,14 @@ export default function ActiveScreen({ route }) {
     // setDoc(projectRef, { minutes: project.minutes + addedMinutes });
   }
 
+  function setProject(project) {
+    setCurrentProj({ ...project, logs: [...project.logs, { newLog }] });
+  }
+
   //This useEffect will save the notes that the user inputted
   useEffect(() => {
     console.log(newLog);
+    setProject(currentProject);
     saveLog(projectID, currentProject);
   }, [newLog]);
 
