@@ -27,8 +27,8 @@ export default function AllImagesScreen() {
     },[searchQuery]);
 
     async function fetchUnsplash() {
-        const unsplashKey = process.env.UNSPLASH_ACESS;
-        // const unsplashKey = "SNmzkWnLsnTfNnc3wIGUZ5YhdbyuquKWw9JEIz_jw-Y";
+        // const unsplashKey = process.env.UNSPLASH_ACESS;
+        const unsplashKey = "SNmzkWnLsnTfNnc3wIGUZ5YhdbyuquKWw9JEIz_jw-Y";
 
         if(searchQuery != ''){
             try{
