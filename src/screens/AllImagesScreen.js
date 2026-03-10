@@ -19,7 +19,12 @@ export default function AllImagesScreen() {
 
     useEffect(() => {
         fetchUnsplash();
-    }, [])
+    }, [selectImagePopup]);
+
+    useEffect(() => {
+        setPageNum(1);
+        // fetchUnsplash();
+    },[searchQuery]);
 
     async function fetchUnsplash() {
         // const unsplashKey = process.env.UNSPLASH_ACESS;
@@ -58,9 +63,9 @@ export default function AllImagesScreen() {
 
     return(
         <SafeAreaView>
-            <Text style = {styles.headerText}>~ All Images ~</Text>
+                <Text style={styles.btnText}>Add Images</Text>
             <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => toggleSelectImagePopup(true)}>
-                <Text>Add Images</Text>
+            <Text style = {styles.headerText}>~ All Images ~</Text>
             </Pressable>
             <FlatList
                 data={selectedImages}
