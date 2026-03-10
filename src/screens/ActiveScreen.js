@@ -132,8 +132,9 @@ export default function ActiveScreen({ route }) {
     if (newLog == null) return;
     try {
       const docRef = await doc(db, "projects", projectID);
-      console.log(project.logs);
+      // console.log(project.logs);
       project.logs.push(newLog);
+      console.log(project.logs);
 
       updateProj(project, projectID);
       updateDoc(docRef, {
