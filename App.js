@@ -46,7 +46,8 @@ export default function App() {
         />
         <Stack.Screen name="shop" component={ShopScreen} />
         <Stack.Screen name="projectImages" component={ProjectImagesScreen} />
-        <Stack.Group navigationKey="ActiveS">
+        <Stack.Screen name="active" component={ActiveScreen} />
+        {/* <Stack.Group navigationKey="ActiveS">
           <Stack.Screen name="active" component={ActiveScreen} />
         </Stack.Group>
         <Stack.Group
@@ -54,7 +55,7 @@ export default function App() {
           screenOptions={{ presentation: "modal" }}
         >
           <Stack.Screen name="MyModal" component={ModalScreen} />
-        </Stack.Group>
+        </Stack.Group> */}
 
         <Stack.Screen name='Camera' component={CameraScreen} />
       </Stack.Navigator>
