@@ -19,7 +19,12 @@ export default function AllImagesScreen() {
 
     useEffect(() => {
         fetchUnsplash();
-    }, [])
+    }, [selectImagePopup]);
+
+    useEffect(() => {
+        setPageNum(1);
+        // fetchUnsplash();
+    },[searchQuery]);
 
     async function fetchUnsplash() {
         // const unsplashKey = process.env.UNSPLASH_ACESS;
