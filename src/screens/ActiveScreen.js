@@ -27,7 +27,7 @@ class Log {
   text = "";
   img = 0;
   constructor(text, date) {
-    this.date = date;
+    this.date = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}/${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;;
     this.text = text;
   }
 }
@@ -39,6 +39,27 @@ async function updateProj(project, projectID) {
   } catch (e) {
     console.error(e);
   }
+}
+
+function saveLog(newLog, projectID, project) {
+  if(project == undefined){
+    console.error("Project undefined");
+    return undefined;
+  }
+  //if there's nothing in the text input just return
+  if (newLog.text == '') return;
+  try {
+    project.logs = [...project.logs, { ...newLog }];
+    // const docRef = await doc(db, "projects", projectID);
+    // updateDoc(docRef, {
+    //   logs: [...project.logs]
+    // });
+    // console.log(`new log created with ID: ${docRef.id}`);
+    updateProj(project, projectID);
+  } catch (e) {
+    console.error("An error occurred while trying to save", e);
+  }
+  return project;
 }
 
 export default function ActiveScreen({ route }) {
@@ -62,8 +83,6 @@ export default function ActiveScreen({ route }) {
 
   //store the string that the user inputs into the text variable
   const [text, onChangeText] = useState("");
-  //variable to create a newLog object
-  const [newLog, setNewLog] = useState(null);
 
   //For toggling the modal popup for the user to input a log
   const [showModal, setShowModal] = useState(false);
@@ -101,42 +120,6 @@ export default function ActiveScreen({ route }) {
       updateProj(project, projectID);
 
       return project;
-    }
-    // const projectRef = doc(db, "projects", project);
-    // setDoc(projectRef, { minutes: project.minutes + addedMinutes });
-  }
-
-  function setProject(projectID, project) {
-    setCurrentProj({ ...project, logs: [...project.logs, { newLog }] });
-    updateProj(project, projectID);
-
-    return project;
-  }
-
-  //This useEffect will save the notes that the user inputted
-  useEffect(() => {
-    console.log(currentProject);
-    // setProject(projectID, currentProject);
-    saveLog(projectID, currentProject);
-  }, [newLog]);
-
-  // setProject({
-  //   ...project,
-  //   logs: [...project.logs, { ...newLog }],
-  // });
-
-  async function saveLog(projectID, project) {
-    //if there's nothing in the text input just return
-    if (newLog == null) return;
-    try {
-      const docRef = await doc(db, "projects", projectID);
-      updateDoc(docRef, {
-        logs: project.logs,
-      });
-      console.log(`new log created with ID: ${docRef.id}`);
-      updateProj(setProject(projectID, project), projectID);
-    } catch (e) {
-      console.error("An error occurred while trying to save", e);
     }
   }
 
@@ -231,7 +214,7 @@ export default function ActiveScreen({ route }) {
           />
           <Button
             title="Save"
-            onPress={() => setNewLog(new Log(text, new Date()))}
+            onPress={() => setCurrentProj(saveLog(new Log(text, new Date()), projectID, currentProject))}
           />
           <Button title="Dismiss" onPress={() => setShowModal(false)} />
         </View>
