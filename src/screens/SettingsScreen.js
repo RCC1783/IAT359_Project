@@ -11,7 +11,6 @@ export default function SettingsScreen() {
     const user = fbAuth.currentUser;
 
     const saveSettings = async () => {
-
         try {
             await AsyncStorage.setItem('test', JSON.stringify(testSetting));
         } catch (error) {
@@ -51,21 +50,22 @@ export default function SettingsScreen() {
     const navigation = useNavigation();
     return(
         <SafeAreaView>
-            <Text>~ Settings ~</Text>
+            <Text style = {styles.btnText}>~ Settings ~</Text>
 
-            <Text>{ user ? `Logged in as: ${user.email}` : 'Not Loogged in... how...?'}</Text>
+            <Text style = {styles.btnText}>{ user ? `Logged in as: ${user.email}` : 'Not Loogged in... how...?'}</Text>
 
             <Text></Text>
 
-            <Text>TEST SETTING </Text>
-            <Switch value = {testSetting} onValueChange = {setTestSetting} />
-
+            <View style = {styles.setSwitch}>
+                <Text>TEST SETTING</Text>
+                <Switch value = {testSetting} onValueChange = {setTestSetting}/>
+            </View>
             <Pressable style = {styles.homeButton} onPress = {signOut}>
-                <Text>Sign Out</Text>
+                <Text style = {styles.btnText}>Sign Out</Text>
             </Pressable> 
 
             <Pressable style = {styles.homeButton} onPress = {saveSettings}>
-                <Text>SAVE SETTINGS</Text>
+                <Text style = {styles.btnText}>SAVE SETTINGS</Text>
             </Pressable>  
         </SafeAreaView>
     );

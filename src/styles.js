@@ -59,29 +59,68 @@ export const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderColor: '#6ac1ff',
     borderWidth: 3,
-    padding: 5,
+    padding: 15,
     borderRadius: 5,
-    margin: 5,
+    margin: 10,
+    
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+
+  btnText: {
+    textAlign: 'center',
   }, 
 
+  boxShadow: {
+    shadowColor: '#333333',
+    shadowOffset: { 
+      width: 6,
+      height: 6
+    },
+    shadowOpacity: 0.6,
+    shadowRadius: 4,
+  },
+
+  androidBoxShdw: {
+    elevation: 10,
+  },
+
+  setSwitch: {
+    flexDirection: 'row',
+    alignItems: 'center',
+
+    padding: 15,
+    borderRadius: 5,
+    margin: 10,
+
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+
+  input: {
+    margin: 5,
+    borderWidth: 1,
+
+    backgroundColor: 'white',
+  }, 
   popupView: {
+
     flex: 1,
     flexDirection: 'column',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
 
     position: 'absolute',
     backgroundColor: '#b1b1b1',
     zIndex: 99,
-    
-    borderColor: 'black',
     borderWidth: 3,
+    borderColor: 'black',
     borderRadius: 20,
 
     width: '95%',
-    height: 200,
+    height: 'fit-content',
     margin: 10,
-    padding: 40,
+    padding: 10,
     gap: 10
   }
 });

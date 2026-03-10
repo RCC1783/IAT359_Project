@@ -17,10 +17,20 @@ import ShopScreen from "./src/screens/ShopScreen";
 import ProjectImagesScreen from "./src/screens/ProjectImagesScreen";
 import ActiveScreen from "./src/screens/ActiveScreen";
 import { ModalScreen } from "./src/screens/ActiveScreen";
+import CameraScreen from './src/screens/CameraScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log("user", user);
+      setUser(user);
+    });
+  }, []);
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="welcome">
@@ -36,7 +46,17 @@ export default function App() {
         />
         <Stack.Screen name="shop" component={ShopScreen} />
         <Stack.Screen name="projectImages" component={ProjectImagesScreen} />
-        <Stack.Screen name="active" component={ActiveScreen} />
+        <Stack.Group navigationKey="ActiveS">
+          <Stack.Screen name="active" component={ActiveScreen} />
+        </Stack.Group>
+        <Stack.Group
+          navigationKey="Modal"
+          screenOptions={{ presentation: "modal" }}
+        >
+          <Stack.Screen name="MyModal" component={ModalScreen} />
+        </Stack.Group>
+
+        <Stack.Screen name='Camera' component={CameraScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
