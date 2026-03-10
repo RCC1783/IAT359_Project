@@ -96,6 +96,8 @@ export default function ProjectsScreen() {
                     <View style={styles.shopItem}>
                         <TouchableOpacity onPress={() => navigation.navigate("selectedProject", {projectID: item.id})}>
                             <Text>{item.name}</Text>
+                            <Text>Most recent log: {item.logs[item.logs.length - 1].date}</Text>
+                            <Text>{item.logs[item.logs.length - 1].text}</Text>
                         </TouchableOpacity>
                     </View>
                 )}
