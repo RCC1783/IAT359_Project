@@ -67,6 +67,7 @@ export default function ActiveScreen({ route }) {
 
   //For toggling the modal popup for the user to input a log
   const [showModal, setShowModal] = useState(false);
+  //fix project.logs
 
   const navigation = useNavigation();
 
@@ -106,16 +107,17 @@ export default function ActiveScreen({ route }) {
     // setDoc(projectRef, { minutes: project.minutes + addedMinutes });
   }
 
-  function setProject(projectID, project) {
-    setCurrentProj({ ...project, logs: [...project.logs, { newLog }] });
-    updateProj(project, projectID);
+  // function setProject(projectID, project) {
+  //   project.logs.push(newLog);
+  //   console.log(project.logs);
+  //   // updateProj(project, projectID);
 
-    return project;
-  }
+  //   return project;
+  // }
 
   //This useEffect will save the notes that the user inputted
   useEffect(() => {
-    console.log(currentProject);
+    // console.log(currentProject);
     // setProject(projectID, currentProject);
     saveLog(projectID, currentProject);
   }, [newLog]);
@@ -130,11 +132,14 @@ export default function ActiveScreen({ route }) {
     if (newLog == null) return;
     try {
       const docRef = await doc(db, "projects", projectID);
+      console.log(project.logs);
+      project.logs.push(newLog);
+
+      updateProj(project, projectID);
       updateDoc(docRef, {
         logs: project.logs,
       });
       console.log(`new log created with ID: ${docRef.id}`);
-      updateProj(setProject(projectID, project), projectID);
     } catch (e) {
       console.error("An error occurred while trying to save", e);
     }
