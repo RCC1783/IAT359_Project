@@ -85,7 +85,7 @@ export default function ProjectsScreen() {
 
     return(
         <SafeAreaView>
-            <Text>~ Projects ~</Text>
+            <Text style = {styles.headerText}>~ Projects ~</Text>
             <TouchableOpacity onPress={() => setCreateMenu(true)}>
                 <Text>New Project</Text>
             </TouchableOpacity>

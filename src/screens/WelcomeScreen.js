@@ -49,9 +49,9 @@ export default function WelcomeScreen() {
 
     return(
         <SafeAreaView>
-            <Text>~ Welcome! ~</Text>
+            <Text style = {styles.headerText}>~ Welcome! ~</Text>
 
-            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={checkUser()}>
+            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => checkUser()}>
                 <Text style = {styles.btnText}>Logged in?</Text>
             </Pressable>
         </SafeAreaView>

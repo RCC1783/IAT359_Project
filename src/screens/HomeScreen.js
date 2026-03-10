@@ -8,7 +8,7 @@ export default function HomeScreen() {
     const navigation = useNavigation();
     return(
         <SafeAreaView>
-            <Text style = {styles.btnText}>~ Welcome! ~</Text>
+            <Text style = {styles.headerText}>~ Welcome! ~</Text>
             {/*<Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('shop')}>
                 <Text style = {styles.btnText}>Shop</Text>
             </Pressable> */}
@@ -25,8 +25,8 @@ export default function HomeScreen() {
                 <Text style = {styles.btnText}>Settings</Text>
             </Pressable>
 
-            <Pressable onPress={() => navigation.navigate('allImages')}>
-                <Text>Image Gallery</Text>
+            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('allImages')}>
+                <Text style = {styles.btnText}>Image Gallery</Text>
             </Pressable>
         </SafeAreaView>
     );

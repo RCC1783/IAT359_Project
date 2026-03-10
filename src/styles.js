@@ -71,6 +71,11 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   }, 
 
+  headerText: {
+    textAlign: 'center',
+    fontSize: 18,
+  },
+
   boxShadow: {
     shadowColor: '#333333',
     shadowOffset: { 

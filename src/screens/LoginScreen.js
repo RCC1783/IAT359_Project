@@ -50,7 +50,7 @@ export default function LoginScreen({navigation}) {
  
     return (
         <SafeAreaView styles = {styles.container}>
-            <Text>~ Login ~</Text>
+            <Text style = {styles.headerText}>~ Login ~</Text>
 
             <TextInput
                 style = {styles.input}

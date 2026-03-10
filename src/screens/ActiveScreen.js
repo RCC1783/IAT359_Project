@@ -191,7 +191,7 @@ export default function ActiveScreen({ route }) {
 
   return (
     <View>
-      <Text>~ Active ~</Text>
+      <Text style = {styles.headerText}>~ Active ~</Text>
       {/*Text to display the stopwatch for the user*/}
       <Text>
         {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:

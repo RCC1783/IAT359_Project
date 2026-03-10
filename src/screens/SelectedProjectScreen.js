@@ -58,7 +58,7 @@ export default function SelectedProjectScreen({route}) {
 
     return(
         <SafeAreaView>
-            <Text>~ selected project ~</Text>
+            <Text style = {styles.headerText}>~ selected project ~</Text>
 
             {roomEditorOpen && (
                 <View style={styles.popupView}>

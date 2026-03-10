@@ -50,7 +50,7 @@ export default function SettingsScreen() {
     const navigation = useNavigation();
     return(
         <SafeAreaView>
-            <Text style = {styles.btnText}>~ Settings ~</Text>
+            <Text style = {styles.headerText}>~ Settings ~</Text>
 
             <Text style = {styles.btnText}>{ user ? `Logged in as: ${user.email}` : 'Not Loogged in... how...?'}</Text>
 

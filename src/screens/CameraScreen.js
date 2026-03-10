@@ -55,7 +55,7 @@ export default function CameraScreen() {
 
     return(
         <SafeAreaView style={{flex:1}}>
-            <Text>~ Camera Test Screen ~</Text>
+            <Text style = {styles.headerText}>~ Camera Test Screen ~</Text>
             {/* <Button title='toggle photo mode' onPress={() => enablePhotoMode(current => !current)}/> */}
             <View style={{flex: 1, alignItems: 'center'}}>
                 {/* https://stackoverflow.com/questions/42398660/how-to-display-emoji-in-react-app */}
