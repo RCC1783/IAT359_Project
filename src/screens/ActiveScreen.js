@@ -86,6 +86,7 @@ export default function ActiveScreen({ route }) {
 
   //For toggling the modal popup for the user to input a log
   const [showModal, setShowModal] = useState(false);
+  //fix project.logs
 
   const navigation = useNavigation();
 
