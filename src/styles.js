@@ -118,9 +118,9 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
 
     width: '95%',
-    height: 200,
+    height: 'fit-content',
     margin: 10,
-    padding: 40,
+    padding: 10,
     gap: 10
   }
 });
