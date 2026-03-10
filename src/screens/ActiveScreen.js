@@ -6,6 +6,7 @@ import {
   Button,
   TouchableOpacity,
   Alert,
+  TextInput,
 } from "react-native";
 import { useState, useRef, useEffect } from "react";
 
@@ -20,7 +21,16 @@ import { db } from "../firebaseConfig";
 //For making the stopwatch I got help from geeksforgeeks.org/react-native/create-a-stop-watch-using-react-native/
 //https://firebase.google.com/docs/firestore/manage-data/add-data For adding data to Firebase
 
-//This section I'm going to try exactly what Roan did
+//Class for storing/making a new log that will then get updated to the firebase data
+class Log {
+  date = "";
+  text = "";
+  img = 0;
+  constructor(text, date) {
+    this.date = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}/${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;;
+    this.text = text;
+  }
+}
 
 async function updateProj(project, projectID) {
   try {
@@ -31,27 +41,25 @@ async function updateProj(project, projectID) {
   }
 }
 
-//section ends here
-
-export function ModalScreen(route) {
-  const navigation = useNavigation();
-
-  return (
-    <View>
-      <Text>Type your notes here</Text>
-      {/* <Button title="Save" onPress={saveLog()} /> */}
-      <Button
-        title="Dismiss"
-        onPress={() =>
-          navigation.dispatch({
-            ...CommonActions.goBack(),
-            source: route.key,
-            target: navigation.getState().key,
-          })
-        }
-      />
-    </View>
-  );
+function saveLog(newLog, projectID, project) {
+  if(project == undefined){
+    console.error("Project undefined");
+    return undefined;
+  }
+  //if there's nothing in the text input just return
+  if (newLog.text == '') return;
+  try {
+    project.logs = [...project.logs, { ...newLog }];
+    // const docRef = await doc(db, "projects", projectID);
+    // updateDoc(docRef, {
+    //   logs: [...project.logs]
+    // });
+    // console.log(`new log created with ID: ${docRef.id}`);
+    updateProj(project, projectID);
+  } catch (e) {
+    console.error("An error occurred while trying to save", e);
+  }
+  return project;
 }
 
 export default function ActiveScreen({ route }) {
@@ -69,10 +77,15 @@ export default function ActiveScreen({ route }) {
 
   //from Roan's code so that it knows which project data to look at
   const [currentProject, setCurrentProj] = useState();
-  // const [updator, updateProj] = useState();
 
   const [workedMinutes, setWorkedMinutes] = useState(0);
   const [minutesToAdd, setMinutesToAdd] = useState(0);
+
+  //store the string that the user inputs into the text variable
+  const [text, onChangeText] = useState("");
+
+  //For toggling the modal popup for the user to input a log
+  const [showModal, setShowModal] = useState(false);
 
   const navigation = useNavigation();
 
@@ -92,7 +105,7 @@ export default function ActiveScreen({ route }) {
 
   useEffect(() => {
     updateTotalMinutes(projectID, currentProject);
-  }, [minutesToAdd])
+  }, [minutesToAdd]);
 
   function updateTotalMinutes(projectID, project) {
     if (project == undefined) {
@@ -101,19 +114,19 @@ export default function ActiveScreen({ route }) {
     } else {
       console.log(project);
       project.minutes = project.minutes + minutesToAdd - workedMinutes;
-      
+
       setWorkedMinutes(minutesToAdd);
       // console.log(`minutes to add: ${minutesToAdd}, worked min: ${workedMinutes}`);
       updateProj(project, projectID);
 
       return project;
     }
-    // const projectRef = doc(db, "projects", project);
-    // setDoc(projectRef, { minutes: project.minutes + addedMinutes });
   }
 
   const openLogger = () => {
-    navigation.navigate("MyModal");
+    //set showModal to true to check if it should display the new popup
+    setShowModal(true);
+    // navigation.navigate("MyModal", { projectID: projectID });
   };
 
   const startStopWatch = () => {
@@ -182,8 +195,8 @@ export default function ActiveScreen({ route }) {
   };
 
   const updateTimer = () => {
-    if(time > 0 && Math.floor(time/60) > minutesToAdd){
-      setMinutesToAdd(Math.floor(time/60));
+    if (time > 0 && Math.floor(time / 60) > minutesToAdd) {
+      setMinutesToAdd(Math.floor(time / 60));
     }
   };
 
@@ -191,36 +204,65 @@ export default function ActiveScreen({ route }) {
 
   return (
     <View>
-      <Text>~ Active ~</Text>
-      {/*Text to display the stopwatch for the user*/}
-      <Text>
-        {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:
-        {time % 60 < 10 ? `0${time % 60}` : time % 60}
-      </Text>
-
-
-      {/*check if the stopwatch is running*/}
-      {running ? (
+      {showModal ? (
         <View>
-          <Text>Working...</Text>
-          <TouchableOpacity onPress={pauseStopWatch}>
-            <Text>Pause</Text>
-          </TouchableOpacity>
+          <Text>Write your Notes here</Text>
+          <TextInput
+            placeholder="Today I drew..."
+            value={text}
+            onChangeText={onChangeText}
+          />
+          <Button
+            title="Save"
+            onPress={() => setCurrentProj(saveLog(new Log(text, new Date()), projectID, currentProject))}
+          />
+          <Button title="Dismiss" onPress={() => setShowModal(false)} />
         </View>
       ) : (
-        <>
-          <TouchableOpacity onPress={startStopWatch}>
-            <Text>Start</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={endStopWatch}>
-            <Text>End Session</Text>
-          </TouchableOpacity>
-        </>
-      )}
-      {!running && (
-        <TouchableOpacity onPress={resumeStopWatch}>
-          <Text>Resume</Text>
-        </TouchableOpacity>
+        <View>
+          <Text>~ Active ~</Text>
+          {/*Text to display the stopwatch for the user*/}
+          <Text>
+            {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:
+            {time % 60 < 10 ? `0${time % 60}` : time % 60}
+          </Text>
+
+          {/*check if the stopwatch is running*/}
+          {running ? (
+            <View>
+              <Text>Working...</Text>
+              <TouchableOpacity
+                onPress={pauseStopWatch}
+                style={styles.homeButton}
+              >
+                <Text>Pause</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <>
+              <TouchableOpacity
+                onPress={startStopWatch}
+                style={styles.homeButton}
+              >
+                <Text>Start</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={endStopWatch}
+                style={styles.homeButton}
+              >
+                <Text>End Session</Text>
+              </TouchableOpacity>
+            </>
+          )}
+          {!running && (
+            <TouchableOpacity
+              onPress={resumeStopWatch}
+              style={styles.homeButton}
+            >
+              <Text>Resume</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       )}
     </View>
   );
