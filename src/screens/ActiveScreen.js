@@ -106,14 +106,17 @@ export default function ActiveScreen({ route }) {
     // setDoc(projectRef, { minutes: project.minutes + addedMinutes });
   }
 
-  function setProject(project) {
+  function setProject(projectID, project) {
     setCurrentProj({ ...project, logs: [...project.logs, { newLog }] });
+    updateProj(project, projectID);
+
+    return project;
   }
 
   //This useEffect will save the notes that the user inputted
   useEffect(() => {
-    console.log(newLog);
-    setProject(currentProject);
+    console.log(currentProject);
+    // setProject(projectID, currentProject);
     saveLog(projectID, currentProject);
   }, [newLog]);
 
@@ -131,9 +134,7 @@ export default function ActiveScreen({ route }) {
         logs: project.logs,
       });
       console.log(`new log created with ID: ${docRef.id}`);
-      updateProj(project, projectID);
-
-      return project;
+      updateProj(setProject(projectID, project), projectID);
     } catch (e) {
       console.error("An error occurred while trying to save", e);
     }
