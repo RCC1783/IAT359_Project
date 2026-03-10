@@ -59,8 +59,8 @@ export default function AllImagesScreen() {
     return(
         <SafeAreaView>
             <Text>~ All Images ~</Text>
-            <Pressable onPress={() => toggleSelectImagePopup(true)}>
-                <Text>Add Images</Text>
+            <Pressable style={[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => toggleSelectImagePopup(true)}>
+                <Text style={styles.btnText}>Add Images</Text>
             </Pressable>
             <FlatList
                 data={selectedImages}
