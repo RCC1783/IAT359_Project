@@ -6,6 +6,7 @@ import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import {db} from '../firebaseConfig'
 import { FlatList } from 'react-native';
+import { CustomHeader } from '../../globals';
 
 async function updateProj(project, projectID) {
     try{
@@ -58,7 +59,7 @@ export default function SelectedProjectScreen({route}) {
 
     return(
         <SafeAreaView>
-            <Text>~ selected project ~</Text>
+            <CustomHeader screenName={currentProject != undefined? currentProject.name : "Loading"} navigation={navigation}></CustomHeader>
 
             {roomEditorOpen && (
                 <View style={styles.popupView}>

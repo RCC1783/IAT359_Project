@@ -16,6 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import {db} from '../firebaseConfig'
 import { shopList } from '../shopItems';
 import { useEffect, useState } from 'react';
+import { CustomHeader } from '../../globals';
 
 // Experimenting w data structures
 const roomItem = {
@@ -104,6 +105,7 @@ export default function ShopScreen({route}) {
 
     return(
         <SafeAreaView>
+            <CustomHeader screenName={"Shop"} navigation={navigation}></CustomHeader>
             <View style={styles.shopHeader}>
                 {/* <Text>~ Shop ~</Text> */}
                 <Text style={styles.minutesDisplay}>minutes: {currentProject != undefined ? currentProject.minutes : "loading"}</Text>

@@ -17,6 +17,7 @@ import { mod } from "firebase/firestore/pipelines";
 import SelectedProjectScreen from "./SelectedProjectScreen";
 import { doc, setDoc, collection, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
+import { CustomHeader } from "../../globals";
 
 //For making the stopwatch I got help from geeksforgeeks.org/react-native/create-a-stop-watch-using-react-native/
 //https://firebase.google.com/docs/firestore/manage-data/add-data For adding data to Firebase
@@ -203,7 +204,8 @@ export default function ActiveScreen({ route }) {
   updateTimer();
 
   return (
-    <View>
+    <SafeAreaView>
+      <CustomHeader screenName={"...Working"}/>
       {showModal ? (
         <View>
           <Text>Write your Notes here</Text>
@@ -264,6 +266,6 @@ export default function ActiveScreen({ route }) {
           )}
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }
