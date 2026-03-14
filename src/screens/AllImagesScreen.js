@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, SafeAreaView, Button, FlatList, Image, Pressabl
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
+import { CustomHeader } from '../../globals';
 
 export default function AllImagesScreen() {
     const navigation = useNavigation();
@@ -63,6 +64,8 @@ export default function AllImagesScreen() {
 
     return(
         <SafeAreaView>
+            <CustomHeader screenName={"Images"} navigation={navigation}/>
+            <Pressable style={[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => toggleSelectImagePopup(true)}>
                 <Text style={styles.btnText}>Add Images</Text>
             <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => toggleSelectImagePopup(true)}>
             <Text style = {styles.headerText}>~ All Images ~</Text>

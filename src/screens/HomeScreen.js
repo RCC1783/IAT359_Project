@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 export default function HomeScreen() {
     const navigation = useNavigation();
     return(
-        <SafeAreaView>
+        <SafeAreaView style={{flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#ffe8ff'}}>
             <Text style = {styles.headerText}>~ Welcome! ~</Text>
             {/*<Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('shop')}>
                 <Text style = {styles.btnText}>Shop</Text>
@@ -17,16 +17,12 @@ export default function HomeScreen() {
                 <Text style = {styles.btnText}>Projects</Text>
             </Pressable>
 
-            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('home')}>
-                <Text style = {styles.btnText}>Home</Text>
-            </Pressable>
-
             <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('settings')}>
                 <Text style = {styles.btnText}>Settings</Text>
             </Pressable>
 
             <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('allImages')}>
-                <Text style = {styles.btnText}>Image Gallery</Text>
+                <Text style = {styles.btnText}>Images</Text>
             </Pressable>
         </SafeAreaView>
     );

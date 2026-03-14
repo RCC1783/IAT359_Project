@@ -6,6 +6,7 @@ import { collection, getDocs, setDoc, doc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { useEffect, useState } from 'react';
 
+import { CustomHeader } from '../../globals';
 
 class Project{
     name = 'unnamed_project';
@@ -85,7 +86,7 @@ export default function ProjectsScreen() {
 
     return(
         <SafeAreaView>
-            <Text style = {styles.headerText}>~ Projects ~</Text>
+            <CustomHeader screenName={"Projects"} navigation={navigation}/>
             <TouchableOpacity onPress={() => setCreateMenu(true)}>
                 <Text>New Project</Text>
             </TouchableOpacity>
@@ -96,6 +97,8 @@ export default function ProjectsScreen() {
                     <View style={styles.shopItem}>
                         <TouchableOpacity onPress={() => navigation.navigate("selectedProject", {projectID: item.id})}>
                             <Text>{item.name}</Text>
+                            <Text>Most recent log: {item.logs[item.logs.length - 1].date}</Text>
+                            <Text>{item.logs[item.logs.length - 1].text}</Text>
                         </TouchableOpacity>
                     </View>
                 )}
