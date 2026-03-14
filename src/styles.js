@@ -127,5 +127,12 @@ export const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
     gap: 10
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 10,
+    marginRight: 40 
   }
 });

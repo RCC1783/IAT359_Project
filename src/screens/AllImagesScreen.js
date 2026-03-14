@@ -67,6 +67,7 @@ export default function AllImagesScreen() {
             <CustomHeader screenName={"Images"} navigation={navigation}/>
             <Pressable style={[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => toggleSelectImagePopup(true)}>
                 <Text style={styles.btnText}>Add Images</Text>
+            </Pressable>
             <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => toggleSelectImagePopup(true)}>
             <Text style = {styles.headerText}>~ All Images ~</Text>
             </Pressable>
