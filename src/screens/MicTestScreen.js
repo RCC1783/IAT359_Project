@@ -4,7 +4,7 @@ import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 
 import { Audio } from 'expo-av';
-import * as FileSystem from 'expo-file-system/legacy';
+// import * as FileSystem from 'expo-file-system/legacy';
 
 export default function MicTestScreen() {
     const [recording, setRecording] = useState();
@@ -12,7 +12,7 @@ export default function MicTestScreen() {
 
     const [micPermission, setMicPermission] = Audio.usePermissions();
 
-    const audioDirectory = FileSystem.documentDirectory + 'audio/';
+    // const audioDirectory = FileSystem.documentDirectory + 'audio/';
 
     async function startRecording() {
         try {
@@ -43,7 +43,7 @@ export default function MicTestScreen() {
         allRecordings.push({
             sound: sound,
             duration: getDurationFormatted(status.durationMillis),
-            file: await saveToStorage(recording.getURI())
+            // file: await saveToStorage(recording.getURI())
         });
 
         console.log(getDurationFormatted(status.durationMillis));
@@ -55,7 +55,7 @@ export default function MicTestScreen() {
         });
         const uri = recording.getURI();
         console.log('Recording stopped and stored at', uri);
-        console.log('Saved in internal storage at', audioDirectory);
+        // console.log('Saved in internal storage at', audioDirectory);
     }
 
     function getDurationFormatted(ms) {
@@ -64,17 +64,17 @@ export default function MicTestScreen() {
         return seconds < 10 ? `${Math.floor(minutes)}:0${seconds}` : `${Math.floor(minutes)}:${seconds}`;
     }
 
-    function getRecordingLines() {
-        return recordings.map((recordingLine, index) => {
-            return (
-                <SafeAreaView key={index} style={styles.row}>
-                    <Text style={styles.fill}>Recording #{index + 1} - {recordingLine.duration}</Text>
-                    <Button style={styles.button} onPress={() => recordingLine.sound.replayAsync()} title='Play'></Button>
-                    <Button style={styles.button} onPress={() => deleteRecording(index)} title='Delete'></Button>
-                </SafeAreaView>
-            );
-        });
-    }
+    // function getRecordingLines() {
+    //     return recordings.map((recordingLine, index) => {
+    //         return (
+    //             <SafeAreaView key={index} style={styles.row}>
+    //                 <Text style={styles.fill}>Recording #{index + 1} - {recordingLine.duration}</Text>
+    //                 <Button style={styles.button} onPress={() => recordingLine.sound.replayAsync()} title='Play'></Button>
+    //                 <Button style={styles.button} onPress={() => deleteRecording(index)} title='Delete'></Button>
+    //             </SafeAreaView>
+    //         );
+    //     });
+    // }
 
     async function deleteAllRecordings() {
         try {
@@ -124,38 +124,38 @@ export default function MicTestScreen() {
         }
     }
 
-    const loadRecordings = async () => {
-        try {  
-            const dirExist = await FileSystem.getInfoAsync(audioDirectory);
+    // const loadRecordings = async () => {
+    //     try {  
+    //         const dirExist = await FileSystem.getInfoAsync(audioDirectory);
 
-            if (!dirExist.exists) {
-                await FileSystem.makeDirectoryAsync(audioDirectory, { intermediates: true });
-                setRecordings([]);
-                return;
-            }
+    //         if (!dirExist.exists) {
+    //             await FileSystem.makeDirectoryAsync(audioDirectory, { intermediates: true });
+    //             setRecordings([]);
+    //             return;
+    //         }
 
-            const audioFiles = await FileSystem.readDirectoryAsync(audioDirectory);
+    //         const audioFiles = await FileSystem.readDirectoryAsync(audioDirectory);
 
-            const loadedRecordings = await Promise.all(audioFiles.map(async (file) => {
-                const fileUri = audioDirectory + file;
-                const { sound, status } = await Audio.Sound.createAsync({ uri: fileUri });
-                const duration = getDurationFormatted(status.durationMillis);
+    //         const loadedRecordings = await Promise.all(audioFiles.map(async (file) => {
+    //             const fileUri = audioDirectory + file;
+    //             const { sound, status } = await Audio.Sound.createAsync({ uri: fileUri });
+    //             const duration = getDurationFormatted(status.durationMillis);
 
-                return {
-                    sound,
-                    duration,
-                    file: fileUri,
-                };
-            }));
-            setRecordings(loadedRecordings);
-        } catch (error) {
-            console.error('Failed to load recordings', error);
-        }
-    }
+    //             return {
+    //                 sound,
+    //                 duration,
+    //                 file: fileUri,
+    //             };
+    //         }));
+    //         setRecordings(loadedRecordings);
+    //     } catch (error) {
+    //         console.error('Failed to load recordings', error);
+    //     }
+    // }
 
-    useEffect(() => {
-        loadRecordings();
-    }, []);
+    // useEffect(() => {
+    //     loadRecordings();
+    // }, []);
 
     const navigation = useNavigation();
     return(
@@ -165,7 +165,7 @@ export default function MicTestScreen() {
             <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => recording ? stopRecording() : startRecording()}>
                 <Text style = {styles.btnText}>{recording ? 'Stop Recording' : 'Start Recording'}</Text>
             </Pressable>
-            {getRecordingLines()}   
+            {/* {getRecordingLines()}    */}
             <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => deleteAllRecordings()}>
                 <Text style = {styles.btnText}>{recordings.length > 0 ? 'Delete Recordings' : 'No Recordings'}</Text>
             </Pressable>

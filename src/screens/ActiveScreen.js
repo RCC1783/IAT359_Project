@@ -17,21 +17,12 @@ import { mod } from "firebase/firestore/pipelines";
 import SelectedProjectScreen from "./SelectedProjectScreen";
 import { doc, setDoc, collection, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import { CustomHeader } from "../../globals";
+import { CustomHeader, Log } from "../../globals";
 
 //For making the stopwatch I got help from geeksforgeeks.org/react-native/create-a-stop-watch-using-react-native/
 //https://firebase.google.com/docs/firestore/manage-data/add-data For adding data to Firebase
 
-//Class for storing/making a new log that will then get updated to the firebase data
-class Log {
-  date = "";
-  text = "";
-  img = 0;
-  constructor(text, date) {
-    this.date = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}/${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;;
-    this.text = text;
-  }
-}
+
 
 async function updateProj(project, projectID) {
   try {

@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, FlatList, Image, Pressable, TextInput } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, FlatList, Image, Pressable, TextInput, Alert } from 'react-native';
 
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { CustomHeader } from '../../globals';
+import { CustomHeader, Log, UserData, saveUserData} from '../../globals';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AllImagesScreen() {
     const navigation = useNavigation();
@@ -19,6 +20,17 @@ export default function AllImagesScreen() {
     const [fullscreenImage, setFullscreenImage] = useState(null)
 
     useEffect(() => {
+        const getImages = async () => {
+            let uID = await AsyncStorage.getItem('uid');
+            let userData = await AsyncStorage.getItem(uID);
+
+            userData = JSON.parse(userData);
+
+            console.log("UserData:", userData);
+
+            setSelectedImages(userData.refImages);
+        }
+        getImages();
         fetchUnsplash();
     }, [selectImagePopup]);
 
@@ -62,14 +74,42 @@ export default function AllImagesScreen() {
         }
     }
 
+    async function addImage(imageItem){
+        if(selectedImages.findIndex((item) => item.id === imageItem.id) != -1) {
+            console.log("Already present");
+            return;
+        }
+
+        setSelectedImages([...selectedImages, imageItem]);
+
+        try{
+            let uID = await AsyncStorage.getItem('uid');
+            let userData = await AsyncStorage.getItem(uID);
+            console.log("userData",userData);
+            // if(userData == null) return;
+
+            userData = JSON.parse(userData);
+
+            userData.refImages = [...selectedImages, imageItem];
+
+            console.log("Updated ref Images:", userData.refImages);
+
+            // userData.updateImages(imageItem);
+
+            await saveUserData(uID, JSON.stringify(userData));
+
+            console.log("SKJFH");
+
+        } catch (e){
+            console.error("Failed to save images", e)
+        }
+    }
+
     return(
         <SafeAreaView>
             <CustomHeader screenName={"Images"} navigation={navigation}/>
             <Pressable style={[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => toggleSelectImagePopup(true)}>
                 <Text style={styles.btnText}>Add Images</Text>
-            </Pressable>
-            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => toggleSelectImagePopup(true)}>
-            <Text style = {styles.headerText}>~ All Images ~</Text>
             </Pressable>
             <FlatList
                 data={selectedImages}
@@ -100,7 +140,17 @@ export default function AllImagesScreen() {
                         data={images != undefined ? images : null}
                         keyExtractor={item => item.id}
                         renderItem={({item}) => (
-                            <Pressable style={{flex: 1, flexDirection: 'column', alignItems: 'center',margin: 2}}>
+                            <Pressable onPress={() => Alert.alert("Save Image?", "Confirm?", 
+                                [
+                                    {
+                                        text: "Yes?",
+                                        onPress: () => addImage({id: item.id, urls: item.urls})
+                                    },
+                                    {
+                                        text: "No."
+                                    }
+                                ]
+                            )} style={{flex: 1, flexDirection: 'column', alignItems: 'center',margin: 2}}>
                                 <Image 
                                     style={{width: 100, height: 100, borderRadius: 10, borderColor: '#656565', borderWidth: 3}}
                                     source={{uri: item.urls.thumb}}

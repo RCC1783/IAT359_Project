@@ -6,6 +6,7 @@ import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { auth, db } from '../firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { UserData } from '../../globals';
 
 export default function LoginScreen({navigation}) {
     const [email, setEmail] = useState('');
@@ -24,6 +25,7 @@ export default function LoginScreen({navigation}) {
             console.log(response);
 
             await AsyncStorage.setItem('uid', JSON.stringify(response.user.uid));
+            await AsyncStorage.setItem(JSON.stringify(response.user.uid), JSON.stringify(new UserData))
             const docRef = await setDoc(doc(db, 'users', response.user.uid), {
                 email: email,
             });
@@ -45,6 +47,15 @@ export default function LoginScreen({navigation}) {
         } catch (error) {
             console.log(error.message);
             alert(error.message);
+        }
+
+        let userData = null;
+        try {
+            userData = await AsyncStorage.getItem(JSON.stringify(response.user.uid));
+            console.log("user data found:", userData);
+        } catch (error) {
+            console.log(error.message);
+            await AsyncStorage.setItem(JSON.stringify(response.user.uid), JSON.stringify(new UserData));
         }
     }
  

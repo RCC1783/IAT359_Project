@@ -126,7 +126,8 @@ export const styles = StyleSheet.create({
     height: 'fit-content',
     margin: 10,
     padding: 10,
-    gap: 10
+    gap: 10,
+    top: 100
   },
   row: {
     flexDirection: 'row',
