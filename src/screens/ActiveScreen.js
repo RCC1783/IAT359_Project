@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   TextInput,
+  Pressable,
 } from "react-native";
 import { useState, useRef, useEffect } from "react";
 
@@ -17,6 +18,9 @@ import { mod } from "firebase/firestore/pipelines";
 import SelectedProjectScreen from "./SelectedProjectScreen";
 import { doc, setDoc, collection, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
+
+import { Audio } from "expo-av";
+
 import { CustomHeader, Log } from "../../globals";
 
 //For making the stopwatch I got help from geeksforgeeks.org/react-native/create-a-stop-watch-using-react-native/
@@ -39,14 +43,9 @@ function saveLog(newLog, projectID, project) {
     return undefined;
   }
   //if there's nothing in the text input just return
-  if (newLog.text == '') return;
+  if (newLog.text == '' && newLog.recordingURI == '') return;
   try {
     project.logs = [...project.logs, { ...newLog }];
-    // const docRef = await doc(db, "projects", projectID);
-    // updateDoc(docRef, {
-    //   logs: [...project.logs]
-    // });
-    // console.log(`new log created with ID: ${docRef.id}`);
     updateProj(project, projectID);
   } catch (e) {
     console.error("An error occurred while trying to save", e);
@@ -80,6 +79,81 @@ export default function ActiveScreen({ route }) {
   const [showModal, setShowModal] = useState(false);
 
   const navigation = useNavigation();
+
+  // ###    Mic Section    ###
+  const [isRecording, setIsRecording] = useState(false);
+  const [activeRecording, setActiveRecording] = useState(null);
+  const [recordingURI, setRecordingURI] = useState('');
+
+  const [micPermission, setMicPermission] = Audio.usePermissions();
+
+  function RecordButton(){
+    return(
+      <Pressable onPress={() => setIsRecording(!isRecording)}>
+        <Text>{isRecording ? 'Recording' : 'Record'}</Text>
+      </Pressable>
+    );
+  }
+
+  useEffect(() => {
+    async function checkMicPerms() {
+      if (!micPermission.granted){
+        const {granted} = await setMicPermission();
+        if(!granted) {
+          Alert.alert("enable mic in settings");
+          setIsRecording(false);
+          return false;
+        };
+      }
+      return true;
+    }
+
+    async function startRecording() {
+      try{
+        if(checkMicPerms() == false) return;
+
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: true,
+          playsInSilentModeIOS: true,
+        });
+
+        const { recording } = await Audio.Recording.createAsync(
+          Audio.RecordingOptionsPresets.HIGH_QUALITY
+        );
+        setActiveRecording( recording );
+      } catch (e){
+        console.error(e);
+      }
+    }
+
+    async function stopRecording() {
+      try {
+        await activeRecording.stopAndUnloadAsync();
+
+        const toSave = await activeRecording.createNewLoadedSoundAsync();
+        const uri = activeRecording.getURI();
+
+        toSave.sound.replayAsync();
+        
+        setRecordingURI(uri);
+
+        console.log("Recording URI", uri);
+
+        setActiveRecording(null);
+      } catch (e) {
+        console.error("Error in stop recording func:", e)
+      }
+    }
+
+    if(!isRecording && activeRecording == null) return;
+    if(!isRecording && activeRecording != null) {stopRecording(); return;} 
+    
+    startRecording();
+    
+  }, [isRecording]);
+
+
+  // ###    End Mic Section   ###
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -200,14 +274,18 @@ export default function ActiveScreen({ route }) {
       {showModal ? (
         <View>
           <Text>Write your Notes here</Text>
+          <RecordButton/>
           <TextInput
-            placeholder="Today I drew..."
+            placeholder="Today I..."
             value={text}
             onChangeText={onChangeText}
           />
+          {isRecording && (
+            <Text>You must stop recording before you can save</Text>
+          )}
           <Button
-            title="Save"
-            onPress={() => setCurrentProj(saveLog(new Log(text, new Date()), projectID, currentProject))}
+            title={"Save"}
+            onPress={isRecording ? null : () => setCurrentProj(saveLog(new Log(new Date(), text, recordingURI), projectID, currentProject))}
           />
           <Button title="Dismiss" onPress={() => setShowModal(false)} />
         </View>

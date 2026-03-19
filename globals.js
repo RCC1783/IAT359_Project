@@ -28,9 +28,11 @@ export class Log {
   date = "";
   text = "";
   img = 0;
-  constructor(text, date) {
-    this.date = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}/${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;;
+  recordingURI = '';
+  constructor(date, text = "", recordingURI = '') {
+    this.date = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}/${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     this.text = text;
+    this.recordingURI = recordingURI;
   }
 }
 
