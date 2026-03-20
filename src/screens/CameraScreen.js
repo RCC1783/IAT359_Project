@@ -51,10 +51,9 @@ export default function CameraScreen() {
                 // The actual image. Should be saved locally so that it can be used for a log. Probably will need some sort of key to find the photo and link it to the log?
                 const base64Image = `data:image/jpg;base64,${photo.base64}`;
 
-                userData.refImages = [...userData.refImages, {id: Date.now().toString(), urls: { thumb: base64Image, regular: base64Image }}];
+                userData.refImages = [...userData.refImages, setLogPhoto(base64Image)];
                 await saveUserData(uID, JSON.stringify(userData));
-                setLogPhoto(base64Image);
-
+                
                 enablePhotoMode(false);
             } catch (e){
                 console.error(e);
