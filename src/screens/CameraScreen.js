@@ -6,6 +6,8 @@ import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { useRef, useState, useEffect } from 'react';
 import { CameraView, useCameraPermissions, CameraType } from 'expo-camera';
+import { UserData, saveUserData} from '../../globals';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CameraScreen() {
     const navigation = useNavigation();
@@ -37,15 +39,22 @@ export default function CameraScreen() {
     async function takePhoto() {
         if(cameraRef.current){
             try{
+                let uID = await AsyncStorage.getItem('uid');
+                let userData = await AsyncStorage.getItem(uID);
+
+                userData = JSON.parse(userData);
+
                 const photo = await cameraRef.current.takePictureAsync({
                     base64: true,
                     quality: 0.25
                 });
-
                 // The actual image. Should be saved locally so that it can be used for a log. Probably will need some sort of key to find the photo and link it to the log?
                 const base64Image = `data:image/jpg;base64,${photo.base64}`;
 
+                userData.refImages = [...userData.refImages, {id: Date.now().toString(), urls: { thumb: base64Image, regular: base64Image }}];
+                await saveUserData(uID, JSON.stringify(userData));
                 setLogPhoto(base64Image);
+
                 enablePhotoMode(false);
             } catch (e){
                 console.error(e);
