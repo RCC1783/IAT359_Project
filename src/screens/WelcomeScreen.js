@@ -24,9 +24,6 @@ export default function WelcomeScreen() {
                 allUsers.push(JSON.stringify(doc.id));
             })
 
-            console.log(savedUID);
-            console.log(allUsers);
-
             if (savedUID) {
                 if (allUsers.includes(savedUID)) {
                     console.log("User is logged in, navigating to home screen: ", savedUID);
@@ -56,6 +53,22 @@ export default function WelcomeScreen() {
             }
         } catch (error) {
             console.error("Error fetching users:", error);
+        }
+
+        try {
+            const savedUID = await AsyncStorage.getItem('uid');
+            let userData = await AsyncStorage.getItem(savedUID);
+
+            userData = JSON.parse(userData);
+
+            if (!userData) {
+                userData = new UserData;
+                await AsyncStorage.setItem(savedUID, JSON.stringify(userData));
+            } else {
+                console.log("user data found:", userData);
+            }
+        } catch (error) {
+            console.log(error.message);
         }
     }
 

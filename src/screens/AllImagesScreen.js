@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, FlatList, Image, Pressable, TextInput, Alert } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, FlatList, Image, Pressable, TextInput, Alert, Modal } from 'react-native';
 
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
@@ -17,7 +17,8 @@ export default function AllImagesScreen() {
 
     const [pageNum, setPageNum] = useState(1);
 
-    const [fullscreenImage, setFullscreenImage] = useState(null)
+    const [fullscreenImage, setFullscreenImage] = useState(false);
+    const [selImgID, setSelImgID] = useState(null); // selected image ID for fullscreen view
 
     useEffect(() => {
         const getImages = async () => {
@@ -105,21 +106,79 @@ export default function AllImagesScreen() {
         }
     }
 
+    async function deleteItem(imageItem) {
+        try {
+            let uID = await AsyncStorage.getItem('uid');
+            let userData = await AsyncStorage.getItem(uID);
+
+            userData = JSON.parse(userData);
+            const updatedImages = userData.refImages.filter((item) => item.id !== imageItem.id);
+            userData.refImages = updatedImages;
+
+            setSelectedImages(updatedImages);
+            await saveUserData(uID, JSON.stringify(userData));
+            console.log('OWNED');
+        } catch (e) {
+            console.error("Failed to delete image", e);
+        }
+    }
+
     return(
         <SafeAreaView>
             <CustomHeader screenName={"Images"} navigation={navigation}/>
             <Pressable style={[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => toggleSelectImagePopup(true)}>
                 <Text style={styles.btnText}>Add Images</Text>
             </Pressable>
+            <Modal
+                animationType = 'fade'
+                transparent = {true}
+                visible = {fullscreenImage}
+                onRequestClose = {() => {
+                    setFullscreenImage(false);
+                }}
+            >
+                <View style = {styles.container}>
+                    <Pressable onPress={() => setFullscreenImage(false)} style={styles.homeButton}>
+                        <Text style={{fontSize: 18}}>Close</Text>
+                    </Pressable>
+                    <Image
+                        style={{width: '75%', height: '75%'}}
+                        source = {{uri:selImgID}}
+                    />
+                </View>
+            </Modal>
             <FlatList
                 data={selectedImages}
                 keyExtractor={item => item.id}
                 renderItem={({item}) => (
                     <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', margin: 2}}>
-                        <Image 
-                            style={{width: 100, height: 100}}
-                            source={{uri: item.urls.thumb}}
-                        />
+                        <Pressable onPress={() => Alert.alert("Image", item.alt_description,
+                            [
+                                {
+                                    text: "View Image.", onPress: () => {
+                                        setFullscreenImage(true)
+                                        setSelImgID(item.urls.regular);
+                                    }
+                                },
+                                {
+                                    text: "Delete Image.", onPress: () => Alert.alert("Are you sure?", "This will delete the image.",
+                                        [
+                                            {
+                                                text: "Yes.", onPress: () => deleteItem(item)
+                                            },
+                                            {
+                                                text: "No.", style: "cancel"
+                                            }
+                                        ]
+                                    )
+                                }
+                            ]
+                        )}>
+                            <Image 
+                                style={{width: 100, height: 100}}
+                                source={{uri: item.urls.thumb}}
+                            />
+                        </Pressable>
                         <Text>{item.alt_description}</Text>
                     </View>
                 )}
