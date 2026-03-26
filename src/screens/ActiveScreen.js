@@ -26,23 +26,10 @@ import { CameraView, useCameraPermissions, CameraType } from 'expo-camera';
 
 import { CustomHeader, Log, saveUserData } from "../../globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as FileSystem from 'expo-file-system/legacy';
 
 //For making the stopwatch I got help from geeksforgeeks.org/react-native/create-a-stop-watch-using-react-native/
 //https://firebase.google.com/docs/firestore/manage-data/add-data For adding data to Firebase
-
-  async function playRecording(recordingURI) {
-    try{
-      // const sound = new Audio.Sound();
-      // sound.loadAsync(
-      //   {uri: recordingURI, shouldPlay: true});
-
-      // await sound.playAsync();
-
-    } catch (e){
-      console.error("error playing recording", e);
-    }
-  }
-
 
 async function updateProj(project, projectID) {
   try {
@@ -83,18 +70,14 @@ export default function ActiveScreen({ route }) {
   const [projectLogs, setProjectLogs] = useState([]);
 
   // ###    Saving   ###
-  function saveLog(newLog, projectID, project) {
+  function saveLog(newLog, project) {
     if(project == undefined){
       console.error("Project undefined");
       return undefined;
     }
     //if there's nothing in the text input just return
-    if (newLog.text == '' && logPhoto == null) return;
+    if (newLog.text == '' && logPhoto == '' && recordingURI == "") return project;
     try {
-      // playRecording(recordingURI);
-      // project.logs = [...project.logs, { ...newLog }];
-      // updateProj(project, projectID);
-      // if (logPhoto != null) saveLocalLogData(newLog.date);
       saveLocalLogData(newLog.date)
       setShowModal(false);
     } catch (e) {
@@ -116,38 +99,28 @@ export default function ActiveScreen({ route }) {
         id: projectID,
         date: date,
         text: text,
-        image: logPhoto
+        image: logPhoto,
+        recordingURI: recordingURI != '' ? await saveToStorage(recordingURI): ''
       }];
 
       await saveUserData(uID, JSON.stringify(userData));
 
-      console.log("Local log data:", userData.logs)
+      console.log("Local log data:", userData.logs);
+
+      setLogPhoto('');
+      setRecordingURI('');
+      onChangeText('');
     } catch (e){
       console.error("Failed to save log locally", e);
     }
   }
 
-  // ###    Mic Section    ###
-  const [isRecording, setIsRecording] = useState(false);
-  const [activeRecording, setActiveRecording] = useState(null);
-  const [recordingURI, setRecordingURI] = useState('');
-
-  const [micPermission, setMicPermission] = Audio.usePermissions();
-
-  function RecordButton(){
-    return(
-      <Pressable onPress={() => setIsRecording(!isRecording)}>
-        <Text>{isRecording ? 'Recording' : 'Record'}</Text>
-      </Pressable>
-    );
-  }
-
-  // ###    Camera Section    ###
+    // ###    Camera Section    ###
   const cameraRef = useRef(null);
   const [cameraPermission, setCameraPermission] = useCameraPermissions();
 
   const [photoMode, enablePhotoMode] = useState(false);
-  const [logPhoto, setLogPhoto] = useState(null);
+  const [logPhoto, setLogPhoto] = useState('');
 
   function CameraButton(){
     if(!cameraPermission) {
@@ -212,6 +185,54 @@ export default function ActiveScreen({ route }) {
         </View>
       </View>
     );
+  }
+
+  // ###    Mic Section    ###
+  const [isRecording, setIsRecording] = useState(false);
+  const [activeRecording, setActiveRecording] = useState(null);
+  const [recordingURI, setRecordingURI] = useState('');
+
+  const [micPermission, setMicPermission] = Audio.usePermissions();
+
+  const audioDirectory = FileSystem.documentDirectory + 'audio/';
+
+  function RecordButton(){
+    return(
+      <Pressable onPress={() => setIsRecording(!isRecording)}>
+        <Text>{isRecording ? 'Recording' : 'Record'}</Text>
+      </Pressable>
+    );
+  }
+
+  async function saveToStorage(tempUri) {
+    const fileName = `recording-${Date.now()}.m4a`;
+    const dirExist = await FileSystem.getInfoAsync(audioDirectory);
+
+    if (!dirExist.exists) {
+      await FileSystem.makeDirectoryAsync(audioDirectory, { intermediates: true });
+    }
+
+    try {
+      await FileSystem.copyAsync({
+        from: tempUri,
+        to: audioDirectory + fileName,
+      });
+      console.log('Recording saved to', audioDirectory + fileName);
+      return audioDirectory + fileName;
+    } catch (error) {
+      console.error('Failed to save recording', error);
+      return "";
+    }
+  }
+
+  async function playRecording(uri){
+    try{
+      const data = await Audio.Sound.createAsync({uri: uri});
+      console.log("data: ",data);
+      data.sound.replayAsync();
+    } catch (e){
+      console.error("Failed to play audio", e);
+    }
   }
 
   useEffect(() => {
@@ -298,8 +319,8 @@ export default function ActiveScreen({ route }) {
         console.error("failed to fetch project", e);
       }
     };
-    fetchProject();
-  }, [running]);
+    if(showModal == false) fetchProject();
+  }, [showModal]);
 
   useEffect(() => {
     updateTotalMinutes(projectID, currentProject);
@@ -404,7 +425,7 @@ export default function ActiveScreen({ route }) {
     <SafeAreaView>
       <CustomHeader screenName={"...Working"}/>
       {showModal ? (
-        <View>
+        <View style={{flex:1, flexDirection: "column", gap: 50}}>
           <Text>Write your Notes here</Text>
           <CameraButton/>
           <RecordButton/>
@@ -418,7 +439,7 @@ export default function ActiveScreen({ route }) {
           )}
           <Button
             title={"Save"}
-            onPress={isRecording ? null : () => setCurrentProj(saveLog(new Log(new Date(), text), projectID, currentProject))}
+            onPress={isRecording ? null : () => setCurrentProj(saveLog(new Log(new Date(), text), currentProject))}
           />
           <Button title="Dismiss" onPress={() => setShowModal(false)} />
         </View>
@@ -473,11 +494,16 @@ export default function ActiveScreen({ route }) {
             renderItem={({item}) => (
               <View style={{flex: 1, flexDirection: "row", gap: 10, marginRight: 20}}>
                 <Image 
-                  style={{width: 100, height: 100}}
+                  style={{width: 100, height: 100, backgroundColor: "#656565"}}
                   source={{uri: item.image}}/>
                 <View>
                   <Text>{item.date}</Text>
                   <Text>{item.text}</Text>
+                  {item.recordingURI != '' && (
+                    <Pressable onPress={() => playRecording(item.recordingURI)}>
+                      <Text>Play</Text>
+                    </Pressable>
+                  )}
                 </View>
               </View>
             )}

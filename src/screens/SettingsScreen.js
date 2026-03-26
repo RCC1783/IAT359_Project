@@ -5,6 +5,7 @@ import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { auth } from '../firebaseConfig';
 import { CustomHeader, saveUserData, UserData } from '../../globals';
+import * as FileSystem from 'expo-file-system/legacy';
 
 export default function SettingsScreen() {
     const [testSetting, setTestSetting] = useState(false);
@@ -47,6 +48,19 @@ export default function SettingsScreen() {
             console.log("Cleared user data");
         } catch (e){
             console.error("Failed to delete userData", e);
+        }
+
+        try {
+            const audioDirectory = FileSystem.documentDirectory + 'audio/';
+            const audioFiles = await FileSystem.readDirectoryAsync(audioDirectory);
+            await Promise.all(audioFiles.map((fileName) => {
+                FileSystem.deleteAsync(audioDirectory + fileName, { idempotent: true })
+            }));
+            
+            console.log('All recordings deleted');
+
+        } catch (error) {
+            console.error('Failed to delete recordings', error);
         }
     }
 

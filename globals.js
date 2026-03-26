@@ -37,7 +37,7 @@ export class Log {
 // Ended up not really being super useful since stringify causes it to loose its type
 export class UserData{
     //don't need a key at the top since the uID is the key for local storage
-    logs = [/* {id: projectID, date: sdfsd, image: } */];
+    logs = [/* {id: projectID, date: sdfsd, image: sfds, recording} */];
     refImages = [];
 }
 
