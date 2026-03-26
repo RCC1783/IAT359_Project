@@ -8,6 +8,8 @@ import {
   Alert,
   TextInput,
   Pressable,
+  Image,
+  FlatList
 } from "react-native";
 import { useState, useRef, useEffect } from "react";
 
@@ -20,12 +22,26 @@ import { doc, setDoc, collection, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 
 import { Audio } from "expo-av";
+import { CameraView, useCameraPermissions, CameraType } from 'expo-camera';
 
-import { CustomHeader, Log } from "../../globals";
+import { CustomHeader, Log, saveUserData } from "../../globals";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //For making the stopwatch I got help from geeksforgeeks.org/react-native/create-a-stop-watch-using-react-native/
 //https://firebase.google.com/docs/firestore/manage-data/add-data For adding data to Firebase
 
+  async function playRecording(recordingURI) {
+    try{
+      // const sound = new Audio.Sound();
+      // sound.loadAsync(
+      //   {uri: recordingURI, shouldPlay: true});
+
+      // await sound.playAsync();
+
+    } catch (e){
+      console.error("error playing recording", e);
+    }
+  }
 
 
 async function updateProj(project, projectID) {
@@ -35,22 +51,6 @@ async function updateProj(project, projectID) {
   } catch (e) {
     console.error(e);
   }
-}
-
-function saveLog(newLog, projectID, project) {
-  if(project == undefined){
-    console.error("Project undefined");
-    return undefined;
-  }
-  //if there's nothing in the text input just return
-  if (newLog.text == '' && newLog.recordingURI == '') return;
-  try {
-    project.logs = [...project.logs, { ...newLog }];
-    updateProj(project, projectID);
-  } catch (e) {
-    console.error("An error occurred while trying to save", e);
-  }
-  return project;
 }
 
 export default function ActiveScreen({ route }) {
@@ -80,6 +80,53 @@ export default function ActiveScreen({ route }) {
 
   const navigation = useNavigation();
 
+  const [projectLogs, setProjectLogs] = useState([]);
+
+  // ###    Saving   ###
+  function saveLog(newLog, projectID, project) {
+    if(project == undefined){
+      console.error("Project undefined");
+      return undefined;
+    }
+    //if there's nothing in the text input just return
+    if (newLog.text == '' && logPhoto == null) return;
+    try {
+      // playRecording(recordingURI);
+      // project.logs = [...project.logs, { ...newLog }];
+      // updateProj(project, projectID);
+      // if (logPhoto != null) saveLocalLogData(newLog.date);
+      saveLocalLogData(newLog.date)
+      setShowModal(false);
+    } catch (e) {
+      console.error("An error occurred while trying to save", e);
+    }
+    return project;
+  }
+
+  async function saveLocalLogData(date) {
+    console.log("Start save locally")
+    try{
+      let uID = await AsyncStorage.getItem('uid');
+      let userData = await AsyncStorage.getItem(uID);
+      console.log("userData",userData);
+
+      userData = JSON.parse(userData);
+
+      userData.logs = [...userData.logs, {
+        id: projectID,
+        date: date,
+        text: text,
+        image: logPhoto
+      }];
+
+      await saveUserData(uID, JSON.stringify(userData));
+
+      console.log("Local log data:", userData.logs)
+    } catch (e){
+      console.error("Failed to save log locally", e);
+    }
+  }
+
   // ###    Mic Section    ###
   const [isRecording, setIsRecording] = useState(false);
   const [activeRecording, setActiveRecording] = useState(null);
@@ -92,6 +139,78 @@ export default function ActiveScreen({ route }) {
       <Pressable onPress={() => setIsRecording(!isRecording)}>
         <Text>{isRecording ? 'Recording' : 'Record'}</Text>
       </Pressable>
+    );
+  }
+
+  // ###    Camera Section    ###
+  const cameraRef = useRef(null);
+  const [cameraPermission, setCameraPermission] = useCameraPermissions();
+
+  const [photoMode, enablePhotoMode] = useState(false);
+  const [logPhoto, setLogPhoto] = useState(null);
+
+  function CameraButton(){
+    if(!cameraPermission) {
+      return(
+        <View>
+          <Text>Camera perms loading</Text>
+        </View>
+      );
+    }
+
+    if(!cameraPermission.granted) {
+      return(
+        <View>
+          <Text>You fool! You must allow the camera to be used!</Text>
+          <Button title='Allow Camera' onPress={setCameraPermission}/>
+        </View>
+      );
+    }
+
+    async function takePhoto() {
+      if(cameraRef.current){
+        try{
+          const photo = await cameraRef.current.takePictureAsync({
+            base64: true,
+            quality: 0.25
+          });
+
+          const base64Image = `data:image/jpg;base64,${photo.base64}`;
+
+          setLogPhoto(base64Image);
+          enablePhotoMode(false);
+        } catch (e){
+          console.error(e);
+        }
+      }
+    }
+
+    return(
+      <View style={{flex:1}}>
+        {/* <Button title='toggle photo mode' onPress={() => enablePhotoMode(current => !current)}/> */}
+        <View style={{flex: 1, alignItems: 'center'}}>
+          {/* https://stackoverflow.com/questions/42398660/how-to-display-emoji-in-react-app */}
+          <Text>{`${String.fromCodePoint('0x2193')} Press to take a photo ${String.fromCodePoint('0x2193')}`}</Text>
+          <Pressable 
+          style={{height: 150, width: 150, borderRadius: 20, overflow: 'hidden'}}
+          onPress={photoMode ? () => takePhoto() : () => enablePhotoMode(current => !current)}>
+            {photoMode && (
+              <CameraView ref={cameraRef} active={photoMode} cameraRatio='1:1' style={{flex:1}}/>
+            )}
+            {!photoMode && logPhoto == null && (
+              <View style={{flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#828282'}}>
+                <Text style={{width: '60%', textAlign: 'center'}}>Press to enable camera</Text>
+              </View>
+            )}
+            {!photoMode && logPhoto != null && (
+              <View style={{flex:1}}>
+                {/* https://stackoverflow.com/questions/29380265/does-react-native-support-base64-encoded-images */}
+                <Image style={{flex:1}} source={{uri: logPhoto}}/>
+              </View>
+            )}
+          </Pressable>
+        </View>
+      </View>
     );
   }
 
@@ -162,6 +281,19 @@ export default function ActiveScreen({ route }) {
         const project = await getDoc(projectRef);
         setCurrentProj(project.data());
         console.log("current proj:", project);
+
+        try{
+          const uid = await AsyncStorage.getItem('uid');
+          let userData = await AsyncStorage.getItem(uid);
+          userData = JSON.parse(userData);
+
+          const logs = userData.logs.filter((log) => {
+            return log.id === projectID;
+          })
+          setProjectLogs(logs);
+        }catch (e){
+          console.error("failed getting project logs:", e);
+        }
       } catch (e) {
         console.error("failed to fetch project", e);
       }
@@ -274,24 +406,24 @@ export default function ActiveScreen({ route }) {
       {showModal ? (
         <View>
           <Text>Write your Notes here</Text>
+          <CameraButton/>
           <RecordButton/>
           <TextInput
             placeholder="Today I..."
             value={text}
             onChangeText={onChangeText}
           />
-          {isRecording && (
-            <Text>You must stop recording before you can save</Text>
+          {isRecording && photoMode && (
+            <Text>You must stop recording or finish taking a photo before you can save.</Text>
           )}
           <Button
             title={"Save"}
-            onPress={isRecording ? null : () => setCurrentProj(saveLog(new Log(new Date(), text, recordingURI), projectID, currentProject))}
+            onPress={isRecording ? null : () => setCurrentProj(saveLog(new Log(new Date(), text), projectID, currentProject))}
           />
           <Button title="Dismiss" onPress={() => setShowModal(false)} />
         </View>
       ) : (
         <View>
-          <Text>~ Active ~</Text>
           {/*Text to display the stopwatch for the user*/}
           <Text>
             {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:
@@ -333,6 +465,25 @@ export default function ActiveScreen({ route }) {
               <Text>Resume</Text>
             </TouchableOpacity>
           )}
+
+          <Text>Logs</Text>
+          <FlatList
+            data={projectLogs}
+            keyExtractor={item => item.date}
+            renderItem={({item}) => (
+              <View style={{flex: 1, flexDirection: "row", gap: 10, marginRight: 20}}>
+                <Image 
+                  style={{width: 100, height: 100}}
+                  source={{uri: item.image}}/>
+                <View>
+                  <Text>{item.date}</Text>
+                  <Text>{item.text}</Text>
+                </View>
+              </View>
+            )}
+            inverted
+            horizontal
+          />
         </View>
       )}
     </SafeAreaView>

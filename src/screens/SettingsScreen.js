@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { auth } from '../firebaseConfig';
+import { CustomHeader, saveUserData, UserData } from '../../globals';
 
 export default function SettingsScreen() {
     const [testSetting, setTestSetting] = useState(false);
@@ -39,6 +40,16 @@ export default function SettingsScreen() {
         }
     }
 
+    async function deleteUserData() {
+        try{
+            let uid = await AsyncStorage.getItem('uid');
+            await AsyncStorage.setItem(uid, JSON.stringify(new UserData))
+            console.log("Cleared user data");
+        } catch (e){
+            console.error("Failed to delete userData", e);
+        }
+    }
+
     useEffect(() => {
         loadSettings();
     }, []);
@@ -66,6 +77,10 @@ export default function SettingsScreen() {
 
             <Pressable style = {styles.homeButton} onPress = {saveSettings}>
                 <Text style = {styles.btnText}>SAVE SETTINGS</Text>
+            </Pressable>  
+
+            <Pressable style = {styles.homeButton} onPress = {deleteUserData}>
+                <Text style = {styles.btnText}>DELETE LOCAL USER DATA</Text>
             </Pressable>  
         </SafeAreaView>
     );

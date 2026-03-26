@@ -6,7 +6,7 @@ import { collection, getDocs, setDoc, doc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { useEffect, useState } from 'react';
 
-import { CustomHeader } from '../../globals';
+import { CustomHeader, ProjectDetails } from '../../globals';
 
 class Project{
     name = 'unnamed_project';
@@ -96,9 +96,7 @@ export default function ProjectsScreen() {
                 renderItem={({item}) => (
                     <View style={styles.shopItem}>
                         <TouchableOpacity onPress={() => navigation.navigate("selectedProject", {projectID: item.id})}>
-                            <Text>{item.name}</Text>
-                            <Text>Most recent log: {item.logs[item.logs.length - 1].date}</Text>
-                            <Text>{item.logs[item.logs.length - 1].text}</Text>
+                            <ProjectDetails projectID={item.id} projectName={item.name}/>
                         </TouchableOpacity>
                     </View>
                 )}

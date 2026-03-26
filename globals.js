@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, Button, Image, TouchableOpacity, Pressable } from 'react-native';
 import { styles } from "./src/styles";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
 // export const 
 
 
@@ -27,19 +28,16 @@ export const CustomHeader =({screenName, navigation}) => {
 export class Log {
   date = "";
   text = "";
-  img = 0;
-  recordingURI = '';
-  constructor(date, text = "", recordingURI = '') {
+  constructor(date, text = "") {
     this.date = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}/${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     this.text = text;
-    this.recordingURI = recordingURI;
   }
 }
 
 // Ended up not really being super useful since stringify causes it to loose its type
 export class UserData{
     //don't need a key at the top since the uID is the key for local storage
-    logs = [];
+    logs = [/* {id: projectID, date: sdfsd, image: } */];
     refImages = [];
 }
 
@@ -52,4 +50,54 @@ export async function saveUserData(uID, newUserData){
         console.error("Failed to save user data")
         return -1;
     }
+}
+
+export function ProjectDetails({projectID, projectName}){
+    const [logData, setLogData] = useState(null);
+    useEffect(() => {
+        async function getMatchingLocalLog() {
+            try {
+                let uid = await AsyncStorage.getItem('uid');
+                let userData = await AsyncStorage.getItem(uid);
+                userData = JSON.parse(userData);
+                if(userData == undefined){
+                    console.error("UD is undefined");
+                    return;
+                }
+                let log = userData.logs.filter((log) => {
+                    return log.id == projectID;
+                });
+                setLogData(log[log.length - 1]);
+            } catch (error) {
+                console.error("Failed to get matching local log",e);
+            }
+        }
+        getMatchingLocalLog();
+    }, [])
+
+    return(
+        <View>
+            {logData == null && (
+                <View style={{flex: 1, flexDirection: "row", gap: 20}}>
+                    {/* <Text>{logData.date}</Text> */}
+                    <View style={{width: 100, height: 100, backgroundColor: "white"}}/>
+                    <View>
+                        <Text>{projectName}</Text>
+                        <Text>No recent logs saved on device</Text>
+                    </View>
+                </View>
+            )}
+            {logData != null && (
+                <View style={{flex: 1, flexDirection: "row", gap: 20}}>
+                    {/* <Text>{logData.date}</Text> */}
+                    <Image style={{width: 100, height: 100}} source={{uri: logData.image}}/>
+                    <View>
+                        <Text>{projectName}</Text>
+                        <Text>{logData.date}</Text>
+                        <Text>{logData.text}</Text>
+                    </View>
+                </View>
+            )}
+        </View>
+    );
 }

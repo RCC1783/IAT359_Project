@@ -24,9 +24,10 @@ export default function LoginScreen({navigation}) {
 
             console.log(response);
 
-            await AsyncStorage.setItem('uid', JSON.stringify(response.user.uid));
-            await AsyncStorage.setItem(JSON.stringify(response.user.uid), JSON.stringify(new UserData))
-            const docRef = await setDoc(doc(db, 'users', response.user.uid), {
+            let uid = JSON.stringify(response.user.uid);
+            await AsyncStorage.setItem('uid', uid);
+            await AsyncStorage.setItem(uid, JSON.stringify(new UserData));
+            const docRef = await setDoc(doc(db, 'users', uid), {
                 email: email,
             });
             alert('User: ' + email + 'successfully signed up.');
@@ -38,25 +39,35 @@ export default function LoginScreen({navigation}) {
     }
 
     async function signIn() {
+        let uid = null;
         try {
             const response = await signInWithEmailAndPassword(fbAuth, email, password);
+            uid = JSON.stringify(response.user.uid);
 
             alert('User: ' + email + ' signed in.');
-            await AsyncStorage.setItem('uid', JSON.stringify(response.user.uid));
+            await AsyncStorage.setItem('uid', uid);
             navigation.navigate('home');  
+
+            let userData = null;
+            try {
+                userData = await AsyncStorage.getItem(uid);
+                if(userData != null) {
+                    console.log("user data found:", userData);
+                    return;
+                }
+
+                console.log("User data not found, creating it now");
+                await AsyncStorage.setItem(uid, JSON.stringify(new UserData));
+
+            } catch (error) {
+                console.log(error.message);
+            }
+
         } catch (error) {
             console.log(error.message);
             alert(error.message);
         }
-
-        let userData = null;
-        try {
-            userData = await AsyncStorage.getItem(JSON.stringify(response.user.uid));
-            console.log("user data found:", userData);
-        } catch (error) {
-            console.log(error.message);
-            await AsyncStorage.setItem(JSON.stringify(response.user.uid), JSON.stringify(new UserData));
-        }
+        
     }
  
     return (
