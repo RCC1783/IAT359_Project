@@ -1,6 +1,6 @@
 // Referenced official documentation: https://docs.expo.dev/versions/latest/sdk/camera/#cameraview
 
-import { StyleSheet, Text, View, SafeAreaView, Button, Pressable, Image } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, Pressable, Image, Alert } from 'react-native';
 
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
@@ -8,6 +8,7 @@ import { useRef, useState, useEffect } from 'react';
 import { CameraView, useCameraPermissions, CameraType } from 'expo-camera';
 import { UserData, saveUserData} from '../../globals';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { type } from 'firebase/firestore/pipelines';
 
 export default function CameraScreen() {
     const navigation = useNavigation();
@@ -36,14 +37,37 @@ export default function CameraScreen() {
         );
     }
 
+    async function saveImage() {
+        if(logPhoto == null) return;
+        let uID = await AsyncStorage.getItem('uid');
+        let userData = await AsyncStorage.getItem(uID);
+
+        userData = JSON.parse(userData);
+
+        var date = new Date();
+
+        userData.refImages = [...userData.refImages, {
+            id: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}/${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`,
+            type: "userPhoto",
+            uri: logPhoto
+        }];
+        await saveUserData(uID, JSON.stringify(userData));
+
+        Alert.alert("Image Saved!", "Press 'continue' to take more photos or return to go back to the previous screen", [
+            {
+                text: "continue",
+            },
+            {
+                text: "return",
+                onPress: () => navigation.goBack()
+            }
+        ])
+        // navigation.goBack();
+    }
+
     async function takePhoto() {
         if(cameraRef.current){
             try{
-                let uID = await AsyncStorage.getItem('uid');
-                let userData = await AsyncStorage.getItem(uID);
-
-                userData = JSON.parse(userData);
-
                 const photo = await cameraRef.current.takePictureAsync({
                     base64: true,
                     quality: 0.25
@@ -51,8 +75,7 @@ export default function CameraScreen() {
                 // The actual image. Should be saved locally so that it can be used for a log. Probably will need some sort of key to find the photo and link it to the log?
                 const base64Image = `data:image/jpg;base64,${photo.base64}`;
 
-                userData.refImages = [...userData.refImages, setLogPhoto(base64Image)];
-                await saveUserData(uID, JSON.stringify(userData));
+                setLogPhoto(base64Image);
                 
                 enablePhotoMode(false);
             } catch (e){
@@ -85,6 +108,9 @@ export default function CameraScreen() {
                             <Image style={{flex:1}} source={{uri: logPhoto}}/>
                         </View>
                     )}
+                </Pressable>
+                <Pressable onPress={() => saveImage()}>
+                    <Text> Save Image? </Text>
                 </Pressable>
             </View>
         </SafeAreaView>

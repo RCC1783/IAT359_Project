@@ -109,11 +109,6 @@ export default function SelectedProjectScreen({route}) {
               title="Jump Back In!"
               onPress={() => navigation.navigate("active", { projectID: projectID })}
             />
-
-            <Button
-                title='Camera'
-                onPress={() => navigation.navigate("Camera")}
-            />
         </SafeAreaView>
     );
 }

@@ -142,7 +142,7 @@ export default function AllImagesScreen() {
                         <Text style={{fontSize: 18}}>Close</Text>
                     </Pressable>
                     <Image
-                        style={{width: '75%', height: '75%'}}
+                        style={{width: '90%', height: '60%', objectFit: "contain"}}
                         source = {{uri:selImgID}}
                     />
                 </View>
@@ -152,12 +152,17 @@ export default function AllImagesScreen() {
                 keyExtractor={item => item.id}
                 renderItem={({item}) => (
                     <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', margin: 2}}>
-                        <Pressable onPress={() => Alert.alert("Image", item.alt_description,
+                        <Pressable onPress={() => Alert.alert("Image", "Select",
                             [
                                 {
                                     text: "View Image.", onPress: () => {
-                                        setFullscreenImage(true)
-                                        setSelImgID(item.urls.regular);
+                                        if(item.type == "unsplash"){
+                                            setFullscreenImage(true)
+                                            setSelImgID(item.urls.regular);
+                                        } else{
+                                            setFullscreenImage(true)
+                                            setSelImgID(item.uri);
+                                        }
                                     }
                                 },
                                 {
@@ -176,7 +181,7 @@ export default function AllImagesScreen() {
                         )}>
                             <Image 
                                 style={{width: 100, height: 100}}
-                                source={{uri: item.urls.thumb}}
+                                source={item.type == "unsplash" ? {uri: item.urls.thumb} : {uri: item.uri}}
                             />
                         </Pressable>
                         <Text>{item.alt_description}</Text>
@@ -188,7 +193,12 @@ export default function AllImagesScreen() {
             {selectImagePopup && (
                 <View style={styles.popupView}> 
                     <View style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', width: '80%'}}>
-                        <Pressable onPress={() => toggleSelectImagePopup(false)}><Text>Close</Text></Pressable>
+                        <Pressable onPress={() => {
+                            toggleSelectImagePopup(false);
+                            setPageNum(1);
+                        }}>
+                            <Text>Close</Text>
+                        </Pressable>
                         <Pressable><Text>Save</Text></Pressable>
                     </View>
 
@@ -203,7 +213,7 @@ export default function AllImagesScreen() {
                                 [
                                     {
                                         text: "Yes?",
-                                        onPress: () => addImage({id: item.id, urls: item.urls})
+                                        onPress: () => addImage({id: item.id, urls: item.urls, type: "unsplash"})
                                     },
                                     {
                                         text: "No."
@@ -224,6 +234,14 @@ export default function AllImagesScreen() {
                         <Pressable onPress={() => { pageNum > 1 ? setPageNum(pageNum - 1) : null; fetchUnsplash()}}><Text>{`<-`}</Text></Pressable>
                         <Pressable onPress={() => { setPageNum(pageNum + 1); fetchUnsplash() }}><Text>{`->`}</Text></Pressable>
                     </View>
+                    <Button
+                        title='Camera'
+                        onPress={() => {
+                            // toggleSelectImagePopup(false);
+                            setPageNum(1);
+                            navigation.navigate("Camera");
+                        }}
+                    />
                 </View>
             )}
         </SafeAreaView>
