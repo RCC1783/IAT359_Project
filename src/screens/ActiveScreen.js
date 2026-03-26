@@ -159,13 +159,12 @@ export default function ActiveScreen({ route }) {
     }
 
     return(
-      <View style={{flex:1}}>
-        {/* <Button title='toggle photo mode' onPress={() => enablePhotoMode(current => !current)}/> */}
+      <View style={{flex:1,minHeight:180}}>
         <View style={{flex: 1, alignItems: 'center'}}>
           {/* https://stackoverflow.com/questions/42398660/how-to-display-emoji-in-react-app */}
           <Text>{`${String.fromCodePoint('0x2193')} Press to take a photo ${String.fromCodePoint('0x2193')}`}</Text>
           <Pressable 
-          style={{height: 150, width: 150, borderRadius: 20, overflow: 'hidden'}}
+          style={{height: 150, width: 150, borderRadius: 20, overflow: 'hidden', backgroundColor:"#656565"}}
           onPress={photoMode ? () => takePhoto() : () => enablePhotoMode(current => !current)}>
             {photoMode && (
               <CameraView ref={cameraRef} active={photoMode} cameraRatio='1:1' style={{flex:1}}/>
@@ -425,7 +424,7 @@ export default function ActiveScreen({ route }) {
     <SafeAreaView>
       <CustomHeader screenName={"...Working"}/>
       {showModal ? (
-        <View style={{flex:1, flexDirection: "column", gap: 50}}>
+        <View style={{flex:1, flexDirection: "column", gap: 20, padding: 50}}>
           <Text>Write your Notes here</Text>
           <CameraButton/>
           <RecordButton/>
