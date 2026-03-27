@@ -7,6 +7,9 @@ import {
   TouchableOpacity,
   Alert,
   TextInput,
+  Pressable,
+  Image,
+  FlatList
 } from "react-native";
 import { useState, useRef, useEffect } from "react";
 
@@ -16,51 +19,28 @@ import { mod } from "firebase/firestore/pipelines";
 
 import SelectedProjectScreen from "./SelectedProjectScreen";
 import { doc, setDoc, collection, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../firebaseConfig";
-import { CustomHeader } from "../../globals";
+import { db, auth } from '../firebaseConfig';
+
+import { Audio } from "expo-av";
+import { CameraView, useCameraPermissions, CameraType } from 'expo-camera';
+
+import { CustomHeader, Log, saveUserData } from "../../globals";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as FileSystem from 'expo-file-system/legacy';
 
 //For making the stopwatch I got help from geeksforgeeks.org/react-native/create-a-stop-watch-using-react-native/
 //https://firebase.google.com/docs/firestore/manage-data/add-data For adding data to Firebase
 
-//Class for storing/making a new log that will then get updated to the firebase data
-class Log {
-  date = "";
-  text = "";
-  img = 0;
-  constructor(text, date) {
-    this.date = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}/${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;;
-    this.text = text;
-  }
-}
-
 async function updateProj(project, projectID) {
   try {
-    const projectRef = doc(db, "projects", projectID);
+    const fbAuth = auth;
+    const user = fbAuth.currentUser;
+
+    const projectRef = doc(db, user.email, projectID);
     await updateDoc(projectRef, { ...project });
   } catch (e) {
     console.error(e);
   }
-}
-
-function saveLog(newLog, projectID, project) {
-  if(project == undefined){
-    console.error("Project undefined");
-    return undefined;
-  }
-  //if there's nothing in the text input just return
-  if (newLog.text == '') return;
-  try {
-    project.logs = [...project.logs, { ...newLog }];
-    // const docRef = await doc(db, "projects", projectID);
-    // updateDoc(docRef, {
-    //   logs: [...project.logs]
-    // });
-    // console.log(`new log created with ID: ${docRef.id}`);
-    updateProj(project, projectID);
-  } catch (e) {
-    console.error("An error occurred while trying to save", e);
-  }
-  return project;
 }
 
 export default function ActiveScreen({ route }) {
@@ -90,19 +70,263 @@ export default function ActiveScreen({ route }) {
 
   const navigation = useNavigation();
 
+  const [projectLogs, setProjectLogs] = useState([]);
+
+  // ###    Saving   ###
+  function saveLog(newLog, project) {
+    if(project == undefined){
+      console.error("Project undefined");
+      return undefined;
+    }
+    //if there's nothing in the text input just return
+    if (newLog.text == '' && logPhoto == '' && recordingURI == "") return project;
+    try {
+      saveLocalLogData(newLog.date)
+      setShowModal(false);
+    } catch (e) {
+      console.error("An error occurred while trying to save", e);
+    }
+    return project;
+  }
+
+  async function saveLocalLogData(date) {
+    console.log("Start save locally")
+    try{
+      let uID = await AsyncStorage.getItem('uid');
+      let userData = await AsyncStorage.getItem(uID);
+      console.log("userData",userData);
+
+      userData = JSON.parse(userData);
+
+      userData.logs = [...userData.logs, {
+        id: projectID,
+        date: date,
+        text: text,
+        image: logPhoto,
+        recordingURI: recordingURI != '' ? await saveToStorage(recordingURI): ''
+      }];
+
+      await saveUserData(uID, JSON.stringify(userData));
+
+      console.log("Local log data:", userData.logs);
+
+      setLogPhoto('');
+      setRecordingURI('');
+      onChangeText('');
+    } catch (e){
+      console.error("Failed to save log locally", e);
+    }
+  }
+
+    // ###    Camera Section    ###
+  const cameraRef = useRef(null);
+  const [cameraPermission, setCameraPermission] = useCameraPermissions();
+
+  const [photoMode, enablePhotoMode] = useState(false);
+  const [logPhoto, setLogPhoto] = useState('');
+
+  function CameraButton(){
+    if(!cameraPermission) {
+      return(
+        <View>
+          <Text>Camera perms loading</Text>
+        </View>
+      );
+    }
+
+    if(!cameraPermission.granted) {
+      return(
+        <View>
+          <Text>You fool! You must allow the camera to be used!</Text>
+          <Button title='Allow Camera' onPress={setCameraPermission}/>
+        </View>
+      );
+    }
+
+    async function takePhoto() {
+      if(cameraRef.current){
+        try{
+          const photo = await cameraRef.current.takePictureAsync({
+            base64: true,
+            quality: 0.25
+          });
+
+          const base64Image = `data:image/jpg;base64,${photo.base64}`;
+
+          setLogPhoto(base64Image);
+          enablePhotoMode(false);
+        } catch (e){
+          console.error(e);
+        }
+      }
+    }
+
+    return(
+      <View style={{flex:1,minHeight:180}}>
+        <View style={{flex: 1, alignItems: 'center'}}>
+          {/* https://stackoverflow.com/questions/42398660/how-to-display-emoji-in-react-app */}
+          <Text>{`${String.fromCodePoint('0x2193')} Press to take a photo ${String.fromCodePoint('0x2193')}`}</Text>
+          <Pressable 
+          style={{height: 150, width: 150, borderRadius: 20, overflow: 'hidden', backgroundColor:"#656565"}}
+          onPress={photoMode ? () => takePhoto() : () => enablePhotoMode(current => !current)}>
+            {photoMode && (
+              <CameraView ref={cameraRef} active={photoMode} cameraRatio='1:1' style={{flex:1}}/>
+            )}
+            {!photoMode && logPhoto == null && (
+              <View style={{flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#828282'}}>
+                <Text style={{width: '60%', textAlign: 'center'}}>Press to enable camera</Text>
+              </View>
+            )}
+            {!photoMode && logPhoto != null && (
+              <View style={{flex:1}}>
+                {/* https://stackoverflow.com/questions/29380265/does-react-native-support-base64-encoded-images */}
+                <Image style={{flex:1}} source={{uri: logPhoto}}/>
+              </View>
+            )}
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
+
+  // ###    Mic Section    ###
+  const [isRecording, setIsRecording] = useState(false);
+  const [activeRecording, setActiveRecording] = useState(null);
+  const [recordingURI, setRecordingURI] = useState('');
+
+  const [micPermission, setMicPermission] = Audio.usePermissions();
+
+  const audioDirectory = FileSystem.documentDirectory + 'audio/';
+
+  function RecordButton(){
+    return(
+      <Pressable onPress={() => setIsRecording(!isRecording)}>
+        <Text>{isRecording ? 'Recording' : 'Record'}</Text>
+      </Pressable>
+    );
+  }
+
+  async function saveToStorage(tempUri) {
+    const fileName = `recording-${Date.now()}.m4a`;
+    const dirExist = await FileSystem.getInfoAsync(audioDirectory);
+
+    if (!dirExist.exists) {
+      await FileSystem.makeDirectoryAsync(audioDirectory, { intermediates: true });
+    }
+
+    try {
+      await FileSystem.copyAsync({
+        from: tempUri,
+        to: audioDirectory + fileName,
+      });
+      console.log('Recording saved to', audioDirectory + fileName);
+      return audioDirectory + fileName;
+    } catch (error) {
+      console.error('Failed to save recording', error);
+      return "";
+    }
+  }
+
+  async function playRecording(uri){
+    try{
+      const data = await Audio.Sound.createAsync({uri: uri});
+      console.log("data: ",data);
+      data.sound.replayAsync();
+    } catch (e){
+      console.error("Failed to play audio", e);
+    }
+  }
+
+  useEffect(() => {
+    async function checkMicPerms() {
+      if (!micPermission.granted){
+        const {granted} = await setMicPermission();
+        if(!granted) {
+          Alert.alert("enable mic in settings");
+          setIsRecording(false);
+          return false;
+        };
+      }
+      return true;
+    }
+
+    async function startRecording() {
+      try{
+        if(checkMicPerms() == false) return;
+
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: true,
+          playsInSilentModeIOS: true,
+        });
+
+        const { recording } = await Audio.Recording.createAsync(
+          Audio.RecordingOptionsPresets.HIGH_QUALITY
+        );
+        setActiveRecording( recording );
+      } catch (e){
+        console.error(e);
+      }
+    }
+
+    async function stopRecording() {
+      try {
+        await activeRecording.stopAndUnloadAsync();
+
+        const toSave = await activeRecording.createNewLoadedSoundAsync();
+        const uri = activeRecording.getURI();
+
+        toSave.sound.replayAsync();
+        
+        setRecordingURI(uri);
+
+        console.log("Recording URI", uri);
+
+        setActiveRecording(null);
+      } catch (e) {
+        console.error("Error in stop recording func:", e)
+      }
+    }
+
+    if(!isRecording && activeRecording == null) return;
+    if(!isRecording && activeRecording != null) {stopRecording(); return;} 
+    
+    startRecording();
+    
+  }, [isRecording]);
+
+
+  // ###    End Mic Section   ###
+
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const projectRef = doc(db, "projects", projectID);
+        const fbAuth = auth;
+        const user = fbAuth.currentUser;
+
+        const projectRef = doc(db, user.email, projectID);
         const project = await getDoc(projectRef);
+
         setCurrentProj(project.data());
         console.log("current proj:", project);
+
+        try{
+          const uid = await AsyncStorage.getItem('uid');
+          let userData = await AsyncStorage.getItem(uid);
+          userData = JSON.parse(userData);
+
+          const logs = userData.logs.filter((log) => {
+            return log.id === projectID;
+          })
+          setProjectLogs(logs);
+        }catch (e){
+          console.error("failed getting project logs:", e);
+        }
       } catch (e) {
         console.error("failed to fetch project", e);
       }
     };
-    fetchProject();
-  }, [running]);
+    if(showModal == false) fetchProject();
+  }, [showModal]);
 
   useEffect(() => {
     updateTotalMinutes(projectID, currentProject);
@@ -115,6 +339,7 @@ export default function ActiveScreen({ route }) {
     } else {
       console.log(project);
       project.minutes = project.minutes + minutesToAdd - workedMinutes;
+      project.totalMinutes = project.totalMinutes + minutesToAdd - workedMinutes;
 
       setWorkedMinutes(minutesToAdd);
       // console.log(`minutes to add: ${minutesToAdd}, worked min: ${workedMinutes}`);
@@ -207,22 +432,26 @@ export default function ActiveScreen({ route }) {
     <SafeAreaView>
       <CustomHeader screenName={"...Working"}/>
       {showModal ? (
-        <View>
+        <View style={{flex:1, flexDirection: "column", gap: 20, padding: 50}}>
           <Text>Write your Notes here</Text>
+          <CameraButton/>
+          <RecordButton/>
           <TextInput
-            placeholder="Today I drew..."
+            placeholder="Today I..."
             value={text}
             onChangeText={onChangeText}
           />
+          {isRecording && photoMode && (
+            <Text>You must stop recording or finish taking a photo before you can save.</Text>
+          )}
           <Button
-            title="Save"
-            onPress={() => setCurrentProj(saveLog(new Log(text, new Date()), projectID, currentProject))}
+            title={"Save"}
+            onPress={isRecording ? null : () => setCurrentProj(saveLog(new Log(new Date(), text), currentProject))}
           />
           <Button title="Dismiss" onPress={() => setShowModal(false)} />
         </View>
       ) : (
         <View>
-          <Text>~ Active ~</Text>
           {/*Text to display the stopwatch for the user*/}
           <Text>
             {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:
@@ -264,6 +493,30 @@ export default function ActiveScreen({ route }) {
               <Text>Resume</Text>
             </TouchableOpacity>
           )}
+
+          <Text>Logs</Text>
+          <FlatList
+            data={projectLogs}
+            keyExtractor={item => item.date}
+            renderItem={({item}) => (
+              <View style={{flex: 1, flexDirection: "row", gap: 10, marginRight: 20}}>
+                <Image 
+                  style={{width: 100, height: 100, backgroundColor: "#656565"}}
+                  source={{uri: item.image}}/>
+                <View>
+                  <Text>{item.date}</Text>
+                  <Text>{item.text}</Text>
+                  {item.recordingURI != '' && (
+                    <Pressable onPress={() => playRecording(item.recordingURI)}>
+                      <Text>Play</Text>
+                    </Pressable>
+                  )}
+                </View>
+              </View>
+            )}
+            inverted
+            horizontal
+          />
         </View>
       )}
     </SafeAreaView>

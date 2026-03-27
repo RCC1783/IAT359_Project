@@ -6,6 +6,7 @@ import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { auth, db } from '../firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { UserData } from '../../globals';
 
 export default function LoginScreen({navigation}) {
     const [email, setEmail] = useState('');
@@ -23,8 +24,10 @@ export default function LoginScreen({navigation}) {
 
             console.log(response);
 
-            await AsyncStorage.setItem('uid', JSON.stringify(response.user.uid));
-            const docRef = await setDoc(doc(db, 'users', response.user.uid), {
+            let uid = JSON.stringify(response.user.uid);
+            await AsyncStorage.setItem('uid', uid);
+            await AsyncStorage.setItem(uid, JSON.stringify(new UserData));
+            const docRef = await setDoc(doc(db, 'users', uid), {
                 email: email,
             });
             alert('User: ' + email + 'successfully signed up.');
@@ -36,21 +39,40 @@ export default function LoginScreen({navigation}) {
     }
 
     async function signIn() {
+        let uid = null;
         try {
             const response = await signInWithEmailAndPassword(fbAuth, email, password);
+            uid = JSON.stringify(response.user.uid);
 
             alert('User: ' + email + ' signed in.');
-            await AsyncStorage.setItem('uid', JSON.stringify(response.user.uid));
+            await AsyncStorage.setItem('uid', uid);
             navigation.navigate('home');  
+
+            let userData = null;
+            try {
+                userData = await AsyncStorage.getItem(uid);
+                if(userData != null) {
+                    console.log("user data found:", userData);
+                    return;
+                }
+
+                console.log("User data not found, creating it now");
+                await AsyncStorage.setItem(uid, JSON.stringify(new UserData));
+
+            } catch (error) {
+                console.log(error.message);
+            }
+
         } catch (error) {
             console.log(error.message);
             alert(error.message);
         }
+        
     }
  
     return (
         <SafeAreaView styles = {styles.container}>
-            <Text>~ Login ~</Text>
+            <Text style = {styles.headerText}>~ Login ~</Text>
 
             <TextInput
                 style = {styles.input}

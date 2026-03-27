@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, FlatList, Image, Pressable, TextInput } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, FlatList, Image, Pressable, TextInput, Alert, Modal } from 'react-native';
 
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { CustomHeader } from '../../globals';
+import { CustomHeader, Log, UserData, saveUserData} from '../../globals';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AllImagesScreen() {
     const navigation = useNavigation();
@@ -16,9 +17,21 @@ export default function AllImagesScreen() {
 
     const [pageNum, setPageNum] = useState(1);
 
-    const [fullscreenImage, setFullscreenImage] = useState(null)
+    const [fullscreenImage, setFullscreenImage] = useState(false);
+    const [selImgID, setSelImgID] = useState(null); // selected image ID for fullscreen view
 
     useEffect(() => {
+        const getImages = async () => {
+            let uID = await AsyncStorage.getItem('uid');
+            let userData = await AsyncStorage.getItem(uID);
+
+            userData = JSON.parse(userData);
+
+            console.log("UserData:", userData);
+
+            setSelectedImages(userData.refImages);
+        }
+        getImages();
         fetchUnsplash();
     }, [selectImagePopup]);
 
@@ -62,21 +75,115 @@ export default function AllImagesScreen() {
         }
     }
 
+    async function addImage(imageItem){
+        if(selectedImages.findIndex((item) => item.id === imageItem.id) != -1) {
+            console.log("Already present");
+            return;
+        }
+
+        setSelectedImages([...selectedImages, imageItem]);
+
+        try{
+            let uID = await AsyncStorage.getItem('uid');
+            let userData = await AsyncStorage.getItem(uID);
+            console.log("userData",userData);
+            // if(userData == null) return;
+
+            userData = JSON.parse(userData);
+
+            userData.refImages = [...selectedImages, imageItem];
+
+            console.log("Updated ref Images:", userData.refImages);
+
+            // userData.updateImages(imageItem);
+
+            await saveUserData(uID, JSON.stringify(userData));
+
+            console.log("SKJFH");
+
+        } catch (e){
+            console.error("Failed to save images", e)
+        }
+    }
+
+    async function deleteItem(imageItem) {
+        try {
+            let uID = await AsyncStorage.getItem('uid');
+            let userData = await AsyncStorage.getItem(uID);
+
+            userData = JSON.parse(userData);
+            const updatedImages = userData.refImages.filter((item) => item.id !== imageItem.id);
+            userData.refImages = updatedImages;
+
+            setSelectedImages(updatedImages);
+            await saveUserData(uID, JSON.stringify(userData));
+            console.log('OWNED');
+        } catch (e) {
+            console.error("Failed to delete image", e);
+        }
+    }
+
     return(
         <SafeAreaView>
             <CustomHeader screenName={"Images"} navigation={navigation}/>
             <Pressable style={[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => toggleSelectImagePopup(true)}>
                 <Text style={styles.btnText}>Add Images</Text>
             </Pressable>
+            <Modal
+                animationType = 'fade'
+                transparent = {true}
+                visible = {fullscreenImage}
+                onRequestClose = {() => {
+                    setFullscreenImage(false);
+                }}
+            >
+                <View style = {styles.container}>
+                    <Pressable onPress={() => setFullscreenImage(false)} style={styles.homeButton}>
+                        <Text style={{fontSize: 18}}>Close</Text>
+                    </Pressable>
+                    <Image
+                        style={{width: '90%', height: '60%', objectFit: "contain"}}
+                        source = {{uri:selImgID}}
+                    />
+                </View>
+            </Modal>
             <FlatList
                 data={selectedImages}
                 keyExtractor={item => item.id}
                 renderItem={({item}) => (
                     <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', margin: 2}}>
-                        <Image 
-                            style={{width: 100, height: 100}}
-                            source={{uri: item.urls.thumb}}
-                        />
+                        <Pressable onPress={() => Alert.alert("Image", "Select",
+                            [
+                                {
+                                    text: "View Image.", onPress: () => {
+                                        if(item.type == "unsplash"){
+                                            setFullscreenImage(true)
+                                            setSelImgID(item.urls.regular);
+                                        } else{
+                                            setFullscreenImage(true)
+                                            setSelImgID(item.uri);
+                                        }
+                                    }
+                                },
+                                {
+                                    text: "Delete Image.", onPress: () => Alert.alert("Are you sure?", "This will delete the image.",
+                                        [
+                                            {
+                                                text: "Yes.", onPress: () => deleteItem(item)
+                                            },
+                                            {
+                                                text: "No.", style: "cancel"
+                                            }
+                                        ]
+                                    )
+                                }
+                            ]
+                        )}>
+                            <Image 
+                                style={{width: 100, height: 100}}
+                                source={item.type == "unsplash" ? {uri: item.urls.thumb} : {uri: item.uri}}
+                            />
+                        </Pressable>
                         <Text>{item.alt_description}</Text>
                     </View>
                 )}
@@ -86,7 +193,12 @@ export default function AllImagesScreen() {
             {selectImagePopup && (
                 <View style={styles.popupView}> 
                     <View style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', width: '80%'}}>
-                        <Pressable onPress={() => toggleSelectImagePopup(false)}><Text>Close</Text></Pressable>
+                        <Pressable onPress={() => {
+                            toggleSelectImagePopup(false);
+                            setPageNum(1);
+                        }}>
+                            <Text>Close</Text>
+                        </Pressable>
                         <Pressable><Text>Save</Text></Pressable>
                     </View>
 
@@ -97,7 +209,17 @@ export default function AllImagesScreen() {
                         data={images != undefined ? images : null}
                         keyExtractor={item => item.id}
                         renderItem={({item}) => (
-                            <Pressable style={{flex: 1, flexDirection: 'column', alignItems: 'center',margin: 2}}>
+                            <Pressable onPress={() => Alert.alert("Save Image?", "Confirm?", 
+                                [
+                                    {
+                                        text: "Yes?",
+                                        onPress: () => addImage({id: item.id, urls: item.urls, type: "unsplash"})
+                                    },
+                                    {
+                                        text: "No."
+                                    }
+                                ]
+                            )} style={{flex: 1, flexDirection: 'column', alignItems: 'center',margin: 2}}>
                                 <Image 
                                     style={{width: 100, height: 100, borderRadius: 10, borderColor: '#656565', borderWidth: 3}}
                                     source={{uri: item.urls.thumb}}
@@ -112,6 +234,14 @@ export default function AllImagesScreen() {
                         <Pressable onPress={() => { pageNum > 1 ? setPageNum(pageNum - 1) : null; fetchUnsplash()}}><Text>{`<-`}</Text></Pressable>
                         <Pressable onPress={() => { setPageNum(pageNum + 1); fetchUnsplash() }}><Text>{`->`}</Text></Pressable>
                     </View>
+                    <Button
+                        title='Camera'
+                        onPress={() => {
+                            // toggleSelectImagePopup(false);
+                            setPageNum(1);
+                            navigation.navigate("Camera");
+                        }}
+                    />
                 </View>
             )}
         </SafeAreaView>

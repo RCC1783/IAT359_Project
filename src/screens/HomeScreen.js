@@ -8,7 +8,7 @@ export default function HomeScreen() {
     const navigation = useNavigation();
     return(
         <SafeAreaView style={{flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#ffe8ff'}}>
-            <Text style = {styles.btnText}>~ Welcome! ~</Text>
+            <Text style = {styles.headerText}>~ Welcome! ~</Text>
             {/*<Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('shop')}>
                 <Text style = {styles.btnText}>Shop</Text>
             </Pressable> */}
@@ -23,6 +23,10 @@ export default function HomeScreen() {
 
             <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('allImages')}>
                 <Text style = {styles.btnText}>Images</Text>
+            </Pressable>
+
+            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('micTest')}>
+                <Text style = {styles.btnText}>Microphone Test</Text>
             </Pressable>
         </SafeAreaView>
     );

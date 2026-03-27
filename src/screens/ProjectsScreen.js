@@ -3,15 +3,16 @@ import { StyleSheet, Text, View, SafeAreaView, Button, FlatList, TouchableOpacit
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { collection, getDocs, setDoc, doc } from 'firebase/firestore';
-import { db } from '../firebaseConfig';
+import { db, auth } from '../firebaseConfig';
+
 import { useEffect, useState } from 'react';
 
-import { CustomHeader } from '../../globals';
+import { CustomHeader, ProjectDetails } from '../../globals';
 
 class Project{
     name = 'unnamed_project';
     minutes = 0;
-    logs = [];
+    totalMinutes = 0;
     ownedItems = [];
     roomSetup = {
         wallpaper: {},
@@ -22,21 +23,6 @@ class Project{
         this.minutes = minutes;
     }
 }
-const test_proj = {
-  name: "test project", // Display name of the project
-  minutes: 500,
-
-    // array containing log objects
-    logs:[],
-
-  ownedItems: [], //Array of roomItems that can be used to populate the room
-
-  roomSetup: {
-    // Object populated with roomItems controlling the layout of the room
-    wallpaper: {},
-    flooring: {},
-  },
-};
 
 
 export default function ProjectsScreen() {
@@ -47,29 +33,35 @@ export default function ProjectsScreen() {
     const [newProjectName, setNewProjectName] = useState('');
     const [newProject, setNewProject] = useState(null);
 
+    const fbAuth = auth;
+    const user = fbAuth.currentUser;
+
     useEffect(() => {
         const fetchProjects = async() => {
-            const querySnapshot = await getDocs(collection(db, "projects"));
+            const querySnapshot = await getDocs(collection(db, user.email));
 
-      let allDocs = [];
-      querySnapshot.forEach((doc) => {
-        allDocs.push({
-          ...doc.data(),
-          id: doc.id,
+        let allDocs = [];
+        querySnapshot.forEach((doc) => {
+            allDocs.push({
+            ...doc.data(),
+            id: doc.id,
+            });
         });
-      });
 
-      setProjectList(allDocs);
+        setProjectList(allDocs);
     };
 
         fetchProjects();
+
     }, [createMenuOpen]);
 
     useEffect(() => {
         const createNewProject = async() => {
             if(newProject == null || newProjectName == '') return;
             try{
-                const docRef = doc(collection(db, 'projects'));
+                // let uID = await AsyncStorage.getItem('uid');
+                if(user == null) return;
+                const docRef = doc(collection(db, user.email));
                 setDoc(docRef, {
                     ...newProject
                 });
@@ -96,9 +88,7 @@ export default function ProjectsScreen() {
                 renderItem={({item}) => (
                     <View style={styles.shopItem}>
                         <TouchableOpacity onPress={() => navigation.navigate("selectedProject", {projectID: item.id})}>
-                            <Text>{item.name}</Text>
-                            <Text>Most recent log: {item.logs[item.logs.length - 1].date}</Text>
-                            <Text>{item.logs[item.logs.length - 1].text}</Text>
+                            <ProjectDetails projectID={item.id} projectName={item.name}/>
                         </TouchableOpacity>
                     </View>
                 )}
