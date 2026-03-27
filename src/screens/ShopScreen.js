@@ -13,7 +13,7 @@ import {
 
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
-import {db} from '../firebaseConfig'
+import { db, auth } from '../firebaseConfig';
 import { shopList } from '../shopItems';
 import { useEffect, useState } from 'react';
 import { CustomHeader } from '../../globals';
@@ -31,19 +31,12 @@ const log1 = {
     text:""
 }
 
-
-
-async function printAll() {
-    const querySnapshot = await getDocs(collection(db, "projects"));
-    querySnapshot.forEach((doc) => {
-        console.log(doc.id, "=>", doc.data());
-    });
-
-}
-
 async function updateProj(project, projectID) {
     try{
-        const projectRef = doc(db, "projects", projectID);
+        const fbAuth = auth;
+        const user = fbAuth.currentUser;
+
+        const projectRef = doc(db, user.email, projectID);
         await updateDoc(projectRef, {
             ...project
         });
@@ -81,8 +74,12 @@ export default function ShopScreen({route}) {
     useEffect(() => {
         const fetchProject = async() => {
             try{
-                const projectRef = doc(db, "projects", projectID);
+                const fbAuth = auth;
+                const user = fbAuth.currentUser;
+
+                const projectRef = doc(db, user.email, projectID);
                 const project = await getDoc(projectRef);
+
                 setCurrentProj(project.data());
                 console.log("current proj:", project);
 

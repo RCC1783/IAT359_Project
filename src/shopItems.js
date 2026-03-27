@@ -32,8 +32,8 @@ const rainbow_floors = {
 }
 
 export const shopList = [
-    {owned: false, cost: 200, item: default_walls},
-    {owned: false, cost: 300, item: wood_floors},
-    {owned: false, cost: 300, item: rainbow_floors},
-    {owned: false, cost: 300, item: blue_walls},
+    {owned: false, cost: 2, item: default_walls},
+    {owned: false, cost: 2, item: wood_floors},
+    {owned: false, cost: 5, item: rainbow_floors},
+    {owned: false, cost: 5, item: blue_walls},
 ]

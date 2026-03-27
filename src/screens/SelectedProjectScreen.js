@@ -4,13 +4,15 @@ import { and, collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where 
 
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
-import {db} from '../firebaseConfig'
+import { db, auth } from '../firebaseConfig';
 import { FlatList } from 'react-native';
 import { CustomHeader } from '../../globals';
 
 async function updateProj(project, projectID) {
     try{
-        const projectRef = doc(db, "projects", projectID);
+        const fbAuth = auth;
+        const user = fbAuth.currentUser;
+        const projectRef = doc(db, user.email, projectID);
         await updateDoc(projectRef, {
             ...project
         });
@@ -46,8 +48,12 @@ export default function SelectedProjectScreen({route}) {
     useEffect(() => {
         const fetchProject = async() => {
             try{
-                const projectRef = doc(db, "projects", projectID);
+                const fbAuth = auth;
+                const user = fbAuth.currentUser;
+
+                const projectRef = doc(db, user.email, projectID);
                 const project = await getDoc(projectRef);
+                
                 setCurrentProj(project.data());
                 console.log("current proj:", project);
             } catch (e){

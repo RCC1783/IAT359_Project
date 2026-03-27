@@ -19,7 +19,7 @@ import { mod } from "firebase/firestore/pipelines";
 
 import SelectedProjectScreen from "./SelectedProjectScreen";
 import { doc, setDoc, collection, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../firebaseConfig";
+import { db, auth } from '../firebaseConfig';
 
 import { Audio } from "expo-av";
 import { CameraView, useCameraPermissions, CameraType } from 'expo-camera';
@@ -33,7 +33,10 @@ import * as FileSystem from 'expo-file-system/legacy';
 
 async function updateProj(project, projectID) {
   try {
-    const projectRef = doc(db, "projects", projectID);
+    const fbAuth = auth;
+    const user = fbAuth.currentUser;
+
+    const projectRef = doc(db, user.email, projectID);
     await updateDoc(projectRef, { ...project });
   } catch (e) {
     console.error(e);
@@ -297,8 +300,12 @@ export default function ActiveScreen({ route }) {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const projectRef = doc(db, "projects", projectID);
+        const fbAuth = auth;
+        const user = fbAuth.currentUser;
+
+        const projectRef = doc(db, user.email, projectID);
         const project = await getDoc(projectRef);
+
         setCurrentProj(project.data());
         console.log("current proj:", project);
 
@@ -332,6 +339,7 @@ export default function ActiveScreen({ route }) {
     } else {
       console.log(project);
       project.minutes = project.minutes + minutesToAdd - workedMinutes;
+      project.totalMinutes = project.totalMinutes + minutesToAdd - workedMinutes;
 
       setWorkedMinutes(minutesToAdd);
       // console.log(`minutes to add: ${minutesToAdd}, worked min: ${workedMinutes}`);
