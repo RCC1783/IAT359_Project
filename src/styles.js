@@ -135,5 +135,22 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 10,
     marginRight: 40 
+  },
+
+  // Welcome Screen
+  cloud: {
+    position: 'absolute',
+    backgroundColor: 'white',
+    borderRadius: 100,
+    width: 200,
+    height: 200,
+  },
+
+  smallHome: {
+    transform: [{ rotateX: '60deg'}, { rotateZ: '45deg' }],
+    width: 100,
+    height: 100,
+    backgroundColor: 'black',
+    borderWidth: 2,
   }
 });
