@@ -76,7 +76,7 @@ export default function ActiveScreen({ route }) {
 
   const [projectLogs, setProjectLogs] = useState([]);
 
-  //For starting the stopwatch as the user opens the active screen
+  //For starting the stopwatch as soon as the user opens the active screen
   useFocusEffect(
     useCallback(() => {
       startStopWatch();
