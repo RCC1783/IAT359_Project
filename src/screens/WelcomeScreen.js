@@ -77,12 +77,25 @@ export default function WelcomeScreen() {
     }, []);
 
     return(
-        <SafeAreaView>
-            <Text style = {styles.headerText}>~ Welcome! ~</Text>
+        <SafeAreaView style={{flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#EDDEFF'}}>
+            <Text style = {styles.headerText}>Welcome!</Text>
 
-            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => checkUser()}>
-                <Text style = {styles.btnText}>Logged in?</Text>
+            <Pressable onPress={() => checkUser()}>
+                {/* walls  */}
+                    <View style = {[styles.smallHome, { zIndex: -1 ,top: 140, left: 35, transform: [{ rotateX: '-25deg'}, { rotateY: '-45deg'}, { rotateZ: '0deg' }], backgroundColor: '#5A53BF' }]}></View>
+                    <View style = {[styles.smallHome, { zIndex: -1, top: 41, right: 35, transform: [{ rotateX: '25deg'}, { rotateY: '-45deg'}, { rotateZ: '0deg' }], backgroundColor: '#B6BCFB' }]}></View>
+                {/* walls  */}
+
+                <View style = {[styles.smallHome, { backgroundColor: '#D95635' }]}></View>
             </Pressable>
+
+            <View style = {[styles.cloud, {top: -100, right: -20, zIndex: 1, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {top: -50, right: -50}]}></View>
+            <View style = {[styles.cloud, {top: -120, right: 80}]}></View>
+
+            <View style = {[styles.cloud, {bottom: -50, left: -100, width: 200, height: 175, borderRadius: 175, zIndex: 1, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {bottom: -100, left: -150, width: 300, height: 300, borderRadius: 150}]}></View>
+            <View style = {[styles.cloud, {bottom: -120, left: 50, width: 250, height: 250, borderRadius: 125}]}></View>
         </SafeAreaView>
     );
 }
