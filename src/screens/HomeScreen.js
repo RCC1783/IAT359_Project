@@ -11,7 +11,7 @@ export default function HomeScreen() {
     const user = fbAuth.currentUser;
 
     return(
-        <SafeAreaView style={{flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#ffe8ff'}}>
+        <SafeAreaView style={{ zIndex: -1, flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#EDDEFF'}}>
             <Text style = {[styles.headerText, {alignSelf: 'flex-start', fontSize: 24}]}>    Welcome! {user ? `${user.email}` : 'Not Loogged in... how...?'}</Text>
 
             <Pressable style = {[styles.homeButton, { flexDirection: 'row', alignItems: 'center', backgroundColor: "#5A53BF" }]} onPress={() => navigation.navigate('projects')}>
@@ -38,17 +38,26 @@ export default function HomeScreen() {
             </View>
 
             <Pressable style={[styles.homeButton, { margin: 5 }]}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={[styles.headerText, { color: 'white', fontSize: 18, textAlign: 'center', textTransform: 'none'}]}>Title</Text>
-                <Text style={[styles.btnText, { fontSize: 14, textTransform: 'none' }]}>Time</Text>
-            </View>
-            <View style={{ alignSelf: 'center' }}>
-                <Image style={{ margin: 5, width: 270, height: 150 }} source={require('../images/home/phBlock.png')} />
-            </View>
-            <View>
-                <Text style={[styles.btnText, { textAlign: 'left' }]}>Note</Text>
-            </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={[styles.headerText, { color: 'white', fontSize: 18, textAlign: 'center', textTransform: 'none'}]}>Title</Text>
+                    <Text style={[styles.btnText, { fontSize: 14, textTransform: 'none' }]}>Time</Text>
+                </View>
+                <View style={{ alignSelf: 'center' }}>
+                    <Image style={{ margin: 5, width: 270, height: 150 }} source={require('../images/home/phBlock.png')} />
+                </View>
+                <View>
+                    <Text style={[styles.btnText, { textAlign: 'left' }]}>Note</Text>
+                </View>
             </Pressable>
+
+            {/* CLOUDS */}
+            <View style = {[styles.cloud, {zIndex: -1, top: -100, right: -20, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {zIndex: -2, top: -50, right: -50}]}></View>
+            <View style = {[styles.cloud, {zIndex: -2, top: -120, right: 80}]}></View>
+
+            <View style = {[styles.cloud, {zIndex: -1, bottom: -50, left: -100, width: 200, height: 175, borderRadius: 175, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {zIndex: -2, bottom: -100, left: -150, width: 300, height: 300, borderRadius: 150}]}></View>
+            <View style = {[styles.cloud, {zIndex: -2, bottom: -120, left: 50, width: 250, height: 250, borderRadius: 125}]}></View>
         </SafeAreaView>
     );
 }
