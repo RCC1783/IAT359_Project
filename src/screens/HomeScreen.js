@@ -37,26 +37,17 @@ export default function HomeScreen() {
                 <View></View>
             </View>
 
-            <Pressable style = {[styles.homeButton, { margin: 5 }]} onPress={() => navigation.navigate('project1')}>
-                <View style = {{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style = {[styles.headerText, { color: 'white', fontSize: 18, textAlign: 'center', textTransform: 'none'}]}>
-                        Title
-                    </Text>
-
-                    <Text style = {[styles.btnText, { fontSize: 14, textTransform: 'none' }]}>
-                        Time
-                    </Text>
-                </View>
-
-                <View style = {{ alignSelf: 'center' }}> {/* Thumbnail */}
-                    <Image style = {{ margin: 5, width: 270, height: 150 }} source = {require('../images/home/phBlock.png')} />
-                </View>
-
-                <View> {/* Note */}
-                    <Text style = {[styles.btnText, { textAlign: 'left' }]}> 
-                        Note
-                    </Text>
-                </View>
+            <Pressable style={[styles.homeButton, { margin: 5 }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={[styles.headerText, { color: 'white', fontSize: 18, textAlign: 'center', textTransform: 'none'}]}>Title</Text>
+                <Text style={[styles.btnText, { fontSize: 14, textTransform: 'none' }]}>Time</Text>
+            </View>
+            <View style={{ alignSelf: 'center' }}>
+                <Image style={{ margin: 5, width: 270, height: 150 }} source={require('../images/home/phBlock.png')} />
+            </View>
+            <View>
+                <Text style={[styles.btnText, { textAlign: 'left' }]}>Note</Text>
+            </View>
             </Pressable>
         </SafeAreaView>
     );
