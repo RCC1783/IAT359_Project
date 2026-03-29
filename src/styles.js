@@ -56,12 +56,11 @@ export const styles = StyleSheet.create({
   },
 
   homeButton: {
-    backgroundColor: "#ffffff",
-    borderColor: '#6ac1ff',
-    borderWidth: 3,
+    backgroundColor: "#D95635",
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 25,
     margin: 10,
+    width: '80%',
     
     alignContent: 'center',
     justifyContent: 'center',
@@ -69,11 +68,14 @@ export const styles = StyleSheet.create({
 
   btnText: {
     textAlign: 'center',
+    color: 'white',
+    textTransform: 'uppercase',
   }, 
 
   headerText: {
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 36,
+    fontWeight: 'bold',
   },
 
   boxShadow: {
@@ -87,6 +89,7 @@ export const styles = StyleSheet.create({
   },
 
   androidBoxShdw: {
+    borderRadius: 25,
     elevation: 10,
   },
 
@@ -105,6 +108,11 @@ export const styles = StyleSheet.create({
   input: {
     margin: 5,
     borderWidth: 1,
+    borderColor: '#D95635',
+    borderRadius: 25,
+
+    padding: 15,
+    width: '80%',
 
     backgroundColor: 'white',
   }, 

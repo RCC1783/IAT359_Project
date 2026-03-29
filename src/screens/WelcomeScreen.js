@@ -24,6 +24,8 @@ export default function WelcomeScreen() {
                 allUsers.push(JSON.stringify(doc.id));
             })
 
+            console.log("Saved UID:", savedUID);
+
             if (savedUID) {
                 if (allUsers.includes(savedUID)) {
                     console.log("User is logged in, navigating to home screen: ", savedUID);
@@ -31,9 +33,9 @@ export default function WelcomeScreen() {
                     let userData = null;
                     try {
                         userData = await AsyncStorage.getItem(savedUID);
-                        if(userData != null) {
+                        if (userData != null) {
                             console.log("user data found");
-                        } else{
+                        } else {
                             console.log("User data not found, creating it now");
                             await AsyncStorage.setItem(savedUID, JSON.stringify(new UserData));
                         }
@@ -49,7 +51,7 @@ export default function WelcomeScreen() {
                     navigation.navigate('login');
                 }
             } else {
-                navigation.navigate('login');
+                return navigation.navigate('login');
             }
         } catch (error) {
             console.error("Error fetching users:", error);

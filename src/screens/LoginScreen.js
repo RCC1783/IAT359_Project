@@ -71,12 +71,13 @@ export default function LoginScreen({navigation}) {
     }
  
     return (
-        <SafeAreaView styles = {styles.container}>
-            <Text style = {styles.headerText}>~ Login ~</Text>
+        <SafeAreaView style = {[styles.container, {backgroundColor: '#EDDEFF'}]}>
+            <Text style = {styles.headerText}>Log In</Text>
 
             <TextInput
                 style = {styles.input}
                 placeholder="Email"
+                placeholderTextColor={'#D95635'}
                 keyboardType="email-address"
                 value={email}
                 onChangeText={setEmail}
@@ -86,19 +87,32 @@ export default function LoginScreen({navigation}) {
             <TextInput
                 style = {styles.input}
                 placeholder="Password"
+                placeholderTextColor={'#D95635'}
                 secureTextEntry={true}
                 value={password}
                 onChangeText={setPassword}
                 autoCapitalize='none'
             />
 
-            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={signUp}>
+            <Pressable style = {styles.homeButton} onPress={signIn}>
+                <Text style = {styles.btnText}>Sign In</Text>
+            </Pressable>
+
+            <Text>Don't have an account?</Text>
+            <Pressable style = {[styles.homeButton, { backgroundColor: "#5A53BF" }]} onPress={signUp}>
                 <Text style = {styles.btnText}>Sign Up</Text>
             </Pressable>
 
-            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={signIn}>
-                <Text style = {styles.btnText}>Sign In</Text>
-            </Pressable>
+            {/* CLOUDS */}
+            <View style = {[styles.cloud, {width: 175, height: 175, top: -100, left: 25, zIndex: 1, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {width: 175, height: 175, top: -150, left: 150, zIndex: 1, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {top: -50, left: -50}]}></View>
+            <View style = {[styles.cloud, {top: -120, left: 80}]}></View>
+            <View style = {[styles.cloud, {width: 200, top: -165, left: 205}]}></View>
+
+            <View style = {[styles.cloud, {bottom: -70, right: 10, width: 175, height: 175, borderRadius: 175, zIndex: 1, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {bottom: -100, right: -150, width: 300, height: 300, borderRadius: 150}]}></View>
+            <View style = {[styles.cloud, {bottom: -120, right: 50, width: 250, height: 250, borderRadius: 125}]}></View>
         </SafeAreaView>
     );
 }
