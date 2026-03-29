@@ -83,6 +83,7 @@ export default function WelcomeScreen() {
             <Text style = {styles.headerText}>Welcome!</Text>
 
             <Pressable onPress={() => checkUser()}>
+                <Text style = {styles.btnText}>Check User</Text>
                 {/* walls  */}
                     <View style = {[styles.smallHome, { zIndex: -1 ,top: 140, left: 35, transform: [{ rotateX: '-25deg'}, { rotateY: '-45deg'}, { rotateZ: '0deg' }], backgroundColor: '#5A53BF' }]}></View>
                     <View style = {[styles.smallHome, { zIndex: -1, top: 41, right: 35, transform: [{ rotateX: '25deg'}, { rotateY: '-45deg'}, { rotateZ: '0deg' }], backgroundColor: '#B6BCFB' }]}></View>

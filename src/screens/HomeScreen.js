@@ -1,32 +1,62 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, Pressable, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, Pressable, ImageBackground, Image } from 'react-native';
 import { useState, useEffect } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
+import { auth } from '../firebaseConfig';
 
 export default function HomeScreen() {
     const navigation = useNavigation();
+    const fbAuth = auth;
+    const user = fbAuth.currentUser;
+
     return(
         <SafeAreaView style={{flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#ffe8ff'}}>
-            <Text style = {styles.headerText}>~ Welcome! ~</Text>
-            {/*<Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('shop')}>
-                <Text style = {styles.btnText}>Shop</Text>
-            </Pressable> */}
+            <Text style = {[styles.headerText, {alignSelf: 'flex-start', fontSize: 24}]}>    Welcome! {user ? `${user.email}` : 'Not Loogged in... how...?'}</Text>
 
-            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('projects')}>
-                <Text style = {styles.btnText}>Projects</Text>
+            <Pressable style = {[styles.homeButton, { flexDirection: 'row', alignItems: 'center', backgroundColor: "#5A53BF" }]} onPress={() => navigation.navigate('projects')}>
+                <Image style = {{ margin: 5, left: -75, width: 50, height: 50 }} source = {require('../images/home/phBlock.png')} />
+                <Text style = {[styles.btnText, { left: -25, textAlign: 'center'}]}>Projects</Text>
             </Pressable>
 
-            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('settings')}>
+            <Pressable style = {[styles.homeButton, { flexDirection: 'row', alignItems: 'center', backgroundColor: "#5A53BF" }]} onPress={() => navigation.navigate('allImages')}>
+                <Image style = {{ margin: 5, left: -83, width: 50, height: 50 }} source = {require('../images/home/phBlock.png')} />
+                <Text style = {[styles.btnText, { left: -28, textAlign: 'center'}]}>Images</Text>
+            </Pressable>
+
+            <Pressable style = {[styles.homeButton]} onPress={() => navigation.navigate('settings')}>
                 <Text style = {styles.btnText}>Settings</Text>
-            </Pressable>
-
-            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('allImages')}>
-                <Text style = {styles.btnText}>Images</Text>
             </Pressable>
 
             <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('micTest')}>
                 <Text style = {styles.btnText}>Microphone Test</Text>
+            </Pressable>
+
+            <View>
+                <Text style = {[styles.headerText, { fontSize: 20, alignSelf: 'flex-start'}]}>Jump back in!</Text>
+                <View></View>
+            </View>
+
+            <Pressable style = {[styles.homeButton, { margin: 5 }]} onPress={() => navigation.navigate('project1')}>
+                <View style = {{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style = {[styles.headerText, { color: 'white', fontSize: 18, textAlign: 'center', textTransform: 'none'}]}>
+                        Title
+                    </Text>
+
+                    <Text style = {[styles.btnText, { fontSize: 14, textTransform: 'none' }]}>
+                        Time
+                    </Text>
+                </View>
+
+                <View style = {{ alignSelf: 'center' }}> {/* Thumbnail */}
+                    <Image style = {{ margin: 5, width: 270, height: 150 }} source = {require('../images/home/phBlock.png')} />
+                </View>
+
+                <View> {/* Note */}
+                    <Text style = {[styles.btnText, { textAlign: 'left' }]}> 
+                        Note
+                    </Text>
+                </View>
             </Pressable>
         </SafeAreaView>
     );
