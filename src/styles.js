@@ -4,9 +4,7 @@ import { shopList } from './shopItems';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#EDDEFF',
   },
 
   shopHeader: {
@@ -124,10 +122,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
 
     position: 'absolute',
-    backgroundColor: '#b1b1b1',
+    backgroundColor: '#70a1e4',
     zIndex: 99,
-    borderWidth: 3,
-    borderColor: 'black',
     borderRadius: 20,
 
     width: '95%',

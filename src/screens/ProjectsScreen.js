@@ -77,10 +77,10 @@ export default function ProjectsScreen() {
     }, [newProject]);
 
     return(
-        <SafeAreaView>
+        <SafeAreaView style = {styles.container}>
             <CustomHeader screenName={"Projects"} navigation={navigation}/>
-            <TouchableOpacity onPress={() => setCreateMenu(true)}>
-                <Text>New Project</Text>
+            <TouchableOpacity style = {[styles.homeButton, { justifyContent: 'center', alignSelf: 'center' }]} onPress={() => setCreateMenu(true)}>
+                <Text style = {styles.btnText}>New Project</Text>
             </TouchableOpacity>
             <FlatList
                 data={projectList}
@@ -96,15 +96,16 @@ export default function ProjectsScreen() {
             {createMenuOpen && (
                 <View style={styles.popupView}>
                     <TextInput
-                        placeholder='Name your project'
+                        placeholder='Name Your Project'
+                        placeholderTextColor = {'white'}
                         value={newProjectName}
                         onChangeText={setNewProjectName}
                     />
-                    <TouchableOpacity onPress={() => setNewProject(new Project(newProjectName))}>
-                        <Text>Create Project</Text>
+                    <TouchableOpacity style = {styles.homeButton} onPress={() => setNewProject(new Project(newProjectName))}>
+                        <Text style = {styles.btnText}>Create Project</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {setCreateMenu(false); setNewProjectName('');}}>
-                        <Text>Cancel</Text>
+                    <TouchableOpacity style = {styles.homeButton} onPress={() => {setCreateMenu(false); setNewProjectName('');}}>
+                        <Text style = {styles.btnText}>Cancel</Text>
                     </TouchableOpacity>
                 </View>
             )}
