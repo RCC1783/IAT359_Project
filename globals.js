@@ -8,11 +8,11 @@ import { useEffect, useState } from 'react';
 export const CustomHeader =({screenName, navigation}) => {
     if(navigation != null){ 
         return(
-            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems:'center', height: 'fit-content', minHeight: 55}}>
+            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems:'center', maxHeight: 50, minHeight: 55, width: "100%"}}>
                 <Pressable onPress={() => navigation.goBack()} style={{margin: 10}}>
                     <Text style={{paddingVertical: 5, paddingHorizontal: 10, borderRadius: 10, fontSize: 22, backgroundColor: '#5A53BF', color: '#FFF', textAlignVertical:"top" }}>{'<'}</Text>
                 </Pressable>
-                <Text style={{color: "#FFFF", backgroundColor: '#5A53BF', margin: 10, borderRadius: 10, paddingLeft: 35, paddingRight: 15, paddingTop: 7, paddingBottom: 10, borderTopStartRadius: 10, borderBottomStartRadius: 30, textAlignVertical: 'top', textAlign:'right', fontSize: 18, fontWeight: 'bold'}}>{screenName}</Text>
+                <Text style={{color: "#FFFF", backgroundColor: '#5A53BF', paddingLeft: 50, paddingRight: 30, paddingTop: 7, paddingBottom: 10, borderTopStartRadius: 10, borderBottomStartRadius: 30, textAlignVertical: 'top', textAlign:'right', fontSize: 18, fontWeight: 'bold'}}>{screenName}</Text>
             </View>
         );
     } else{

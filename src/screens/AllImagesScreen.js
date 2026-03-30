@@ -137,7 +137,7 @@ export default function AllImagesScreen() {
                     setFullscreenImage(false);
                 }}
             >
-                <View style = {styles.container}>
+                <SafeAreaView style = {styles.container}>
                     <Pressable onPress={() => setFullscreenImage(false)} style={styles.homeButton}>
                         <Text style={{fontSize: 18}}>Close</Text>
                     </Pressable>
@@ -145,7 +145,7 @@ export default function AllImagesScreen() {
                         style={{width: '90%', height: '60%', objectFit: "contain"}}
                         source = {{uri:selImgID}}
                     />
-                </View>
+                </SafeAreaView>
             </Modal>
             <FlatList
                 data={selectedImages}
@@ -188,6 +188,7 @@ export default function AllImagesScreen() {
                     </View>
                 )}
                 numColumns={3}
+                style={{minWidth:"100%"}}
             />
 
             {selectImagePopup && (
@@ -199,7 +200,17 @@ export default function AllImagesScreen() {
                         }}>
                             <Text style = {styles.btnText}>Close</Text>
                         </Pressable>
-                        <Pressable style = {{backgroundColor: "#D95635", padding: 10, borderRadius: 10 }}><Text style = {styles.btnText}>Save</Text></Pressable>
+                        <Pressable
+                            style = {{backgroundColor: "#D95635", padding: 10, borderRadius: 10 }}
+                            title='Camera'
+                            onPress={() => {
+                                // toggleSelectImagePopup(false);
+                                setPageNum(1);
+                                navigation.navigate("Camera");
+                            }}
+                        >
+                            <Text style = {[styles.btnText]}>CAMERA</Text>
+                        </Pressable>
                     </View>
 
                     {/* https://stackoverflow.com/questions/67098132/how-to-call-function-on-enter-press-in-textinput-react-native */}
@@ -227,22 +238,12 @@ export default function AllImagesScreen() {
                             </Pressable>
                         )}
                         numColumns={3}
-                        style={{width: '100%'}}
+                        style={{minWidth: '100%'}}
                     />
                     <Text style = {styles.btnText}>Powered by Unsplash</Text>
                     <View style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', alignContent:'center', width: '80%'}}>
                         <Pressable style = {{backgroundColor: "#D95635", padding: 10, borderRadius: 10 }} onPress={() => { pageNum > 1 ? setPageNum(pageNum - 1) : null; fetchUnsplash()}}><Text style = {[styles.btnText, { fontWeight: 'bold'}]}>{`<`}</Text></Pressable>
-                        <Pressable
-                            style = {{backgroundColor: "#D95635", padding: 10, borderRadius: 10 }}
-                            title='Camera'
-                            onPress={() => {
-                                // toggleSelectImagePopup(false);
-                                setPageNum(1);
-                                navigation.navigate("Camera");
-                            }}
-                        >
-                            <Text style = {[styles.btnText, { fontWeight: 'bold'}]}>CAMERA</Text>
-                        </Pressable>
+                        <Text style = {{backgroundColor: "#D95635", padding: 10, borderRadius: 10, color: "white" }}>{pageNum}</Text>
                         <Pressable style = {{backgroundColor: "#D95635", padding: 10, borderRadius: 10 }} onPress={() => { setPageNum(pageNum + 1); fetchUnsplash() }}><Text style = {[styles.btnText, { fontWeight: 'bold'}]}>{`>`}</Text></Pressable>
                     </View>
                 </View>

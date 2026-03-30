@@ -28,9 +28,9 @@ export default function HomeScreen() {
                 <Text style = {styles.btnText}>Settings</Text>
             </Pressable>
 
-            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('micTest')}>
+            {/* <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => navigation.navigate('micTest')}>
                 <Text style = {styles.btnText}>Microphone Test</Text>
-            </Pressable>
+            </Pressable> */}
 
             <View>
                 <Text style = {[styles.headerText, { fontSize: 20, alignSelf: 'flex-start'}]}>Jump back in!</Text>

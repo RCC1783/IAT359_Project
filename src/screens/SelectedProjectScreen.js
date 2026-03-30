@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { useEffect, useState } from 'react';
 import { and, collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
 
@@ -64,57 +64,59 @@ export default function SelectedProjectScreen({route}) {
     }, [updator]);
 
     return(
-        <SafeAreaView>
+        <SafeAreaView style={styles.container}>
             <CustomHeader screenName={currentProject != undefined? currentProject.name : "Loading"} navigation={navigation}></CustomHeader>
 
-            {roomEditorOpen && (
-                <View style={styles.popupView}>
-                    <Text>Walls</Text>
-                    <FlatList 
-                        data={currentProject != undefined ? currentProject.ownedItems.filter((item) => {return item.type == "wallpaper";}) : null}
-                        keyExtractor={item => item.id}
-                        renderItem={({item}) => (
-                            <TouchableOpacity onPress={() => updateProj(editRoomSetup("wallpaper", item, currentProject, projectID))}>
-                                <Text>{item.name}</Text>
-                            </TouchableOpacity>
-                        )}
-                        horizontal={true}
-                    />
-                    <Text>Floors</Text>
-                    <FlatList 
-                        data={currentProject != undefined ? currentProject.ownedItems.filter((item) => {return item.type == "flooring";}) : null}
-                        keyExtractor={item => item.id}
-                        renderItem={({item}) => (
-                            <TouchableOpacity onPress={() => updateProj(editRoomSetup("flooring", item, currentProject, projectID))}>
-                                <Text>{item.name}</Text>
-                            </TouchableOpacity>
-                        )}
-                        horizontal={true}
-                    />
-                    <Button title='Close' onPress={() => setRoomEditorOpen(false)}/>
+            <ScrollView>
+                {roomEditorOpen && (
+                    <View style={styles.popupView}>
+                        <Text>Walls</Text>
+                        <FlatList 
+                            data={currentProject != undefined ? currentProject.ownedItems.filter((item) => {return item.type == "wallpaper";}) : null}
+                            keyExtractor={item => item.id}
+                            renderItem={({item}) => (
+                                <TouchableOpacity onPress={() => updateProj(editRoomSetup("wallpaper", item, currentProject, projectID))}>
+                                    <Text>{item.name}</Text>
+                                </TouchableOpacity>
+                            )}
+                            horizontal={true}
+                        />
+                        <Text>Floors</Text>
+                        <FlatList 
+                            data={currentProject != undefined ? currentProject.ownedItems.filter((item) => {return item.type == "flooring";}) : null}
+                            keyExtractor={item => item.id}
+                            renderItem={({item}) => (
+                                <TouchableOpacity onPress={() => updateProj(editRoomSetup("flooring", item, currentProject, projectID))}>
+                                    <Text>{item.name}</Text>
+                                </TouchableOpacity>
+                            )}
+                            horizontal={true}
+                        />
+                        <Button title='Close' onPress={() => setRoomEditorOpen(false)}/>
+                    </View>
+                )}
+
+                {/* May put this into its own function so it can be reused (once I figure out how...) */}
+                <View style={styles.roomContainer}>
+                    <Text>{currentProject != undefined ? currentProject.roomSetup.flooring.imgSrc : "Loading"}</Text>
+                    <Image 
+                        style={styles.roomImage}
+                        source={currentProject != undefined ? currentProject.roomSetup.wallpaper.imgSrc : null}/>
+                    <Image 
+                        style={styles.roomImage}
+                        source={currentProject != undefined ? currentProject.roomSetup.flooring.imgSrc : null}/>
+                    
                 </View>
-            )}
 
-            {/* May put this into its own function so it can be reused (once I figure out how...) */}
-            <View style={styles.roomContainer}>
-                <Text>{currentProject != undefined ? currentProject.roomSetup.flooring.imgSrc : "Loading"}</Text>
-                <Image 
-                    style={styles.roomImage}
-                    source={currentProject != undefined ? currentProject.roomSetup.wallpaper.imgSrc : null}/>
-                <Image 
-                    style={styles.roomImage}
-                    source={currentProject != undefined ? currentProject.roomSetup.flooring.imgSrc : null}/>
-                
-            </View>
+                <Button title='Edit Room' onPress={() => setRoomEditorOpen(true)}/>
 
-            <Button title='Edit Room' onPress={() => setRoomEditorOpen(true)}/>
+                <Button title="Shop Screen" onPress={() => navigation.navigate("shop", {projectID: projectID})}/>
 
-            <Button title="Shop Screen" onPress={() => navigation.navigate("shop", {projectID: projectID})}/>
-
-            <Button
-              title="Jump Back In!"
-              onPress={() => navigation.navigate("active", { projectID: projectID })}
-            />
+                <Button
+                title="Jump Back In!"
+                onPress={() => navigation.navigate("active", { projectID: projectID })}
+                />
+            </ScrollView>
         </SafeAreaView>
     );
 }

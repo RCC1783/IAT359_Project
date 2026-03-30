@@ -4,6 +4,10 @@ import { shopList } from './shopItems';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    overflow: "scroll",
     backgroundColor: '#EDDEFF',
   },
 
