@@ -1,8 +1,10 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, Image, TouchableOpacity, Pressable } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, Image, TouchableOpacity, Pressable, FlatList, Alert } from 'react-native';
 import { styles } from "./src/styles";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-// export const 
+
+import * as FileSystem from 'expo-file-system/legacy';
+import { Audio } from "expo-av";
 
 
 export const CustomHeader =({screenName, navigation}) => {
@@ -37,7 +39,7 @@ export class Log {
 // Ended up not really being super useful since stringify causes it to loose its type
 export class UserData{
     //don't need a key at the top since the uID is the key for local storage
-    logs = [/* {id: projectID, date: sdfsd, image: sfds, recording} */];
+    logs = [/* {id: projectID, date: sdfsd, image: sfds, recordingURI: recordingURI} */];
     refImages = [];
 }
 
@@ -100,4 +102,93 @@ export function ProjectDetails({projectID, projectName}){
             )}
         </View>
     );
+}
+
+export async function playRecording(uri){
+    try{
+        const data = await Audio.Sound.createAsync({uri: uri});
+        console.log("data: ",data);
+        data.sound.replayAsync();
+    } catch (e){
+        console.error("Failed to play audio", e);
+    }
+}
+
+async function deleteLog(log){
+    try{
+        if(log.recordingURI != '') await FileSystem.deleteAsync(log.recordingURI, {idempotent: true});
+
+        const uid = await AsyncStorage.getItem('uid');
+        let userData = await AsyncStorage.getItem(uid);
+        userData = JSON.parse(userData);
+
+        const newLogArray = userData.logs.filter((l) => {
+            return !(l.id == log.id && l.date == log.date);
+        });
+
+        userData.logs = newLogArray;
+        await saveUserData(uid, JSON.stringify(userData));
+        console.log("Deleted log");
+    }catch (e){
+        console.error("Failed to delete log.", e);
+    }
+}
+
+export function LogView({projectID}){
+    const [projectLogs, setProjectLogs] = useState([]);
+    useEffect(() => {
+        const fetchLogs = async () =>  {
+            try{
+                const uid = await AsyncStorage.getItem('uid');
+                let userData = await AsyncStorage.getItem(uid);
+                userData = JSON.parse(userData);
+
+                const logs = userData.logs.filter((log) => {
+                    return log.id === projectID;
+                })
+                setProjectLogs(logs);
+            }catch (e){
+                console.error("failed getting project logs:", e);
+            }
+        }
+        fetchLogs();
+    },[])
+    return(
+        <View style={{flex:1, minHeight: 100}}>
+            <FlatList
+                // https://medium.com/@bhagwat12rawat/how-to-invert-and-reverse-a-flatlist-in-react-native-20c3be76b16
+                data={projectLogs.slice().reverse()}
+                keyExtractor={item => item.date}
+                renderItem={({item}) => (
+                    <View style={{flex: 1, flexDirection: "row", gap: 10, marginRight: 20}}>
+                        <Image 
+                            style={{width: 100, height: 100, backgroundColor: "#656565"}}
+                            source={{uri: item.image}}/>
+                        <View>
+                            <Text>{item.date}</Text>
+                            <Text>{item.text}</Text>
+                            {item.recordingURI != '' && (
+                            <Pressable onPress={() => playRecording(item.recordingURI)}>
+                                <Text>Play</Text>
+                            </Pressable>
+                            )}
+                            <Pressable onPress={() => Alert.alert("Delete log?", "Deleted logs cannot be restored", [
+                                {
+                                    text: "Delete",
+                                    onPress: () => deleteLog(item)
+                                },
+                                {
+                                    text: "Nevermind"
+                                }
+                            ])}>
+                                <Text style={{color:"red"}}>Delete</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                )}
+                horizontal
+                
+            />
+        </View>
+    )
 }
