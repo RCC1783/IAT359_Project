@@ -124,9 +124,9 @@ export default function AllImagesScreen() {
     }
 
     return(
-        <SafeAreaView>
+        <SafeAreaView style = {styles.container}>
             <CustomHeader screenName={"Images"} navigation={navigation}/>
-            <Pressable style={[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => toggleSelectImagePopup(true)}>
+            <Pressable style={[styles.homeButton, { justifyContent: 'center', alignSelf: 'center' }]} onPress={() => toggleSelectImagePopup(true)}>
                 <Text style={styles.btnText}>Add Images</Text>
             </Pressable>
             <Modal
@@ -137,7 +137,7 @@ export default function AllImagesScreen() {
                     setFullscreenImage(false);
                 }}
             >
-                <View style = {styles.container}>
+                <SafeAreaView style = {styles.container}>
                     <Pressable onPress={() => setFullscreenImage(false)} style={styles.homeButton}>
                         <Text style={{fontSize: 18}}>Close</Text>
                     </Pressable>
@@ -145,7 +145,7 @@ export default function AllImagesScreen() {
                         style={{width: '90%', height: '60%', objectFit: "contain"}}
                         source = {{uri:selImgID}}
                     />
-                </View>
+                </SafeAreaView>
             </Modal>
             <FlatList
                 data={selectedImages}
@@ -172,7 +172,7 @@ export default function AllImagesScreen() {
                                                 text: "Yes.", onPress: () => deleteItem(item)
                                             },
                                             {
-                                                text: "No.", style: "cancel"
+                                                text: "No", style: "cancel"
                                             }
                                         ]
                                     )
@@ -188,22 +188,33 @@ export default function AllImagesScreen() {
                     </View>
                 )}
                 numColumns={3}
+                style={{minWidth:"100%"}}
             />
 
             {selectImagePopup && (
                 <View style={styles.popupView}> 
                     <View style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', width: '80%'}}>
-                        <Pressable onPress={() => {
+                        <Pressable style = {{backgroundColor: "#D95635", padding: 10, borderRadius: 10 }} onPress={() => {
                             toggleSelectImagePopup(false);
                             setPageNum(1);
                         }}>
-                            <Text>Close</Text>
+                            <Text style = {styles.btnText}>Close</Text>
                         </Pressable>
-                        <Pressable><Text>Save</Text></Pressable>
+                        <Pressable
+                            style = {{backgroundColor: "#D95635", padding: 10, borderRadius: 10 }}
+                            title='Camera'
+                            onPress={() => {
+                                // toggleSelectImagePopup(false);
+                                setPageNum(1);
+                                navigation.navigate("Camera");
+                            }}
+                        >
+                            <Text style = {[styles.btnText]}>CAMERA</Text>
+                        </Pressable>
                     </View>
 
                     {/* https://stackoverflow.com/questions/67098132/how-to-call-function-on-enter-press-in-textinput-react-native */}
-                    <TextInput onSubmitEditing={() => fetchUnsplash()} placeholder='Search' onChangeText={setSearchQuery}/>
+                    <TextInput style = {[styles.input, { textAlign: 'center'}]} onSubmitEditing={() => fetchUnsplash()} placeholder='Search' placeholderTextColor={'#D95635'} onChangeText={setSearchQuery}/>
 
                     <FlatList
                         data={images != undefined ? images : null}
@@ -216,32 +227,25 @@ export default function AllImagesScreen() {
                                         onPress: () => addImage({id: item.id, urls: item.urls, type: "unsplash"})
                                     },
                                     {
-                                        text: "No."
+                                        text: "No"
                                     }
                                 ]
                             )} style={{flex: 1, flexDirection: 'column', alignItems: 'center',margin: 2}}>
                                 <Image 
-                                    style={{width: 100, height: 100, borderRadius: 10, borderColor: '#656565', borderWidth: 3}}
+                                    style={{width: 100, height: 100, borderRadius: 10, borderColor: '#342b60', borderWidth: 3}}
                                     source={{uri: item.urls.thumb}}
                                 />
                             </Pressable>
                         )}
                         numColumns={3}
-                        style={{width: '100%'}}
+                        style={{minWidth: '100%'}}
                     />
-                    <Text>Powered by Unsplash</Text>
-                    <View style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', width: '80%'}}>
-                        <Pressable onPress={() => { pageNum > 1 ? setPageNum(pageNum - 1) : null; fetchUnsplash()}}><Text>{`<-`}</Text></Pressable>
-                        <Pressable onPress={() => { setPageNum(pageNum + 1); fetchUnsplash() }}><Text>{`->`}</Text></Pressable>
+                    <Text style = {styles.btnText}>Powered by Unsplash</Text>
+                    <View style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', alignContent:'center', width: '80%'}}>
+                        <Pressable style = {{backgroundColor: "#D95635", padding: 10, borderRadius: 10 }} onPress={() => { pageNum > 1 ? setPageNum(pageNum - 1) : null; fetchUnsplash()}}><Text style = {[styles.btnText, { fontWeight: 'bold'}]}>{`<`}</Text></Pressable>
+                        <Text style = {{backgroundColor: "#D95635", padding: 10, borderRadius: 10, color: "white" }}>{pageNum}</Text>
+                        <Pressable style = {{backgroundColor: "#D95635", padding: 10, borderRadius: 10 }} onPress={() => { setPageNum(pageNum + 1); fetchUnsplash() }}><Text style = {[styles.btnText, { fontWeight: 'bold'}]}>{`>`}</Text></Pressable>
                     </View>
-                    <Button
-                        title='Camera'
-                        onPress={() => {
-                            // toggleSelectImagePopup(false);
-                            setPageNum(1);
-                            navigation.navigate("Camera");
-                        }}
-                    />
                 </View>
             )}
         </SafeAreaView>

@@ -24,6 +24,8 @@ export default function WelcomeScreen() {
                 allUsers.push(JSON.stringify(doc.id));
             })
 
+            console.log("Saved UID:", savedUID);
+
             if (savedUID) {
                 if (allUsers.includes(savedUID)) {
                     console.log("User is logged in, navigating to home screen: ", savedUID);
@@ -31,9 +33,9 @@ export default function WelcomeScreen() {
                     let userData = null;
                     try {
                         userData = await AsyncStorage.getItem(savedUID);
-                        if(userData != null) {
+                        if (userData != null) {
                             console.log("user data found");
-                        } else{
+                        } else {
                             console.log("User data not found, creating it now");
                             await AsyncStorage.setItem(savedUID, JSON.stringify(new UserData));
                         }
@@ -49,7 +51,7 @@ export default function WelcomeScreen() {
                     navigation.navigate('login');
                 }
             } else {
-                navigation.navigate('login');
+                return navigation.navigate('login');
             }
         } catch (error) {
             console.error("Error fetching users:", error);
@@ -77,12 +79,26 @@ export default function WelcomeScreen() {
     }, []);
 
     return(
-        <SafeAreaView>
-            <Text style = {styles.headerText}>~ Welcome! ~</Text>
+        <SafeAreaView style={{flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#EDDEFF'}}>
+            <Text style = {styles.headerText}>Welcome!</Text>
 
-            <Pressable style = {[styles.homeButton, styles.androidBoxShdw, styles.boxShadow]} onPress={() => checkUser()}>
-                <Text style = {styles.btnText}>Logged in?</Text>
+            <Pressable onPress={() => checkUser()}>
+                <Text style = {styles.btnText}>Check User</Text>
+                {/* walls  */}
+                    <View style = {[styles.smallHome, { zIndex: -1 ,top: 140, left: 35, transform: [{ rotateX: '-25deg'}, { rotateY: '-45deg'}, { rotateZ: '0deg' }], backgroundColor: '#5A53BF' }]}></View>
+                    <View style = {[styles.smallHome, { zIndex: -1, top: 41, right: 35, transform: [{ rotateX: '25deg'}, { rotateY: '-45deg'}, { rotateZ: '0deg' }], backgroundColor: '#B6BCFB' }]}></View>
+                {/* walls  */}
+
+                <View style = {[styles.smallHome, { backgroundColor: '#D95635' }]}></View>
             </Pressable>
+
+            <View style = {[styles.cloud, {top: -100, right: -20, zIndex: 1, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {top: -50, right: -50}]}></View>
+            <View style = {[styles.cloud, {top: -120, right: 80}]}></View>
+
+            <View style = {[styles.cloud, {bottom: -50, left: -100, width: 200, height: 175, borderRadius: 175, zIndex: 1, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {bottom: -100, left: -150, width: 300, height: 300, borderRadius: 150}]}></View>
+            <View style = {[styles.cloud, {bottom: -120, left: 50, width: 250, height: 250, borderRadius: 125}]}></View>
         </SafeAreaView>
     );
 }

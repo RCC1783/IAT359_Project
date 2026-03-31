@@ -28,7 +28,7 @@ import { db, auth } from "../firebaseConfig";
 import { Audio } from "expo-av";
 import { CameraView, useCameraPermissions, CameraType } from "expo-camera";
 
-import { CustomHeader, Log, saveUserData } from "../../globals";
+import { CustomHeader, Log, saveUserData, playRecording, LogView } from "../../globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system/legacy";
 
@@ -272,16 +272,6 @@ export default function ActiveScreen({ route }) {
     }
   }
 
-  async function playRecording(uri) {
-    try {
-      const data = await Audio.Sound.createAsync({ uri: uri });
-      console.log("data: ", data);
-      data.sound.replayAsync();
-    } catch (e) {
-      console.error("Failed to play audio", e);
-    }
-  }
-
   useEffect(() => {
     async function checkMicPerms() {
       if (!micPermission.granted) {
@@ -354,19 +344,6 @@ export default function ActiveScreen({ route }) {
 
         setCurrentProj(project.data());
         console.log("current proj:", project);
-
-        try {
-          const uid = await AsyncStorage.getItem("uid");
-          let userData = await AsyncStorage.getItem(uid);
-          userData = JSON.parse(userData);
-
-          const logs = userData.logs.filter((log) => {
-            return log.id === projectID;
-          });
-          setProjectLogs(logs);
-        } catch (e) {
-          console.error("failed getting project logs:", e);
-        }
       } catch (e) {
         console.error("failed to fetch project", e);
       }
@@ -548,40 +525,7 @@ export default function ActiveScreen({ route }) {
           )}
 
           <Text>Logs</Text>
-          <FlatList
-            data={projectLogs}
-            keyExtractor={(item) => item.date}
-            renderItem={({ item }) => (
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: "row",
-                  gap: 10,
-                  marginRight: 20,
-                }}
-              >
-                <Image
-                  style={{
-                    width: 100,
-                    height: 100,
-                    backgroundColor: "#656565",
-                  }}
-                  source={{ uri: item.image }}
-                />
-                <View>
-                  <Text>{item.date}</Text>
-                  <Text>{item.text}</Text>
-                  {item.recordingURI != "" && (
-                    <Pressable onPress={() => playRecording(item.recordingURI)}>
-                      <Text>Play</Text>
-                    </Pressable>
-                  )}
-                </View>
-              </View>
-            )}
-            inverted
-            horizontal
-          />
+          <LogView projectID={projectID}/>
         </View>
       )}
     </SafeAreaView>

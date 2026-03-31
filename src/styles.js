@@ -4,9 +4,11 @@ import { shopList } from './shopItems';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    overflow: "scroll",
+    backgroundColor: '#EDDEFF',
   },
 
   shopHeader: {
@@ -56,12 +58,11 @@ export const styles = StyleSheet.create({
   },
 
   homeButton: {
-    backgroundColor: "#ffffff",
-    borderColor: '#6ac1ff',
-    borderWidth: 3,
+    backgroundColor: "#D95635",
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 25,
     margin: 10,
+    width: '80%',
     
     alignContent: 'center',
     justifyContent: 'center',
@@ -69,11 +70,14 @@ export const styles = StyleSheet.create({
 
   btnText: {
     textAlign: 'center',
+    color: 'white',
+    textTransform: 'uppercase',
   }, 
 
   headerText: {
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 36,
+    fontWeight: 'bold',
   },
 
   boxShadow: {
@@ -87,6 +91,7 @@ export const styles = StyleSheet.create({
   },
 
   androidBoxShdw: {
+    borderRadius: 25,
     elevation: 10,
   },
 
@@ -105,6 +110,11 @@ export const styles = StyleSheet.create({
   input: {
     margin: 5,
     borderWidth: 1,
+    borderColor: '#D95635',
+    borderRadius: 25,
+
+    padding: 15,
+    width: '80%',
 
     backgroundColor: 'white',
   }, 
@@ -116,10 +126,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
 
     position: 'absolute',
-    backgroundColor: '#b1b1b1',
+    backgroundColor: '#70a1e4',
     zIndex: 99,
-    borderWidth: 3,
-    borderColor: 'black',
     borderRadius: 20,
 
     width: '95%',
@@ -135,5 +143,22 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 10,
     marginRight: 40 
+  },
+
+  // Welcome Screen
+  cloud: {
+    position: 'absolute',
+    backgroundColor: 'white',
+    borderRadius: 100,
+    width: 200,
+    height: 200,
+  },
+
+  smallHome: {
+    transform: [{ rotateX: '60deg'}, { rotateZ: '45deg' }],
+    width: 100,
+    height: 100,
+    backgroundColor: 'black',
+    borderWidth: 2,
   }
 });

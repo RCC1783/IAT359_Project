@@ -74,10 +74,10 @@ export default function SettingsScreen() {
 
     const navigation = useNavigation();
     return(
-        <SafeAreaView>
-            <Text style = {styles.headerText}>~ Settings ~</Text>
+        <SafeAreaView style = {[styles.container, {justifyContent: 'center', alignItems: 'center'}]}>
+            <Text style = {styles.headerText}>Settings</Text>
 
-            <Text style = {styles.btnText}>{ user ? `Logged in as: ${user.email}` : 'Not Loogged in... how...?'}</Text>
+            <Text style = {[styles.btnText, { color: 'black' }]}>{ user ? `Logged in as: ${user.email}` : 'Not Loogged in... how...?'}</Text>
 
             <Text></Text>
 
@@ -93,7 +93,7 @@ export default function SettingsScreen() {
                 <Text style = {styles.btnText}>SAVE SETTINGS</Text>
             </Pressable>  
 
-            <Pressable style = {styles.homeButton} onPress = {deleteUserData}>
+            <Pressable style = {[styles.homeButton, { backgroundColor: 'red' }]} onPress = {deleteUserData}>
                 <Text style = {styles.btnText}>DELETE LOCAL USER DATA</Text>
             </Pressable>  
         </SafeAreaView>
