@@ -104,6 +104,40 @@ export function ProjectDetails({projectID, projectName}){
     );
 }
 
+export function RoomView(){
+    const [currentProject, setCurrentProj] = useState();
+    useEffect(() => {
+        const fetchProject = async() => {
+            try{
+                const fbAuth = auth;
+                const user = fbAuth.currentUser;
+
+                const projectRef = doc(db, user.email, projectID);
+                const project = await getDoc(projectRef);
+                
+                setCurrentProj(project.data());
+                console.log("current proj:", project);
+            } catch (e){
+                console.error("Failed to fetch project", e);
+            }
+        }
+        fetchProject();
+    }, [updator]);
+
+    return(
+        <View style={styles.roomContainer}>
+            <Text>{currentProject != undefined ? currentProject.roomSetup.flooring.imgSrc : "Loading"}</Text>
+            <Image 
+                style={styles.roomImage}
+                source={currentProject != undefined ? currentProject.roomSetup.wallpaper.imgSrc : null}/>
+            <Image 
+                style={styles.roomImage}
+                source={currentProject != undefined ? currentProject.roomSetup.flooring.imgSrc : null}/>
+            
+        </View>
+    )
+}
+
 export async function playRecording(uri){
     try{
         const data = await Audio.Sound.createAsync({uri: uri});
