@@ -154,7 +154,7 @@ export function LogView({projectID}){
         fetchLogs();
     },[])
     return(
-        <View style={{flex:1, minHeight: 100}}>
+        <View style={{flex:1, minHeight: 100, margin: 20}}>
             <FlatList
                 // https://medium.com/@bhagwat12rawat/how-to-invert-and-reverse-a-flatlist-in-react-native-20c3be76b16
                 data={projectLogs.slice().reverse()}

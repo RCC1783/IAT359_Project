@@ -170,6 +170,7 @@ export default function SelectedProjectScreen({route}) {
                 onPress={() => navigation.navigate("active", { projectID: projectID })}
                 />
 
+                <Text>Logs</Text>
                 <LogView projectID={projectID}/>
 
                 <Pressable onPress={() => Alert.alert("Are you sure you want to delete this project", "There is no restoring it once deleted", [
