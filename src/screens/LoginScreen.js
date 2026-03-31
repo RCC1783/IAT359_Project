@@ -104,13 +104,13 @@ export default function LoginScreen({navigation}) {
             </Pressable>
 
             {/* CLOUDS */}
-            <View style = {[styles.cloud, {width: 175, height: 175, top: -100, left: 25, zIndex: 1, backgroundColor: '#B6BCFB'}]}></View>
-            <View style = {[styles.cloud, {width: 175, height: 175, top: -150, left: 150, zIndex: 1, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {width: 175, height: 175, top: -100, left: 25, zIndex: 0, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {width: 175, height: 175, top: -150, left: 150, zIndex: 0, backgroundColor: '#B6BCFB'}]}></View>
             <View style = {[styles.cloud, {top: -50, left: -50}]}></View>
             <View style = {[styles.cloud, {top: -120, left: 80}]}></View>
             <View style = {[styles.cloud, {width: 200, top: -165, left: 205}]}></View>
 
-            <View style = {[styles.cloud, {bottom: -70, right: 10, width: 175, height: 175, borderRadius: 175, zIndex: 1, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {bottom: -70, right: 10, width: 175, height: 175, borderRadius: 175, zIndex: 0, backgroundColor: '#B6BCFB'}]}></View>
             <View style = {[styles.cloud, {bottom: -100, right: -150, width: 300, height: 300, borderRadius: 150}]}></View>
             <View style = {[styles.cloud, {bottom: -120, right: 50, width: 250, height: 250, borderRadius: 125}]}></View>
         </SafeAreaView>

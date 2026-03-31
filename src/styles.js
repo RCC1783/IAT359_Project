@@ -7,8 +7,42 @@ export const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    overflow: "scroll",
+    // overflow: "scroll",
     backgroundColor: '#EDDEFF',
+  },
+
+  // Navigation Header
+  navHeader: {
+    flex: 1, 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems:'center', 
+    maxHeight: 50, 
+    minHeight: 55, 
+    minWidth: "100%"
+  },
+  screenName: {
+    color: "#FFFF", 
+    backgroundColor: '#5A53BF',
+    paddingLeft: 50,
+    paddingRight: 30,
+    paddingTop: 7,
+    paddingBottom: 10,
+    borderTopStartRadius: 10,
+    borderBottomStartRadius: 30,
+    textAlignVertical: 'top',
+    textAlign:'right',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  backButton: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    fontSize: 22,
+    backgroundColor: '#5A53BF',
+    color: '#FFF',
+    textAlignVertical:"top" 
   },
 
   shopHeader: {
@@ -44,9 +78,12 @@ export const styles = StyleSheet.create({
 
   roomContainer:{
     width: '100%',
+    maxWidth: 500,
+    maxHeight: 500,
     height: undefined,
     aspectRatio: 1,
-    backgroundColor: '#ffe7e7'
+    // backgroundColor: '#ffe7e7',
+    alignSelf: "center"
   },
   roomImage:{
     width:'100%',
@@ -66,6 +103,7 @@ export const styles = StyleSheet.create({
     
     alignContent: 'center',
     justifyContent: 'center',
+    alignSelf: "center",
   },
 
   btnText: {
@@ -117,6 +155,7 @@ export const styles = StyleSheet.create({
     width: '80%',
 
     backgroundColor: 'white',
+    alignSelf:"center"
   }, 
   popupView: {
 
@@ -152,6 +191,7 @@ export const styles = StyleSheet.create({
     borderRadius: 100,
     width: 200,
     height: 200,
+    zIndex:-2
   },
 
   smallHome: {

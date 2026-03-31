@@ -219,7 +219,7 @@ export default function ActiveScreen({ route }) {
                 </Text>
               </View>
             )}
-            {!photoMode && logPhoto != null && (
+            {!photoMode && logPhoto != '' && (
               <View style={{ flex: 1 }}>
                 {/* https://stackoverflow.com/questions/29380265/does-react-native-support-base64-encoded-images */}
                 <Image style={{ flex: 1 }} source={{ uri: logPhoto }} />
@@ -242,8 +242,8 @@ export default function ActiveScreen({ route }) {
 
   function RecordButton() {
     return (
-      <Pressable onPress={() => setIsRecording(!isRecording)}>
-        <Text>{isRecording ? "Recording" : "Record"}</Text>
+      <Pressable style={styles.homeButton} onPress={() => setIsRecording(!isRecording)}>
+        <Text style={styles.btnText}>{isRecording ? "Recording..." : "Record Log"}</Text>
       </Pressable>
     );
   }
@@ -454,28 +454,29 @@ export default function ActiveScreen({ route }) {
   return (
     <SafeAreaView style={styles.container}>
       <CustomHeader screenName={"...Working"} />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <RoomView projectID={projectID}/>
         {showModal ? (
           <View
-            style={{ flex: 1, flexDirection: "column", gap: 20, padding: 50 }}
+            style={{ flex: 1, flexDirection: "column", gap: 20, padding: 50, backgroundColor:"white" }}
           >
             <Text>Write your Notes here</Text>
             <CameraButton />
             <RecordButton />
             <TextInput
+              style={styles.input}
               placeholder="Today I..."
               value={text}
               onChangeText={onChangeText}
             />
-            {isRecording && photoMode && (
+            {(isRecording || photoMode) && (
               <Text>
-                You must stop recording or finish taking a photo before you can
-                save.
+                Stop recording or finish taking a photo before saving.
               </Text>
             )}
-            <Button
-              title={"Save"}
+
+            <Pressable 
+              style={styles.homeButton}
               onPress={
                 isRecording
                   ? null
@@ -484,11 +485,16 @@ export default function ActiveScreen({ route }) {
                         saveLog(new Log(new Date(), text), currentProject),
                       )
               }
-            />
-            <Button title="Dismiss" onPress={() => setShowModal(false)} />
+            >
+              <Text style={styles.btnText}>Save</Text>
+            </Pressable>
+  
+            <Pressable style={styles.homeButton} onPress={() => setShowModal(false)}>
+              <Text style={styles.btnText}>Dismiss</Text>
+            </Pressable>
           </View>
         ) : (
-          <View >
+          <View style={{backgroundColor:"white", padding: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20}}>
             {/*Text to display the stopwatch for the user*/}
             <Text>
               {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:
@@ -499,12 +505,12 @@ export default function ActiveScreen({ route }) {
             {running ? (
               <View>
                 <Text>Working...</Text>
-                <TouchableOpacity
+                <Pressable
                   onPress={pauseStopWatch}
                   style={styles.homeButton}
                 >
-                  <Text>Pause</Text>
-                </TouchableOpacity>
+                  <Text style={styles.btnText}>Pause</Text>
+                </Pressable>
               </View>
             ) : (
               <>

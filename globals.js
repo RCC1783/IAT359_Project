@@ -14,17 +14,17 @@ import { useFocusEffect } from '@react-navigation/native';
 export const CustomHeader =({screenName, navigation}) => {
     if(navigation != null){ 
         return(
-            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems:'center', maxHeight: 50, minHeight: 55, minWidth: "100%"}}>
+            <View style={styles.navHeader}>
                 <Pressable onPress={() => navigation.goBack()} style={{margin: 10}}>
-                    <Text style={{paddingVertical: 5, paddingHorizontal: 10, borderRadius: 10, fontSize: 22, backgroundColor: '#5A53BF', color: '#FFF', textAlignVertical:"top" }}>{'<'}</Text>
+                    <Text style={styles.backButton}>{'<'}</Text>
                 </Pressable>
-                <Text style={{color: "#FFFF", backgroundColor: '#5A53BF', paddingLeft: 50, paddingRight: 30, paddingTop: 7, paddingBottom: 10, borderTopStartRadius: 10, borderBottomStartRadius: 30, textAlignVertical: 'top', textAlign:'right', fontSize: 18, fontWeight: 'bold'}}>{screenName}</Text>
+                <Text style={styles.screenName}>{screenName}</Text>
             </View>
         );
     } else{
         return(
-            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems:'center', height: 'fit-content', minHeight: 55}}>
-                <Text style={{color: "#FFFF", backgroundColor: '#5A53BF', borderRadius: 10, paddingLeft: 35, paddingRight: 15, paddingTop: 7, paddingBottom: 10, borderTopStartRadius: 10, borderBottomStartRadius: 30, textAlignVertical: 'top', textAlign:'right', fontSize: 18, fontWeight: 'bold'}}>{screenName}</Text>
+            <View style={[styles.navHeader, {justifyContent:"flex-end"}]}>
+                <Text style={styles.screenName}>{screenName}</Text>
             </View>
         );
     }

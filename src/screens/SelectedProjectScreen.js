@@ -119,7 +119,7 @@ export default function SelectedProjectScreen({route}) {
         <SafeAreaView style={styles.container}>
             <CustomHeader screenName={currentProject != undefined? currentProject.name : "Loading"} navigation={navigation}></CustomHeader>
 
-            <ScrollView>
+            <ScrollView style={{width:"90%", alignSelf: "center"}} showsVerticalScrollIndicator={false}>
                 {roomEditorOpen && (
                     <View style={styles.popupView}>
                         <Text>Walls</Text>
@@ -150,29 +150,35 @@ export default function SelectedProjectScreen({route}) {
 
                 <RoomView projectID={projectID} autoReload={true}/>
 
-                <Button title='Edit Room' onPress={() => setRoomEditorOpen(true)}/>
+                <View style={{flex:1, padding: 20, backgroundColor:"white", borderTopLeftRadius:20, borderTopRightRadius:20}}>
+                    <Pressable style={styles.homeButton} onPress={() => navigation.navigate("active", { projectID: projectID })}>
+                        <Text style={styles.btnText}>Jump Back In!</Text>
+                    </Pressable>
 
-                <Button title="Shop Screen" onPress={() => navigation.navigate("shop", {projectID: projectID})}/>
+                    <Pressable style={styles.homeButton} onPress={() => setRoomEditorOpen(true)}>
+                        <Text style={styles.btnText}>Edit Room</Text>
+                    </Pressable>
 
-                <Button
-                title="Jump Back In!"
-                onPress={() => navigation.navigate("active", { projectID: projectID })}
-                />
+                    <Pressable style={styles.homeButton} onPress={() => navigation.navigate("shop", {projectID: projectID})}>
+                        <Text style={styles.btnText}>Shop</Text>
+                    </Pressable>
+                    
 
-                <Text>Logs</Text>
-                <LogView projectID={projectID}/>
+                    <Text>Logs</Text>
+                    <LogView projectID={projectID}/>
 
-                <Pressable onPress={() => Alert.alert("Are you sure you want to delete this project", "There is no restoring it once deleted", [
-                    {
-                        text: "Delete",
-                        onPress:() => deleteProject(projectID, navigation)
-                    },
-                    {
-                        text: "Nevermind"
-                    }
-                ])}>
-                    <Text style={{color:"red"}}>Delete Project</Text>
-                </Pressable>
+                    <Pressable style={[styles.homeButton, {backgroundColor:"red"}]} onPress={() => Alert.alert("Are you sure you want to delete this project", "There is no restoring it once deleted", [
+                        {
+                            text: "Delete",
+                            onPress:() => deleteProject(projectID, navigation)
+                        },
+                        {
+                            text: "Nevermind"
+                        }
+                    ])}>
+                        <Text style={styles.btnText}>Delete Project</Text>
+                    </Pressable>
+                </View>
             </ScrollView>
         </SafeAreaView>
     );

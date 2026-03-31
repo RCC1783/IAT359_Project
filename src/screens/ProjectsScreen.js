@@ -96,8 +96,9 @@ export default function ProjectsScreen() {
             {createMenuOpen && (
                 <View style={styles.popupView}>
                     <TextInput
-                        placeholder='Name Your Project'
-                        placeholderTextColor = {'white'}
+                        style={styles.input}
+                        placeholder='Name Your Project...'
+                        placeholderTextColor = {'#D95635'}
                         value={newProjectName}
                         onChangeText={setNewProjectName}
                     />
