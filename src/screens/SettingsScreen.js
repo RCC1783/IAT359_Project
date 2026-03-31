@@ -75,6 +75,7 @@ export default function SettingsScreen() {
     const navigation = useNavigation();
     return(
         <SafeAreaView style = {[styles.container, {justifyContent: 'center', alignItems: 'center'}]}>
+            <CustomHeader screenName={"Settings"} navigation={navigation}/>
             <Text style = {styles.headerText}>Settings</Text>
 
             <Text style = {[styles.btnText, { color: 'black' }]}>{ user ? `Logged in as: ${user.email}` : 'Not Loogged in... how...?'}</Text>

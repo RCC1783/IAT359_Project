@@ -6,7 +6,7 @@ import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { useRef, useState, useEffect } from 'react';
 import { CameraView, useCameraPermissions, CameraType } from 'expo-camera';
-import { UserData, saveUserData} from '../../globals';
+import { CustomHeader, UserData, saveUserData} from '../../globals';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { type } from 'firebase/firestore/pipelines';
 
@@ -85,8 +85,8 @@ export default function CameraScreen() {
     }
 
     return(
-        <SafeAreaView style={{flex:1}}>
-            <Text style = {styles.headerText}>~ Camera Test Screen ~</Text>
+        <SafeAreaView style={styles.container}>
+            <CustomHeader screenName={"Camera"} navigation={navigation}/>
             {/* <Button title='toggle photo mode' onPress={() => enablePhotoMode(current => !current)}/> */}
             <View style={{flex: 1, alignItems: 'center'}}>
                 {/* https://stackoverflow.com/questions/42398660/how-to-display-emoji-in-react-app */}
@@ -109,8 +109,8 @@ export default function CameraScreen() {
                         </View>
                     )}
                 </Pressable>
-                <Pressable onPress={() => saveImage()}>
-                    <Text> Save Image? </Text>
+                <Pressable style={[styles.homeButton, {maxWidth: 200}]} onPress={() => saveImage()}>
+                    <Text style={styles.btnText}> Save Image? </Text>
                 </Pressable>
             </View>
         </SafeAreaView>
