@@ -119,7 +119,7 @@ export default function SelectedProjectScreen({route}) {
         <SafeAreaView style={styles.container}>
             <CustomHeader screenName={currentProject != undefined? currentProject.name : "Loading"} navigation={navigation}></CustomHeader>
 
-            <ScrollView style={{width:"90%", alignSelf: "center", overflow:"visible"}} showsVerticalScrollIndicator={false}>
+            <ScrollView style={{width:"90%", alignSelf: "center"}} showsVerticalScrollIndicator={false}>
                 {roomEditorOpen && (
                     <View style={styles.popupView}>
                         <Text>Walls</Text>
