@@ -10,7 +10,7 @@ import { Audio } from "expo-av";
 export const CustomHeader =({screenName, navigation}) => {
     if(navigation != null){ 
         return(
-            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems:'center', maxHeight: 50, minHeight: 55, width: "100%"}}>
+            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems:'center', maxHeight: 50, minHeight: 55, minWidth: "100%"}}>
                 <Pressable onPress={() => navigation.goBack()} style={{margin: 10}}>
                     <Text style={{paddingVertical: 5, paddingHorizontal: 10, borderRadius: 10, fontSize: 22, backgroundColor: '#5A53BF', color: '#FFF', textAlignVertical:"top" }}>{'<'}</Text>
                 </Pressable>
@@ -92,7 +92,7 @@ export function ProjectDetails({projectID, projectName}){
             {logData != null && (
                 <View style={{flex: 1, flexDirection: "row", gap: 20}}>
                     {/* <Text>{logData.date}</Text> */}
-                    <Image style={{width: 100, height: 100}} source={{uri: logData.image}}/>
+                    {logData.image != '' ? (<Image style={{width: 100, height: 100}} source={{uri: logData.image}}/>) : (<View style={{width: 100, height: 100, backgroundColor:"white"}}></View>)}
                     <View>
                         <Text>{projectName}</Text>
                         <Text>{logData.date}</Text>
@@ -161,9 +161,9 @@ export function LogView({projectID}){
                 keyExtractor={item => item.date}
                 renderItem={({item}) => (
                     <View style={{flex: 1, flexDirection: "row", gap: 10, marginRight: 20}}>
-                        <Image 
+                        {item.image != '' ? (<Image 
                             style={{width: 100, height: 100, backgroundColor: "#656565"}}
-                            source={{uri: item.image}}/>
+                            source={{uri: item.image}}/>) : (<View style={{width:100, height:100, backgroundColor:"white"}}/>)}
                         <View>
                             <Text>{item.date}</Text>
                             <Text>{item.text}</Text>

@@ -74,8 +74,6 @@ export default function ActiveScreen({ route }) {
 
   const navigation = useNavigation();
 
-  const [projectLogs, setProjectLogs] = useState([]);
-
   //For starting the stopwatch as soon as the user opens the active screen
   useFocusEffect(
     useCallback(() => {
@@ -453,7 +451,7 @@ export default function ActiveScreen({ route }) {
   updateTimer();
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <CustomHeader screenName={"...Working"} />
       {showModal ? (
         <View
@@ -487,7 +485,7 @@ export default function ActiveScreen({ route }) {
           <Button title="Dismiss" onPress={() => setShowModal(false)} />
         </View>
       ) : (
-        <View>
+        <View >
           {/*Text to display the stopwatch for the user*/}
           <Text>
             {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:
