@@ -9,24 +9,28 @@ import {
   TextInput,
   Pressable,
   Image,
-  FlatList
+  FlatList,
 } from "react-native";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 import { styles } from "../styles";
-import { CommonActions, useNavigation } from "@react-navigation/native";
+import {
+  CommonActions,
+  useNavigation,
+  useFocusEffect,
+} from "@react-navigation/native";
 import { mod } from "firebase/firestore/pipelines";
 
 import SelectedProjectScreen from "./SelectedProjectScreen";
 import { doc, setDoc, collection, getDoc, updateDoc } from "firebase/firestore";
-import { db, auth } from '../firebaseConfig';
+import { db, auth } from "../firebaseConfig";
 
 import { Audio } from "expo-av";
-import { CameraView, useCameraPermissions, CameraType } from 'expo-camera';
+import { CameraView, useCameraPermissions, CameraType } from "expo-camera";
 
 import { CustomHeader, Log, saveUserData, playRecording, LogView } from "../../globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as FileSystem from 'expo-file-system/legacy';
+import * as FileSystem from "expo-file-system/legacy";
 
 //For making the stopwatch I got help from geeksforgeeks.org/react-native/create-a-stop-watch-using-react-native/
 //https://firebase.google.com/docs/firestore/manage-data/add-data For adding data to Firebase
@@ -70,16 +74,28 @@ export default function ActiveScreen({ route }) {
 
   const navigation = useNavigation();
 
+  const [projectLogs, setProjectLogs] = useState([]);
+
+  //For starting the stopwatch as soon as the user opens the active screen
+  useFocusEffect(
+    useCallback(() => {
+      startStopWatch();
+
+      return () => {};
+    }, []),
+  );
+
   // ###    Saving   ###
   function saveLog(newLog, project) {
-    if(project == undefined){
+    if (project == undefined) {
       console.error("Project undefined");
       return undefined;
     }
     //if there's nothing in the text input just return
-    if (newLog.text == '' && logPhoto == '' && recordingURI == "") return project;
+    if (newLog.text == "" && logPhoto == "" && recordingURI == "")
+      return project;
     try {
-      saveLocalLogData(newLog.date)
+      saveLocalLogData(newLog.date);
       setShowModal(false);
     } catch (e) {
       console.error("An error occurred while trying to save", e);
@@ -88,97 +104,126 @@ export default function ActiveScreen({ route }) {
   }
 
   async function saveLocalLogData(date) {
-    console.log("Start save locally")
-    try{
-      let uID = await AsyncStorage.getItem('uid');
+    console.log("Start save locally");
+    try {
+      let uID = await AsyncStorage.getItem("uid");
       let userData = await AsyncStorage.getItem(uID);
-      console.log("userData",userData);
+      console.log("userData", userData);
 
       userData = JSON.parse(userData);
 
-      userData.logs = [...userData.logs, {
-        id: projectID,
-        date: date,
-        text: text,
-        image: logPhoto,
-        recordingURI: recordingURI != '' ? await saveToStorage(recordingURI): ''
-      }];
+      userData.logs = [
+        ...userData.logs,
+        {
+          id: projectID,
+          date: date,
+          text: text,
+          image: logPhoto,
+          recordingURI:
+            recordingURI != "" ? await saveToStorage(recordingURI) : "",
+        },
+      ];
 
       await saveUserData(uID, JSON.stringify(userData));
 
       console.log("Local log data:", userData.logs);
 
-      setLogPhoto('');
-      setRecordingURI('');
-      onChangeText('');
-    } catch (e){
+      setLogPhoto("");
+      setRecordingURI("");
+      onChangeText("");
+    } catch (e) {
       console.error("Failed to save log locally", e);
     }
   }
 
-    // ###    Camera Section    ###
+  // ###    Camera Section    ###
   const cameraRef = useRef(null);
   const [cameraPermission, setCameraPermission] = useCameraPermissions();
 
   const [photoMode, enablePhotoMode] = useState(false);
-  const [logPhoto, setLogPhoto] = useState('');
+  const [logPhoto, setLogPhoto] = useState("");
 
-  function CameraButton(){
-    if(!cameraPermission) {
-      return(
+  function CameraButton() {
+    if (!cameraPermission) {
+      return (
         <View>
           <Text>Camera perms loading</Text>
         </View>
       );
     }
 
-    if(!cameraPermission.granted) {
-      return(
+    if (!cameraPermission.granted) {
+      return (
         <View>
           <Text>You fool! You must allow the camera to be used!</Text>
-          <Button title='Allow Camera' onPress={setCameraPermission}/>
+          <Button title="Allow Camera" onPress={setCameraPermission} />
         </View>
       );
     }
 
     async function takePhoto() {
-      if(cameraRef.current){
-        try{
+      if (cameraRef.current) {
+        try {
           const photo = await cameraRef.current.takePictureAsync({
             base64: true,
-            quality: 0.25
+            quality: 0.25,
           });
 
           const base64Image = `data:image/jpg;base64,${photo.base64}`;
 
           setLogPhoto(base64Image);
           enablePhotoMode(false);
-        } catch (e){
+        } catch (e) {
           console.error(e);
         }
       }
     }
 
-    return(
-      <View style={{flex:1,minHeight:180}}>
-        <View style={{flex: 1, alignItems: 'center'}}>
+    return (
+      <View style={{ flex: 1, minHeight: 180 }}>
+        <View style={{ flex: 1, alignItems: "center" }}>
           {/* https://stackoverflow.com/questions/42398660/how-to-display-emoji-in-react-app */}
-          <Text>{`${String.fromCodePoint('0x2193')} Press to take a photo ${String.fromCodePoint('0x2193')}`}</Text>
-          <Pressable 
-          style={{height: 150, width: 150, borderRadius: 20, overflow: 'hidden', backgroundColor:"#656565"}}
-          onPress={photoMode ? () => takePhoto() : () => enablePhotoMode(current => !current)}>
+          <Text>{`${String.fromCodePoint("0x2193")} Press to take a photo ${String.fromCodePoint("0x2193")}`}</Text>
+          <Pressable
+            style={{
+              height: 150,
+              width: 150,
+              borderRadius: 20,
+              overflow: "hidden",
+              backgroundColor: "#656565",
+            }}
+            onPress={
+              photoMode
+                ? () => takePhoto()
+                : () => enablePhotoMode((current) => !current)
+            }
+          >
             {photoMode && (
-              <CameraView ref={cameraRef} active={photoMode} cameraRatio='1:1' style={{flex:1}}/>
+              <CameraView
+                ref={cameraRef}
+                active={photoMode}
+                cameraRatio="1:1"
+                style={{ flex: 1 }}
+              />
             )}
             {!photoMode && logPhoto == null && (
-              <View style={{flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#828282'}}>
-                <Text style={{width: '60%', textAlign: 'center'}}>Press to enable camera</Text>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#828282",
+                }}
+              >
+                <Text style={{ width: "60%", textAlign: "center" }}>
+                  Press to enable camera
+                </Text>
               </View>
             )}
             {!photoMode && logPhoto != null && (
-              <View style={{flex:1}}>
+              <View style={{ flex: 1 }}>
                 {/* https://stackoverflow.com/questions/29380265/does-react-native-support-base64-encoded-images */}
-                <Image style={{flex:1}} source={{uri: logPhoto}}/>
+                <Image style={{ flex: 1 }} source={{ uri: logPhoto }} />
               </View>
             )}
           </Pressable>
@@ -190,16 +235,16 @@ export default function ActiveScreen({ route }) {
   // ###    Mic Section    ###
   const [isRecording, setIsRecording] = useState(false);
   const [activeRecording, setActiveRecording] = useState(null);
-  const [recordingURI, setRecordingURI] = useState('');
+  const [recordingURI, setRecordingURI] = useState("");
 
   const [micPermission, setMicPermission] = Audio.usePermissions();
 
-  const audioDirectory = FileSystem.documentDirectory + 'audio/';
+  const audioDirectory = FileSystem.documentDirectory + "audio/";
 
-  function RecordButton(){
-    return(
+  function RecordButton() {
+    return (
       <Pressable onPress={() => setIsRecording(!isRecording)}>
-        <Text>{isRecording ? 'Recording' : 'Record'}</Text>
+        <Text>{isRecording ? "Recording" : "Record"}</Text>
       </Pressable>
     );
   }
@@ -209,7 +254,9 @@ export default function ActiveScreen({ route }) {
     const dirExist = await FileSystem.getInfoAsync(audioDirectory);
 
     if (!dirExist.exists) {
-      await FileSystem.makeDirectoryAsync(audioDirectory, { intermediates: true });
+      await FileSystem.makeDirectoryAsync(audioDirectory, {
+        intermediates: true,
+      });
     }
 
     try {
@@ -217,30 +264,30 @@ export default function ActiveScreen({ route }) {
         from: tempUri,
         to: audioDirectory + fileName,
       });
-      console.log('Recording saved to', audioDirectory + fileName);
+      console.log("Recording saved to", audioDirectory + fileName);
       return audioDirectory + fileName;
     } catch (error) {
-      console.error('Failed to save recording', error);
+      console.error("Failed to save recording", error);
       return "";
     }
   }
 
   useEffect(() => {
     async function checkMicPerms() {
-      if (!micPermission.granted){
-        const {granted} = await setMicPermission();
-        if(!granted) {
+      if (!micPermission.granted) {
+        const { granted } = await setMicPermission();
+        if (!granted) {
           Alert.alert("enable mic in settings");
           setIsRecording(false);
           return false;
-        };
+        }
       }
       return true;
     }
 
     async function startRecording() {
-      try{
-        if(checkMicPerms() == false) return;
+      try {
+        if (checkMicPerms() == false) return;
 
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: true,
@@ -248,10 +295,10 @@ export default function ActiveScreen({ route }) {
         });
 
         const { recording } = await Audio.Recording.createAsync(
-          Audio.RecordingOptionsPresets.HIGH_QUALITY
+          Audio.RecordingOptionsPresets.HIGH_QUALITY,
         );
-        setActiveRecording( recording );
-      } catch (e){
+        setActiveRecording(recording);
+      } catch (e) {
         console.error(e);
       }
     }
@@ -264,24 +311,25 @@ export default function ActiveScreen({ route }) {
         const uri = activeRecording.getURI();
 
         toSave.sound.replayAsync();
-        
+
         setRecordingURI(uri);
 
         console.log("Recording URI", uri);
 
         setActiveRecording(null);
       } catch (e) {
-        console.error("Error in stop recording func:", e)
+        console.error("Error in stop recording func:", e);
       }
     }
 
-    if(!isRecording && activeRecording == null) return;
-    if(!isRecording && activeRecording != null) {stopRecording(); return;} 
-    
-    startRecording();
-    
-  }, [isRecording]);
+    if (!isRecording && activeRecording == null) return;
+    if (!isRecording && activeRecording != null) {
+      stopRecording();
+      return;
+    }
 
+    startRecording();
+  }, [isRecording]);
 
   // ###    End Mic Section   ###
 
@@ -300,7 +348,7 @@ export default function ActiveScreen({ route }) {
         console.error("failed to fetch project", e);
       }
     };
-    if(showModal == false) fetchProject();
+    if (showModal == false) fetchProject();
   }, [showModal]);
 
   useEffect(() => {
@@ -314,7 +362,8 @@ export default function ActiveScreen({ route }) {
     } else {
       console.log(project);
       project.minutes = project.minutes + minutesToAdd - workedMinutes;
-      project.totalMinutes = project.totalMinutes + minutesToAdd - workedMinutes;
+      project.totalMinutes =
+        project.totalMinutes + minutesToAdd - workedMinutes;
 
       setWorkedMinutes(minutesToAdd);
       // console.log(`minutes to add: ${minutesToAdd}, worked min: ${workedMinutes}`);
@@ -405,23 +454,35 @@ export default function ActiveScreen({ route }) {
 
   return (
     <SafeAreaView>
-      <CustomHeader screenName={"...Working"}/>
+      <CustomHeader screenName={"...Working"} />
       {showModal ? (
-        <View style={{flex:1, flexDirection: "column", gap: 20, padding: 50}}>
+        <View
+          style={{ flex: 1, flexDirection: "column", gap: 20, padding: 50 }}
+        >
           <Text>Write your Notes here</Text>
-          <CameraButton/>
-          <RecordButton/>
+          <CameraButton />
+          <RecordButton />
           <TextInput
             placeholder="Today I..."
             value={text}
             onChangeText={onChangeText}
           />
           {isRecording && photoMode && (
-            <Text>You must stop recording or finish taking a photo before you can save.</Text>
+            <Text>
+              You must stop recording or finish taking a photo before you can
+              save.
+            </Text>
           )}
           <Button
             title={"Save"}
-            onPress={isRecording ? null : () => setCurrentProj(saveLog(new Log(new Date(), text), currentProject))}
+            onPress={
+              isRecording
+                ? null
+                : () =>
+                    setCurrentProj(
+                      saveLog(new Log(new Date(), text), currentProject),
+                    )
+            }
           />
           <Button title="Dismiss" onPress={() => setShowModal(false)} />
         </View>
@@ -446,12 +507,6 @@ export default function ActiveScreen({ route }) {
             </View>
           ) : (
             <>
-              <TouchableOpacity
-                onPress={startStopWatch}
-                style={styles.homeButton}
-              >
-                <Text>Start</Text>
-              </TouchableOpacity>
               <TouchableOpacity
                 onPress={endStopWatch}
                 style={styles.homeButton}
