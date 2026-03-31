@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    // overflow: "scroll",
+    overflow: "visible",
     backgroundColor: '#EDDEFF',
   },
 
