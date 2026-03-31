@@ -1,10 +1,14 @@
 import { StyleSheet, Text, View, SafeAreaView, Button, Image, TouchableOpacity, Pressable, FlatList, Alert } from 'react-native';
+import * as React from 'react';
 import { styles } from "./src/styles";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {db, auth} from './src/firebaseConfig';
+import { doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
 import * as FileSystem from 'expo-file-system/legacy';
 import { Audio } from "expo-av";
+import { useFocusEffect } from '@react-navigation/native';
 
 
 export const CustomHeader =({screenName, navigation}) => {
@@ -104,25 +108,35 @@ export function ProjectDetails({projectID, projectName}){
     );
 }
 
-export function RoomView(){
+export function RoomView({projectID, autoReload = false}){
+    if(projectID == null) return;
     const [currentProject, setCurrentProj] = useState();
-    useEffect(() => {
-        const fetchProject = async() => {
-            try{
-                const fbAuth = auth;
-                const user = fbAuth.currentUser;
+    
+    const fetchProject = async() => {
+        try{
+            const fbAuth = auth;
+            const user = fbAuth.currentUser;
 
-                const projectRef = doc(db, user.email, projectID);
-                const project = await getDoc(projectRef);
-                
-                setCurrentProj(project.data());
-                console.log("current proj:", project);
-            } catch (e){
-                console.error("Failed to fetch project", e);
-            }
+            const projectRef = doc(db, user.email, projectID);
+            const project = await getDoc(projectRef);
+            
+            setCurrentProj(project.data());
+            // console.log("Updated room view");
+        } catch (e){
+            console.error("Failed to fetch project", e);
         }
+    }
+
+    // https://reactnavigation.org/docs/function-after-focusing-screen/#triggering-an-action-with-a-focus-event-listener
+    useFocusEffect(
+        React.useCallback(() => {
         fetchProject();
-    }, [updator]);
+        const interval = setInterval(() => {
+            if(autoReload) fetchProject();
+        }, 6000);
+        return () => clearInterval(interval);
+        }, [])
+    );
 
     return(
         <View style={styles.roomContainer}>
@@ -168,25 +182,37 @@ async function deleteLog(log){
     }
 }
 
-export function LogView({projectID}){
+export function LogView({projectID, autoReload = false}){
     const [projectLogs, setProjectLogs] = useState([]);
-    useEffect(() => {
-        const fetchLogs = async () =>  {
-            try{
-                const uid = await AsyncStorage.getItem('uid');
-                let userData = await AsyncStorage.getItem(uid);
-                userData = JSON.parse(userData);
 
-                const logs = userData.logs.filter((log) => {
-                    return log.id === projectID;
-                })
-                setProjectLogs(logs);
-            }catch (e){
-                console.error("failed getting project logs:", e);
-            }
+    const fetchLogs = async () =>  {
+        try{
+            const uid = await AsyncStorage.getItem('uid');
+            let userData = await AsyncStorage.getItem(uid);
+            userData = JSON.parse(userData);
+
+            const logs = userData.logs.filter((log) => {
+                return log.id === projectID;
+            })
+            setProjectLogs(logs);
+            // console.log("Fetched logs");
+        }catch (e){
+            console.error("failed getting project logs:", e);
         }
+    }
+
+    // https://reactnavigation.org/docs/function-after-focusing-screen/#triggering-an-action-with-a-focus-event-listener
+    useFocusEffect(
+        React.useCallback(() => {
         fetchLogs();
-    },[])
+        const interval = setInterval(() => {
+            if(autoReload) fetchLogs();
+        }, 1000);
+        return () => clearInterval(interval);
+        }, [])
+    );
+
+    // setInterval(fetchLogs, 6100);
     return(
         <View style={{flex:1, minHeight: 100, margin: 20}}>
             <FlatList

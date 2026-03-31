@@ -6,7 +6,7 @@ import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { db, auth } from '../firebaseConfig';
 import { FlatList } from 'react-native';
-import { CustomHeader, LogView, saveUserData } from '../../globals';
+import { CustomHeader, LogView, RoomView, saveUserData } from '../../globals';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system/legacy';
 
@@ -74,47 +74,46 @@ async function deleteRecording(recording) {
     }
 }
 
-function editRoomSetup(type, item, project, projectID){
-    switch (type){
-        case "wallpaper": {
-            project.roomSetup.wallpaper = item;
-        }
-        case "flooring": {
-            project.roomSetup.flooring = item;
-        }
-    }
-
-    updateProj(project, projectID);
-
-    return project;
-}
-
 export default function SelectedProjectScreen({route}) {
     const {projectID} = route.params;
     const navigation = useNavigation();
   
     const [currentProject, setCurrentProj] = useState();
-    const [updator, updateProj] = useState();
 
     const [roomEditorOpen, setRoomEditorOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchProject = async() => {
-            try{
-                const fbAuth = auth;
-                const user = fbAuth.currentUser;
+    const fetchProject = async() => {
+        try{
+            const fbAuth = auth;
+            const user = fbAuth.currentUser;
 
-                const projectRef = doc(db, user.email, projectID);
-                const project = await getDoc(projectRef);
-                
-                setCurrentProj(project.data());
-                console.log("current proj:", project);
-            } catch (e){
-                console.error("Failed to fetch project", e);
+            const projectRef = doc(db, user.email, projectID);
+            const project = await getDoc(projectRef);
+            
+            setCurrentProj(project.data());
+        } catch (e){
+            console.error("Failed to fetch project", e);
+        }
+    }
+
+    function editRoomSetup(type, item){
+        switch (type){
+            case "wallpaper": {
+                currentProject.roomSetup.wallpaper = item;
+            }
+            case "flooring": {
+                currentProject.roomSetup.flooring = item;
             }
         }
+
+        updateProj(currentProject, projectID);
+
+        // fetchProject();
+    }
+
+    useEffect(() => {
         fetchProject();
-    }, [updator]);
+    }, [roomEditorOpen]);
 
     return(
         <SafeAreaView style={styles.container}>
@@ -128,7 +127,7 @@ export default function SelectedProjectScreen({route}) {
                             data={currentProject != undefined ? currentProject.ownedItems.filter((item) => {return item.type == "wallpaper";}) : null}
                             keyExtractor={item => item.id}
                             renderItem={({item}) => (
-                                <TouchableOpacity onPress={() => updateProj(editRoomSetup("wallpaper", item, currentProject, projectID))}>
+                                <TouchableOpacity onPress={() => editRoomSetup("wallpaper", item)}>
                                     <Text>{item.name}</Text>
                                 </TouchableOpacity>
                             )}
@@ -139,7 +138,7 @@ export default function SelectedProjectScreen({route}) {
                             data={currentProject != undefined ? currentProject.ownedItems.filter((item) => {return item.type == "flooring";}) : null}
                             keyExtractor={item => item.id}
                             renderItem={({item}) => (
-                                <TouchableOpacity onPress={() => updateProj(editRoomSetup("flooring", item, currentProject, projectID))}>
+                                <TouchableOpacity onPress={() => editRoomSetup("flooring", item)}>
                                     <Text>{item.name}</Text>
                                 </TouchableOpacity>
                             )}
@@ -149,17 +148,7 @@ export default function SelectedProjectScreen({route}) {
                     </View>
                 )}
 
-                {/* May put this into its own function so it can be reused (once I figure out how...) */}
-                <View style={styles.roomContainer}>
-                    <Text>{currentProject != undefined ? currentProject.roomSetup.flooring.imgSrc : "Loading"}</Text>
-                    <Image 
-                        style={styles.roomImage}
-                        source={currentProject != undefined ? currentProject.roomSetup.wallpaper.imgSrc : null}/>
-                    <Image 
-                        style={styles.roomImage}
-                        source={currentProject != undefined ? currentProject.roomSetup.flooring.imgSrc : null}/>
-                    
-                </View>
+                <RoomView projectID={projectID} autoReload={true}/>
 
                 <Button title='Edit Room' onPress={() => setRoomEditorOpen(true)}/>
 

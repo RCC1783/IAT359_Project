@@ -523,7 +523,7 @@ export default function ActiveScreen({ route }) {
           )}
 
           <Text>Logs</Text>
-          <LogView projectID={projectID}/>
+          <LogView projectID={projectID} autoReload={true}/>
         </View>
       )}
     </SafeAreaView>
