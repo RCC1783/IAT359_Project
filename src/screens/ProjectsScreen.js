@@ -40,16 +40,16 @@ export default function ProjectsScreen() {
         const fetchProjects = async() => {
             const querySnapshot = await getDocs(collection(db, user.email));
 
-        let allDocs = [];
-        querySnapshot.forEach((doc) => {
-            allDocs.push({
-            ...doc.data(),
-            id: doc.id,
+            let allDocs = [];
+            querySnapshot.forEach((doc) => {
+                allDocs.push({
+                ...doc.data(),
+                id: doc.id,
+                });
             });
-        });
 
-        setProjectList(allDocs);
-    };
+            setProjectList(allDocs);
+        };
 
         fetchProjects();
 
