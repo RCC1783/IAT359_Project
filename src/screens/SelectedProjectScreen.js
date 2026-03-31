@@ -150,7 +150,7 @@ export default function SelectedProjectScreen({route}) {
 
                 <RoomView projectID={projectID} autoReload={true}/>
 
-                <View style={{flex:1, padding: 20, backgroundColor:"white", borderTopLeftRadius:20, borderTopRightRadius:20}}>
+                <View style={{flex:1, padding: 20, backgroundColor:"white", borderRadius: 20}}>
                     <Pressable style={styles.homeButton} onPress={() => navigation.navigate("active", { projectID: projectID })}>
                         <Text style={styles.btnText}>Jump Back In!</Text>
                     </Pressable>
