@@ -10,6 +10,7 @@ import {
   Pressable,
   Image,
   FlatList,
+  ScrollView,
 } from "react-native";
 import { useState, useRef, useEffect, useCallback } from "react";
 
@@ -28,7 +29,7 @@ import { db, auth } from "../firebaseConfig";
 import { Audio } from "expo-av";
 import { CameraView, useCameraPermissions, CameraType } from "expo-camera";
 
-import { CustomHeader, Log, saveUserData, playRecording, LogView } from "../../globals";
+import { CustomHeader, Log, saveUserData, playRecording, LogView, RoomView } from "../../globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system/legacy";
 
@@ -453,79 +454,82 @@ export default function ActiveScreen({ route }) {
   return (
     <SafeAreaView style={styles.container}>
       <CustomHeader screenName={"...Working"} />
-      {showModal ? (
-        <View
-          style={{ flex: 1, flexDirection: "column", gap: 20, padding: 50 }}
-        >
-          <Text>Write your Notes here</Text>
-          <CameraButton />
-          <RecordButton />
-          <TextInput
-            placeholder="Today I..."
-            value={text}
-            onChangeText={onChangeText}
-          />
-          {isRecording && photoMode && (
+      <ScrollView>
+        <RoomView projectID={projectID}/>
+        {showModal ? (
+          <View
+            style={{ flex: 1, flexDirection: "column", gap: 20, padding: 50 }}
+          >
+            <Text>Write your Notes here</Text>
+            <CameraButton />
+            <RecordButton />
+            <TextInput
+              placeholder="Today I..."
+              value={text}
+              onChangeText={onChangeText}
+            />
+            {isRecording && photoMode && (
+              <Text>
+                You must stop recording or finish taking a photo before you can
+                save.
+              </Text>
+            )}
+            <Button
+              title={"Save"}
+              onPress={
+                isRecording
+                  ? null
+                  : () =>
+                      setCurrentProj(
+                        saveLog(new Log(new Date(), text), currentProject),
+                      )
+              }
+            />
+            <Button title="Dismiss" onPress={() => setShowModal(false)} />
+          </View>
+        ) : (
+          <View >
+            {/*Text to display the stopwatch for the user*/}
             <Text>
-              You must stop recording or finish taking a photo before you can
-              save.
+              {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:
+              {time % 60 < 10 ? `0${time % 60}` : time % 60}
             </Text>
-          )}
-          <Button
-            title={"Save"}
-            onPress={
-              isRecording
-                ? null
-                : () =>
-                    setCurrentProj(
-                      saveLog(new Log(new Date(), text), currentProject),
-                    )
-            }
-          />
-          <Button title="Dismiss" onPress={() => setShowModal(false)} />
-        </View>
-      ) : (
-        <View >
-          {/*Text to display the stopwatch for the user*/}
-          <Text>
-            {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:
-            {time % 60 < 10 ? `0${time % 60}` : time % 60}
-          </Text>
 
-          {/*check if the stopwatch is running*/}
-          {running ? (
-            <View>
-              <Text>Working...</Text>
+            {/*check if the stopwatch is running*/}
+            {running ? (
+              <View>
+                <Text>Working...</Text>
+                <TouchableOpacity
+                  onPress={pauseStopWatch}
+                  style={styles.homeButton}
+                >
+                  <Text>Pause</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <>
+                <TouchableOpacity
+                  onPress={endStopWatch}
+                  style={styles.homeButton}
+                >
+                  <Text>End Session</Text>
+                </TouchableOpacity>
+              </>
+            )}
+            {!running && (
               <TouchableOpacity
-                onPress={pauseStopWatch}
+                onPress={resumeStopWatch}
                 style={styles.homeButton}
               >
-                <Text>Pause</Text>
+                <Text>Resume</Text>
               </TouchableOpacity>
-            </View>
-          ) : (
-            <>
-              <TouchableOpacity
-                onPress={endStopWatch}
-                style={styles.homeButton}
-              >
-                <Text>End Session</Text>
-              </TouchableOpacity>
-            </>
-          )}
-          {!running && (
-            <TouchableOpacity
-              onPress={resumeStopWatch}
-              style={styles.homeButton}
-            >
-              <Text>Resume</Text>
-            </TouchableOpacity>
-          )}
+            )}
 
-          <Text>Logs</Text>
-          <LogView projectID={projectID} autoReload={true}/>
-        </View>
-      )}
+            <Text>Logs</Text>
+            <LogView projectID={projectID} autoReload={true}/>
+          </View>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }
