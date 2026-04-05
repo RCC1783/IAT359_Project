@@ -79,7 +79,7 @@ export default function WelcomeScreen() {
     }, []);
 
     return(
-        <SafeAreaView style={{flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#EDDEFF'}}>
+        <SafeAreaView style={[ styles.container, {flex: 1, flexDirection: 'column', justifyContent: 'center'}]}>
             <Text style = {styles.headerText}>Welcome!</Text>
 
             <Pressable onPress={() => checkUser()}>

@@ -71,7 +71,7 @@ export default function LoginScreen({navigation}) {
     }
  
     return (
-        <SafeAreaView style = {[styles.container, {backgroundColor: '#EDDEFF'}]}>
+        <SafeAreaView style = {[styles.container, {justifyContent: 'center'}]}>
             <Text style = {styles.headerText}>Log In</Text>
 
             <TextInput

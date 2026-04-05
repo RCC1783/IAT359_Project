@@ -88,8 +88,8 @@ export function ProjectDetails({projectID, projectName}){
                     {/* <Text>{logData.date}</Text> */}
                     <View style={{width: 100, height: 100, backgroundColor: "white"}}/>
                     <View>
-                        <Text>{projectName}</Text>
-                        <Text>No recent logs saved on device</Text>
+                        <Text style = {styles.projHeader}>{projectName}</Text>
+                        <Text style = {styles.projNote}>No recent logs saved on device</Text>
                     </View>
                 </View>
             )}
@@ -97,10 +97,12 @@ export function ProjectDetails({projectID, projectName}){
                 <View style={{flex: 1, flexDirection: "row", gap: 20}}>
                     {/* <Text>{logData.date}</Text> */}
                     {logData.image != '' ? (<Image style={{width: 100, height: 100}} source={{uri: logData.image}}/>) : (<View style={{width: 100, height: 100, backgroundColor:"white"}}></View>)}
-                    <View>
-                        <Text>{projectName}</Text>
-                        <Text>{logData.date}</Text>
-                        <Text>{logData.text}</Text>
+                    <View style = {{marginBottom: 10}}>
+                        <Text style = {styles.projHeader}>{projectName}</Text>
+                        <View style = {{backgroundColor: '#5A53BF', padding: 5, borderRadius: 10}}>
+                            <Text style = {[styles.projSubtitle, {marginBottom: 5}]}>{logData.date}</Text>
+                            <Text style = {styles.projNote}>{logData.text}</Text>
+                        </View>
                     </View>
                 </View>
             )}

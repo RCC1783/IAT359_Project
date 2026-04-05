@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, TouchableOpacity, FlatList} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, TouchableOpacity, FlatList, Image} from 'react-native';
 import {
   and,
   collection,
@@ -47,12 +47,13 @@ async function updateProj(project, projectID) {
 
 function purchaseItem(item, projectID, project) {
     if(item.owned) return;
-    item.owned = true;
 
     if(project.minutes < item.cost){
         console.log("POOR!");
         return;
     }
+
+    item.owned = true;
     project.minutes = project.minutes - item.cost;
     project.ownedItems = [...project.ownedItems, item.item];
     console.log("purchased", item.item.name, "- You have $", project.minutes, " remaining");
@@ -71,6 +72,11 @@ export default function ShopScreen({route}) {
     const [currentProject, setCurrentProj] = useState();
     const [updator, updateProj] = useState();
 
+    const keeperIdle = require('../images/shop/images.jpg');
+    const keeperAnnoyed = require('../images/shop/download.jpg');
+    const [keeperTxt, setKeeperTxt] = useState("Hey! Always great to see ya. Here's what I got for you to spruce up your room.");
+    const [keeperSprite, setKeeperSprite] = useState(keeperIdle);
+    
     useEffect(() => {
         const fetchProject = async() => {
             try{
@@ -101,11 +107,18 @@ export default function ShopScreen({route}) {
     }, [updator]);
 
     return(
-        <SafeAreaView>
+        <SafeAreaView style = {styles.container}>
             <CustomHeader screenName={"Shop"} navigation={navigation}></CustomHeader>
             <View style={styles.shopHeader}>
                 {/* <Text>~ Shop ~</Text> */}
-                <Text style={styles.minutesDisplay}>minutes: {currentProject != undefined ? currentProject.minutes : "loading"}</Text>
+                <Text style={styles.minutesDisplay}>Minutes: ${currentProject != undefined ? currentProject.minutes : "loading"}</Text>
+   
+                {/* Shopkeeper Textbox */}
+                <Text style={styles.keeperText}>{keeperTxt}</Text>
+                <TouchableOpacity style = {{alignSelf: 'center'}} onPress = {() => {setKeeperTxt("Hey! Quit pokin' me, and just buy somethin'!"); setKeeperSprite(keeperAnnoyed);}}>
+                    <Image style={{marginTop: 5, width: 125, height: 125}} source={keeperSprite}/>
+                </TouchableOpacity>
+
             </View>
             {/* <TouchableOpacity onPress={printAll}>
                 <Text>Console all</Text>
@@ -118,15 +131,36 @@ export default function ShopScreen({route}) {
                 renderItem={({item}) => (
                     <View style={styles.shopItem}>
                         <View>
-                            <Text>{item.item.name}</Text>
-                            <Text>${item.cost}</Text>
+                            <Text style = {[styles.shopItemTxt, {fontWeight: 'bold'}]}>{item.item.name}</Text>
+                            <Text style = {[styles.shopItemTxt]}>${item.cost}</Text>
                         </View>
-                        <TouchableOpacity onPress={() => updateProj(purchaseItem(item, projectID, currentProject))}>
-                            <Text>{item.owned ? "Owned" : "Purchase?"}</Text>
+                        <TouchableOpacity style = {{backgroundColor: '#5A53BF', padding: 10, borderRadius: 15}}
+                        onPress={() => {
+                            const wasOwned = item.owned;
+
+                            updateProj(purchaseItem(item, projectID, currentProject));
+                            
+                            if (currentProject.minutes < item.cost && !wasOwned){
+                                setKeeperTxt("Sorry pal, looks like you'll have to grind for just a bit longer. Best of luck!");
+                            } else if (wasOwned) {
+                                setKeeperTxt("Always appreciate more coin, but looks like you already got that one.");
+                            } else {
+                                setKeeperTxt("Thanks! Hope that keeps ya goin' for just a bit longer.")
+                            }
+                        }}>
+                            <Text style = {styles.shopItemTxt}>{item.owned ? "Owned" : "Purchase?"}</Text>
                         </TouchableOpacity>
                     </View>
                 )}
             />
+
+            {/* CLOUDS */}
+            <View style = {[styles.cloud, {top: -50, right: -50}]}></View>
+            <View style = {[styles.cloud, {top: -120, right: 80}]}></View>
+
+            <View style = {[styles.cloud, {bottom: -50, left: -100, width: 200, height: 175, borderRadius: 175, zIndex: 1, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {bottom: -100, left: -150, width: 300, height: 300, borderRadius: 150}]}></View>
+            <View style = {[styles.cloud, {bottom: -120, left: 50, width: 250, height: 250, borderRadius: 125}]}></View>
         </SafeAreaView>
     );
 }

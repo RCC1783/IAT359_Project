@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "visible",
     backgroundColor: '#EDDEFF',
+    zIndex: -1
   },
 
   // Navigation Header
@@ -45,6 +46,24 @@ export const styles = StyleSheet.create({
     textAlignVertical:"top" 
   },
 
+  projHeader: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  projSubtitle: {
+    fontSize: 14,
+    color: 'white',
+    fontStyle: 'italic',
+    fontWeight: '300',
+  },
+  projNote: {
+    color: 'white',
+    fontSize: 16,
+
+  },
+
   shopHeader: {
     flex: 1,
     // justifyContent: "space-between",
@@ -52,7 +71,9 @@ export const styles = StyleSheet.create({
     margin: 5,
     padding: 5,
     minHeight: '30%',
-    backgroundColor: '#656565'
+    minWidth: '90%',
+    backgroundColor: '#B6BCFB',
+    borderRadius: 15,
   },
   minutesDisplay: {
     color: 'white',
@@ -60,6 +81,16 @@ export const styles = StyleSheet.create({
     backgroundColor: 'black',
     padding: 5,
     borderRadius: 10,
+    marginBottom: 10,
+  },
+  keeperText: {
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 10,
+
+    maxWidth: '80%',
+    alignSelf: 'center',
+    marginBottom: 5,
   },
   shopList: {
     height: '70%',
@@ -70,10 +101,16 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#b5b5b5',
+    backgroundColor: '#D95635',
     margin: 5,
-    padding: 10,
-    borderRadius: 15
+    padding: 15,
+    borderRadius: 15,
+
+    minWidth: '90%',
+  },
+  shopItemTxt: {
+    color: 'white',
+    fontSize: 14,
   },
 
   roomContainer:{
@@ -191,7 +228,7 @@ export const styles = StyleSheet.create({
     borderRadius: 100,
     width: 200,
     height: 200,
-    zIndex:-2
+    zIndex: -1
   },
 
   smallHome: {
