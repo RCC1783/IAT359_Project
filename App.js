@@ -19,6 +19,7 @@ import ActiveScreen from "./src/screens/ActiveScreen";
 import { ModalScreen } from "./src/screens/ActiveScreen";
 import CameraScreen from './src/screens/CameraScreen';
 import MicTestScreen from './src/screens/MicTestScreen';
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,36 +34,38 @@ export default function App() {
   }, []);
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="welcome"
-        screenOptions={{headerShown: false, gestureEnabled: true}}
-      >
-        <Stack.Screen name="welcome" component={WelcomeScreen} />
-        <Stack.Screen name="login" component={LoginScreen} />
-        <Stack.Screen name="home" component={HomeScreen} />
-        <Stack.Screen name="settings" component={SettingsScreen} />
-        <Stack.Screen name="allImages" component={AllImagesScreen} />
-        <Stack.Screen name="projects" component={ProjectsScreen} />
-        <Stack.Screen
-          name="selectedProject"
-          component={SelectedProjectScreen}
-        />
-        <Stack.Screen name="shop" component={ShopScreen} />
-        <Stack.Screen name="projectImages" component={ProjectImagesScreen} />
-        <Stack.Screen name="active" component={ActiveScreen} />
-        {/* <Stack.Group navigationKey="ActiveS">
-          <Stack.Screen name="active" component={ActiveScreen} />
-        </Stack.Group>
-        <Stack.Group
-          navigationKey="Modal"
-          screenOptions={{ presentation: "modal" }}
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="welcome"
+          screenOptions={{headerShown: false, gestureEnabled: true}}
         >
-          <Stack.Screen name="MyModal" component={ModalScreen} />
-        </Stack.Group> */}
+          <Stack.Screen name="welcome" component={WelcomeScreen} />
+          <Stack.Screen name="login" component={LoginScreen} />
+          <Stack.Screen name="home" component={HomeScreen} />
+          <Stack.Screen name="settings" component={SettingsScreen} />
+          <Stack.Screen name="allImages" component={AllImagesScreen} />
+          <Stack.Screen name="projects" component={ProjectsScreen} />
+          <Stack.Screen
+            name="selectedProject"
+            component={SelectedProjectScreen}
+          />
+          <Stack.Screen name="shop" component={ShopScreen} />
+          <Stack.Screen name="projectImages" component={ProjectImagesScreen} />
+          <Stack.Screen name="active" component={ActiveScreen} />
+          {/* <Stack.Group navigationKey="ActiveS">
+            <Stack.Screen name="active" component={ActiveScreen} />
+          </Stack.Group>
+          <Stack.Group
+            navigationKey="Modal"
+            screenOptions={{ presentation: "modal" }}
+          >
+            <Stack.Screen name="MyModal" component={ModalScreen} />
+          </Stack.Group> */}
 
-        <Stack.Screen name='Camera' component={CameraScreen} />
-        <Stack.Screen name = 'micTest' component={MicTestScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+          <Stack.Screen name='Camera' component={CameraScreen} />
+          <Stack.Screen name = 'micTest' component={MicTestScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }

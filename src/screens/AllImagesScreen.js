@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, FlatList, Image, Pressable, TextInput, Alert, Modal } from 'react-native';
+import { StyleSheet, Text, View, Button, FlatList, Image, Pressable, TextInput, Alert, Modal } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';

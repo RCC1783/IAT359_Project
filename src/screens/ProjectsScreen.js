@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, FlatList, TouchableOpacity, TextInput } from 'react-native';
-
+import { StyleSheet, Text, View, Button, FlatList, TouchableOpacity, TextInput } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { collection, getDocs, setDoc, doc } from 'firebase/firestore';

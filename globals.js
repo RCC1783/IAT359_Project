@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, Image, TouchableOpacity, Pressable, FlatList, Alert } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, Pressable, FlatList, Alert } from 'react-native';
 import * as React from 'react';
 import { styles } from "./src/styles";
 import AsyncStorage from '@react-native-async-storage/async-storage';

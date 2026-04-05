@@ -2,7 +2,6 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
   Button,
   TouchableOpacity,
   Alert,
@@ -13,7 +12,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useState, useRef, useEffect, useCallback } from "react";
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from "../styles";
 import {
   CommonActions,

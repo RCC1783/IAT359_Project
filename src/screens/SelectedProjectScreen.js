@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, Image, TouchableOpacity, ScrollView, Pressable, Alert } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, ScrollView, Pressable, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 import { and, collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
 

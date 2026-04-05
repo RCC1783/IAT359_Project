@@ -1,8 +1,15 @@
 import { StyleSheet } from 'react-native';
 import { shopList } from './shopItems';
 
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+// const insets = useSafeAreaInsets();
 export const styles = StyleSheet.create({
   container: {
+    // paddingTop: insets.top,
+    // paddingBottom: insets.bottom,
+    // paddingLeft: insets.left,
+    // paddingRight: insets.right,
     flex: 1,
     flexDirection: "column",
     justifyContent: "flex-start",

@@ -1,7 +1,7 @@
 // Referenced official documentation: https://docs.expo.dev/versions/latest/sdk/camera/#cameraview
 
-import { StyleSheet, Text, View, SafeAreaView, Button, Pressable, Image, Alert } from 'react-native';
-
+import { StyleSheet, Text, View, Button, Pressable, Image, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { useRef, useState, useEffect } from 'react';
