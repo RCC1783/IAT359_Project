@@ -36,12 +36,13 @@ export const styles = StyleSheet.create({
     paddingRight: 30,
     paddingTop: 7,
     paddingBottom: 10,
-    borderTopStartRadius: 10,
-    borderBottomStartRadius: 30,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 30,
     textAlignVertical: 'top',
     textAlign:'right',
     fontSize: 18,
     fontWeight: 'bold',
+    overflow: 'hidden',
   },
   backButton: {
     paddingVertical: 5,
@@ -50,7 +51,8 @@ export const styles = StyleSheet.create({
     fontSize: 22,
     backgroundColor: '#5A53BF',
     color: '#FFF',
-    textAlignVertical:"top" 
+    textAlignVertical:"top" ,
+    overflow: 'hidden'
   },
 
   projHeader: {
