@@ -90,13 +90,16 @@ export default function ActiveScreen({ route }) {
     const [city, setCity] = useState();
     const [data, setData] = useState();
 
-    await axios.get(url).then((res) => {
-      console.log(res.data);
-      setData(res.data).catch((err) => {
+    axios
+      .get(url)
+      .then((res) => {
+        console.log(res.data);
+        setData(res.data);
+      })
+      .catch((err) => {
         console.log("Error ", err.response.data.message);
         alert(err.response.data.message);
       });
-    });
   }
 
   // ###    Saving   ###
@@ -556,6 +559,7 @@ export default function ActiveScreen({ route }) {
               >
                 <Text>End Session</Text>
               </TouchableOpacity>
+              <Button title="testing weather data" onPress={fetchOpenWeather} />
             </>
           )}
           {!running && (
