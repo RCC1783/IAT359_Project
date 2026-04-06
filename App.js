@@ -51,7 +51,7 @@ export default function App() {
           />
           <Stack.Screen name="shop" component={ShopScreen} />
           <Stack.Screen name="projectImages" component={ProjectImagesScreen} />
-          <Stack.Screen name="active" component={ActiveScreen} />
+          <Stack.Screen name="active" component={ActiveScreen} options={{gestureEnabled:false}} />
           {/* <Stack.Group navigationKey="ActiveS">
             <Stack.Screen name="active" component={ActiveScreen} />
           </Stack.Group>

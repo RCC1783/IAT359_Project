@@ -153,7 +153,7 @@ export default function SelectedProjectScreen({route}) {
 
                 <View style={{flex:1, padding: 20, backgroundColor:"white", borderRadius: 20}}>
                     <Pressable style={styles.homeButton} onPress={() => navigation.navigate("active", { projectID: projectID })}>
-                        <Text style={styles.btnText}>Jump Back In!</Text>
+                        <Text style={styles.btnText}>Start Working</Text>
                     </Pressable>
 
                     <Pressable style={styles.homeButton} onPress={() => setRoomEditorOpen(true)}>
