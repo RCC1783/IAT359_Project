@@ -123,29 +123,34 @@ export default function SelectedProjectScreen({route}) {
             <ScrollView style={{width:"90%", alignSelf: "center"}} showsVerticalScrollIndicator={false}>
                 {roomEditorOpen && (
                     <View style={styles.popupView}>
-                        <Text>Walls</Text>
+                        <Text style={{fontSize:22, color:"#5A53BF", paddingHorizontal: 40, paddingVertical: 10, borderRadius: 20, backgroundColor: "white", marginTop:10}}>Your Items</Text>
+                        <Text style={{fontSize:20, color:"white", paddingHorizontal: 20, paddingVertical: 5, borderRadius: 10}}>- Walls -</Text>
                         <FlatList 
                             data={currentProject != undefined ? currentProject.ownedItems.filter((item) => {return item.type == "wallpaper";}) : null}
                             keyExtractor={item => item.id}
                             renderItem={({item}) => (
-                                <TouchableOpacity onPress={() => editRoomSetup("wallpaper", item)}>
+                                <Pressable onPress={() => editRoomSetup("wallpaper", item)}>
                                     <Text>{item.name}</Text>
-                                </TouchableOpacity>
+                                </Pressable>
                             )}
                             horizontal={true}
                         />
-                        <Text>Floors</Text>
+                        <Text style={{fontSize:20, color:"white", paddingHorizontal: 20, paddingVertical: 5, borderRadius: 10}}>- Floors -</Text>
                         <FlatList 
                             data={currentProject != undefined ? currentProject.ownedItems.filter((item) => {return item.type == "flooring";}) : null}
                             keyExtractor={item => item.id}
                             renderItem={({item}) => (
-                                <TouchableOpacity onPress={() => editRoomSetup("flooring", item)}>
+                                <Pressable onPress={() => editRoomSetup("flooring", item)}>
                                     <Text>{item.name}</Text>
-                                </TouchableOpacity>
+                                </Pressable>
                             )}
                             horizontal={true}
                         />
-                        <Button title='Close' onPress={() => setRoomEditorOpen(false)}/>
+                        
+                        <Pressable style={[styles.homeButton, {backgroundColor:"#5A53BF"}]} onPress={() => setRoomEditorOpen(false)}>
+                            <Text style={[styles.btnText]}>Close</Text>
+                        </Pressable>
+                        <Text style={{color:"white", width: "80%", marginBottom: 15}}>Please be patient as it may take a second for your room to update.</Text>
                     </View>
                 )}
 
