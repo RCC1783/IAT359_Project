@@ -121,36 +121,38 @@ export default function SelectedProjectScreen({route}) {
 
             <ScrollView style={{width:"90%", alignSelf: "center"}} showsVerticalScrollIndicator={false}>
                 {roomEditorOpen && (
-                    <View style={styles.popupView}>
-                        <Text>Walls</Text>
+                    <View style={[styles.popupView, {backgroundColor: '#623be343'}]}>
+                        <Text style = {{textDecorationLine: 'underline', fontWeight: 'bold', color: 'white', padding: 10, borderRadius: 10, marginBottom: 10}}>Walls</Text>
                         <FlatList 
                             data={currentProject != undefined ? currentProject.ownedItems.filter((item) => {return item.type == "wallpaper";}) : null}
                             keyExtractor={item => item.id}
                             renderItem={({item}) => (
-                                <TouchableOpacity onPress={() => editRoomSetup("wallpaper", item)}>
-                                    <Text>{item.name}</Text>
+                                <TouchableOpacity style = {{backgroundColor: '#5A53BF', maxWidth: '100%', padding: 10, borderRadius: 10}} onPress={() => editRoomSetup("wallpaper", item)}>
+                                    <Text style = {styles.btnText}>{item.name}</Text>
                                 </TouchableOpacity>
                             )}
                             horizontal={true}
                         />
-                        <Text>Floors</Text>
+                        <Text style = {{textDecorationLine: 'underline', fontWeight: 'bold', color: 'white', padding: 10, borderRadius: 10, marginBottom: 10}}>Floors</Text>
                         <FlatList 
                             data={currentProject != undefined ? currentProject.ownedItems.filter((item) => {return item.type == "flooring";}) : null}
                             keyExtractor={item => item.id}
                             renderItem={({item}) => (
-                                <TouchableOpacity onPress={() => editRoomSetup("flooring", item)}>
-                                    <Text>{item.name}</Text>
+                                <TouchableOpacity style = {{backgroundColor: '#5A53BF', maxWidth: '100%', padding: 10, margin: 5, borderRadius: 10}} onPress={() => editRoomSetup("flooring", item)}>
+                                    <Text style = {styles.btnText}>{item.name}</Text>
                                 </TouchableOpacity>
                             )}
                             horizontal={true}
                         />
-                        <Button title='Close' onPress={() => setRoomEditorOpen(false)}/>
+                        <TouchableOpacity style = {[styles.homeButton, {backgroundColor: '#5A53BF'}]} onPress={() => setRoomEditorOpen(false)}>
+                            <Text style = {styles.btnText}>Close</Text>
+                        </TouchableOpacity>
                     </View>
                 )}
 
                 <RoomView projectID={projectID} autoReload={true}/>
 
-                <View style={{flex:1, padding: 20, backgroundColor:"white", borderRadius: 20}}>
+                <View style={{flex:1, padding: 20, backgroundColor:"#ffc7fb", borderRadius: 20}}>
                     <Pressable style={styles.homeButton} onPress={() => navigation.navigate("active", { projectID: projectID })}>
                         <Text style={styles.btnText}>Jump Back In!</Text>
                     </Pressable>
@@ -163,9 +165,10 @@ export default function SelectedProjectScreen({route}) {
                         <Text style={styles.btnText}>Shop</Text>
                     </Pressable>
                     
-
-                    <Text>Logs</Text>
-                    <LogView projectID={projectID}/>
+                    <View style = {{backgroundColor: '#f5edff', padding: 10, borderRadius: 10, marginBottom: 10}}>
+                        <Text>Logs</Text>
+                        <LogView projectID={projectID}/>
+                    </View>
 
                     <Pressable style={[styles.homeButton, {backgroundColor:"red"}]} onPress={() => Alert.alert("Are you sure you want to delete this project", "There is no restoring it once deleted", [
                         {
@@ -180,6 +183,11 @@ export default function SelectedProjectScreen({route}) {
                     </Pressable>
                 </View>
             </ScrollView>
+
+            {/* CLOUDS */}
+            <View style = {[styles.cloud, {top: -50, right: -50}]}></View>
+            <View style = {[styles.cloud, {top: -50, right: 50}]}></View>
+            <View style = {[styles.cloud, {top: -120, right: 100}]}></View>
         </SafeAreaView>
     );
 }

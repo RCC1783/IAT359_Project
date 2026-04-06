@@ -74,17 +74,17 @@ export default function SettingsScreen() {
 
     const navigation = useNavigation();
     return(
-        <SafeAreaView style = {[styles.container, {justifyContent: 'center', alignItems: 'center'}]}>
+        <SafeAreaView style = {[styles.container, {justifyContent: 'center', alignItems: 'center', margin: 5}]}>
             <CustomHeader screenName={"Settings"} navigation={navigation}/>
             <Text style = {styles.headerText}>Settings</Text>
 
-            <Text style = {[styles.btnText, { color: 'black' }]}>{ user ? `Logged in as: ${user.email}` : 'Not Loogged in... how...?'}</Text>
+            <Text style = {[styles.btnText, { backgroundColor: '#ada7ff', borderRadius: 25, padding: 15 }]}>{ user ? `Logged in as: ${user.email}` : 'Not Loogged in... how...?'}</Text>
 
             <Text></Text>
 
             <View style = {styles.setSwitch}>
-                <Text>TEST SETTING</Text>
-                <Switch value = {testSetting} onValueChange = {setTestSetting}/>
+                <Text style = {styles.btnText}>TEST SETTING</Text>
+                <Switch style = {{backgroundColor: '#5A53BF', marginLeft: 10, borderRadius: 10}} value = {testSetting} onValueChange = {setTestSetting}/>
             </View>
             <Pressable style = {styles.homeButton} onPress = {signOut}>
                 <Text style = {styles.btnText}>Sign Out</Text>

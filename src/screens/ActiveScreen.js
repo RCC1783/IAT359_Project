@@ -494,7 +494,7 @@ export default function ActiveScreen({ route }) {
             </Pressable>
           </View>
         ) : (
-          <View style={{flex: 1, backgroundColor:"white", padding: 20, borderRadius: 20}}>
+          <View style={{flex:1, padding: 20, backgroundColor:"#ffc7fb", borderRadius: 20, maxWidth: '90%', alignSelf: 'center', gap: 20}}>
             {/*Text to display the stopwatch for the user*/}
             <Text style={{fontSize: 24, alignSelf: "center", backgroundColor:"#70a1e4", color:"white", paddingVertical: 10, paddingHorizontal: 20, borderRadius: 20, minWidth: 120, textAlign: "center"}}>
               {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:
@@ -530,12 +530,18 @@ export default function ActiveScreen({ route }) {
                 <Text style={styles.btnText}>Resume</Text>
               </TouchableOpacity>
             )}
-
-            <Text>Logs</Text>
-            <LogView projectID={projectID} autoReload={true}/>
+            <View style = {{backgroundColor: '#f5edff', padding: 10, borderRadius: 10}}>
+              <Text>Logs</Text>
+              <LogView projectID={projectID} autoReload={true}/>
+            </View>
           </View>
         )}
       </ScrollView>
+
+      {/* CLOUDS */}
+      <View style = {[styles.cloud, {top: -50, left: -90}]}></View>
+      <View style = {[styles.cloud, {top: -90, left: 50}]}></View>
+      <View style = {[styles.cloud, {top: -120, left: 100}]}></View>
     </SafeAreaView>
   );
 }

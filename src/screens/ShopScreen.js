@@ -72,8 +72,12 @@ export default function ShopScreen({route}) {
     const [currentProject, setCurrentProj] = useState();
     const [updator, updateProj] = useState();
 
-    const keeperIdle = require('../images/shop/images.jpg');
-    const keeperAnnoyed = require('../images/shop/download.jpg');
+    const keeperIdle = require('../images/shop/keeperIdle.png');
+    const keeperAnnoyed = require('../images/shop/keeperAnnoyed.png');
+    const keeperHappy = require('../images/shop/keeperHappy.png');
+    const keeperOwned = require('../images/shop/keeperOwned.png');
+    const keeperPoor = require('../images/shop/keeperPoor.png');
+
     const [keeperTxt, setKeeperTxt] = useState("Hey! Always great to see ya. Here's what I got for you to spruce up your room.");
     const [keeperSprite, setKeeperSprite] = useState(keeperIdle);
     
@@ -114,10 +118,12 @@ export default function ShopScreen({route}) {
                 <Text style={styles.minutesDisplay}>Minutes: ${currentProject != undefined ? currentProject.minutes : "loading"}</Text>
    
                 {/* Shopkeeper Textbox */}
-                <Text style={styles.keeperText}>{keeperTxt}</Text>
-                <TouchableOpacity style = {{alignSelf: 'center'}} onPress = {() => {setKeeperTxt("Hey! Quit pokin' me, and just buy somethin'!"); setKeeperSprite(keeperAnnoyed);}}>
-                    <Image style={{marginTop: 5, width: 125, height: 125}} source={keeperSprite}/>
-                </TouchableOpacity>
+                <View style = {{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={styles.keeperText}>{keeperTxt}</Text>
+                    <TouchableOpacity style = {{alignSelf: 'center'}} onPress = {() => {setKeeperTxt("Hey! Quit pokin' me, and just buy somethin'!"); setKeeperSprite(keeperAnnoyed);}}>
+                        <Image style={{marginTop: 5, width: 175, height: 175}} source={keeperSprite}/>
+                    </TouchableOpacity>
+                </View>
 
             </View>
             {/* <TouchableOpacity onPress={printAll}>
@@ -142,10 +148,13 @@ export default function ShopScreen({route}) {
                             
                             if (currentProject.minutes < item.cost && !wasOwned){
                                 setKeeperTxt("Sorry pal, looks like you'll have to grind for just a bit longer. Best of luck!");
+                                setKeeperSprite(keeperPoor);
                             } else if (wasOwned) {
                                 setKeeperTxt("Always appreciate more coin, but looks like you already got that one.");
-                            } else {
+                                setKeeperSprite(keeperOwned);
+                            } else if (currentProject.minutes >= item.cost && !wasOwned){
                                 setKeeperTxt("Thanks! Hope that keeps ya goin' for just a bit longer.")
+                                setKeeperSprite(keeperHappy);
                             }
                         }}>
                             <Text style = {styles.shopItemTxt}>{item.owned ? "Owned" : "Purchase?"}</Text>
