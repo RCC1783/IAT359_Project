@@ -79,9 +79,24 @@ export default function ActiveScreen({ route }) {
     const weatherKey = "a1b20e87b0b501d8f5202117c36d319f";
     const weatherUrl = "https://api.openweathermap.org/data/2.5/weather?";
 
+    //full url
+    const url = `${weatherUrl}q=${"Vancouver"}&appid=${weatherKey}`;
+    console.log(url);
+
+    //https://www.geeksforgeeks.org/reactjs/weather-application-using-reactjs/
+
     //setting the current city/location
-    //must ask the user for permission
+    //must ask the user for permission if its using their location
     const [city, setCity] = useState();
+    const [data, setData] = useState();
+
+    await axios.get(url).then((res) => {
+      console.log(res.data);
+      setData(res.data).catch((err) => {
+        console.log("Error ", err.response.data.message);
+        alert(err.response.data.message);
+      });
+    });
   }
 
   // ###    Saving   ###
