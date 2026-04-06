@@ -8,15 +8,16 @@ import { db, auth } from '../firebaseConfig';
 import { useEffect, useState } from 'react';
 
 import { CustomHeader, ProjectDetails } from '../../globals';
+import {default_walls, wood_floors} from '../shopItems'
 
 class Project{
     name = 'unnamed_project';
     minutes = 0;
     totalMinutes = 0;
-    ownedItems = [];
+    ownedItems = [default_walls, wood_floors];
     roomSetup = {
-        wallpaper: {},
-        flooring: {},
+        wallpaper: {default_walls},
+        flooring: {wood_floors},
     };
     constructor(name, minutes = 0){
         this.name = name;
