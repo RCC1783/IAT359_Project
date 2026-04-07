@@ -1,7 +1,7 @@
 // Referenced official documentation: https://docs.expo.dev/versions/latest/sdk/camera/#cameraview
 
-import { StyleSheet, Text, View, SafeAreaView, Button, Pressable, Image, Alert } from 'react-native';
-
+import { StyleSheet, Text, View, Button, Pressable, Image, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { useRef, useState, useEffect } from 'react';
@@ -31,7 +31,7 @@ export default function CameraScreen() {
     if(!cameraPermission.granted) {
         return(
             <SafeAreaView>
-                <Text>You fool! You must allow the camera to be used!</Text>
+                <Text>You must allow the camera to be used! Please press the button below for a prompt or enable permissions in your settings.</Text>
                 <Button title='Allow Camera' onPress={setCameraPermission}/>
             </SafeAreaView>
         );
@@ -92,7 +92,7 @@ export default function CameraScreen() {
                 {/* https://stackoverflow.com/questions/42398660/how-to-display-emoji-in-react-app */}
                 <Text>{`${String.fromCodePoint('0x2193')} Press to take a photo ${String.fromCodePoint('0x2193')}`}</Text>
                 <Pressable 
-                style={{height: 150, width: 150, borderRadius: 20, overflow: 'hidden'}}
+                style={{height: 300, width: 300, borderRadius: 20, overflow: 'hidden'}}
                 onPress={photoMode ? () => takePhoto() : () => enablePhotoMode(current => !current)}>
                     {photoMode && (
                         <CameraView ref={cameraRef} active={photoMode} cameraRatio='1:1' style={{flex:1}}/>

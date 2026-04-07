@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, Image, TouchableOpacity, Pressable, FlatList, Alert } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, Pressable, FlatList, Alert, ScrollView } from 'react-native';
 import * as React from 'react';
 import { styles } from "./src/styles";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -94,12 +94,12 @@ export function ProjectDetails({projectID, projectName}){
                 </View>
             )}
             {logData != null && (
-                <View style={{flex: 1, flexDirection: "row", gap: 20}}>
+                <View style={{flex: 1, flexDirection: "row", gap: 20, maxWidth: 250}}>
                     {/* <Text>{logData.date}</Text> */}
                     {logData.image != '' ? (<Image style={{width: 100, height: 100}} source={{uri: logData.image}}/>) : (<View style={{width: 100, height: 100, backgroundColor:"white"}}></View>)}
                     <View style = {{marginBottom: 10}}>
                         <Text style = {styles.projHeader}>{projectName}</Text>
-                        <View style = {{backgroundColor: '#5A53BF', padding: 5, borderRadius: 10}}>
+                        <View style = {{backgroundColor: '#5A53BF', padding: 10, borderRadius: 10, maxWidth: 200, maxHeight: 60, overflow: 'hidden'}}>
                             <Text style = {[styles.projSubtitle, {marginBottom: 5}]}>{logData.date}</Text>
                             <Text style = {styles.projNote}>{logData.text}</Text>
                         </View>
@@ -142,7 +142,9 @@ export function RoomView({projectID, autoReload = false}){
 
     return(
         <View style={styles.roomContainer}>
-            <Text>{currentProject != undefined ? currentProject.roomSetup.flooring.imgSrc : "Loading"}</Text>
+            {currentProject == undefined && (
+                <Text>Loading...</Text>
+            )}
             <Image 
                 style={styles.roomImage}
                 source={currentProject != undefined ? currentProject.roomSetup.wallpaper.imgSrc : null}/>
@@ -222,13 +224,15 @@ export function LogView({projectID, autoReload = false}){
                 data={projectLogs.slice().reverse()}
                 keyExtractor={item => item.date}
                 renderItem={({item}) => (
-                    <View style={{flex: 1, flexDirection: "row", gap: 10, marginRight: 20}}>
+                    <View style={{flex: 1, flexDirection: "row", gap: 20, marginRight: 10, width: 270, padding: 15, borderRadius: 20, backgroundColor:"#5A53BF"}}>
                         {item.image != '' ? (<Image 
                             style={{width: 100, height: 100, backgroundColor: "#656565"}}
-                            source={{uri: item.image}}/>) : (<View style={{width:100, height:100, backgroundColor:"white"}}/>)}
-                        <View>
-                            <Text>{item.date}</Text>
-                            <Text>{item.text}</Text>
+                            source={{uri: item.image}}/>) : (<View style={{width:100, height:100, backgroundColor:"#656565"}}/>)}
+                        <View style={{width:'80%', maxHeight: 100}}>
+                            <Text style={{color:'white'}}>{item.date}</Text>
+                            <ScrollView style={{maxWidth:110}} nestedScrollEnabled={true}>
+                                <Text style={{color:'white'}}>{item.text}</Text>
+                            </ScrollView>
                             {item.recordingURI != '' && (
                             <Pressable onPress={() => playRecording(item.recordingURI)}>
                                 <Text>Play</Text>
@@ -249,7 +253,6 @@ export function LogView({projectID, autoReload = false}){
                     </View>
                 )}
                 horizontal
-                
             />
         </View>
     )
