@@ -89,9 +89,9 @@ export default function SettingsScreen() {
                 <Text style = {styles.btnText}>Sign Out</Text>
             </Pressable> 
 
-            <Pressable style = {styles.homeButton} onPress = {saveSettings}>
+            {/* <Pressable style = {styles.homeButton} onPress = {saveSettings}>
                 <Text style = {styles.btnText}>SAVE SETTINGS</Text>
-            </Pressable>  
+            </Pressable>   */}
 
             <Pressable style = {[styles.homeButton, { backgroundColor: 'red' }]} onPress = {deleteUserData}>
                 <Text style = {styles.btnText}>DELETE LOCAL USER DATA</Text>
