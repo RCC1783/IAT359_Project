@@ -80,12 +80,10 @@ export default function SettingsScreen() {
 
             <Text style = {[styles.btnText, { backgroundColor: '#ada7ff', borderRadius: 25, padding: 15 }]}>{ user ? `Logged in as: ${user.email}` : 'Not Loogged in... how...?'}</Text>
 
-            <View style = {styles.setSwitch}>
+            {/* <View style = {styles.setSwitch}>
                 <Text style = {styles.btnText}>TEST SETTING</Text>
                 <Switch style = {{backgroundColor: '#5A53BF', marginLeft: 10, borderRadius: 10}} value = {testSetting} onValueChange = {setTestSetting}/>
-            </View>
-
-            
+            </View> */}
 
             <Pressable style = {styles.homeButton} onPress = {signOut}>
                 <Text style = {styles.btnText}>Sign Out</Text>
