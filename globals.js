@@ -94,12 +94,12 @@ export function ProjectDetails({projectID, projectName}){
                 </View>
             )}
             {logData != null && (
-                <View style={{flex: 1, flexDirection: "row", gap: 20}}>
+                <View style={{flex: 1, flexDirection: "row", gap: 20, maxWidth: 250}}>
                     {/* <Text>{logData.date}</Text> */}
                     {logData.image != '' ? (<Image style={{width: 100, height: 100}} source={{uri: logData.image}}/>) : (<View style={{width: 100, height: 100, backgroundColor:"white"}}></View>)}
                     <View style = {{marginBottom: 10}}>
                         <Text style = {styles.projHeader}>{projectName}</Text>
-                        <View style = {{backgroundColor: '#5A53BF', padding: 5, borderRadius: 10}}>
+                        <View style = {{backgroundColor: '#5A53BF', padding: 10, borderRadius: 10, maxWidth: 200, maxHeight: 60, overflow: 'hidden'}}>
                             <Text style = {[styles.projSubtitle, {marginBottom: 5}]}>{logData.date}</Text>
                             <Text style = {styles.projNote}>{logData.text}</Text>
                         </View>
@@ -142,7 +142,9 @@ export function RoomView({projectID, autoReload = false}){
 
     return(
         <View style={styles.roomContainer}>
-            <Text>{currentProject != undefined ? currentProject.roomSetup.flooring.imgSrc : "Loading"}</Text>
+            {currentProject == undefined && (
+                <Text>Loading...</Text>
+            )}
             <Image 
                 style={styles.roomImage}
                 source={currentProject != undefined ? currentProject.roomSetup.wallpaper.imgSrc : null}/>
