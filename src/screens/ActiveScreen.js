@@ -12,7 +12,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useState, useRef, useEffect, useCallback } from "react";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "../styles";
 import {
   CommonActions,
@@ -28,7 +28,14 @@ import { db, auth } from "../firebaseConfig";
 import { Audio } from "expo-av";
 import { CameraView, useCameraPermissions, CameraType } from "expo-camera";
 
-import { CustomHeader, Log, saveUserData, playRecording, LogView, RoomView } from "../../globals";
+import {
+  CustomHeader,
+  Log,
+  saveUserData,
+  playRecording,
+  LogView,
+  RoomView,
+} from "../../globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system/legacy";
 
@@ -153,7 +160,10 @@ export default function ActiveScreen({ route }) {
     if (!cameraPermission.granted) {
       return (
         <View>
-          <Text>You must allow the camera to be used! Please press the button below for a prompt or enable permissions in your settings.</Text>
+          <Text>
+            You must allow the camera to be used! Please press the button below
+            for a prompt or enable permissions in your settings.
+          </Text>
           <Button title="Allow Camera" onPress={setCameraPermission} />
         </View>
       );
@@ -218,7 +228,7 @@ export default function ActiveScreen({ route }) {
                 </Text>
               </View>
             )}
-            {!photoMode && logPhoto != '' && (
+            {!photoMode && logPhoto != "" && (
               <View style={{ flex: 1 }}>
                 {/* https://stackoverflow.com/questions/29380265/does-react-native-support-base64-encoded-images */}
                 <Image style={{ flex: 1 }} source={{ uri: logPhoto }} />
@@ -241,8 +251,13 @@ export default function ActiveScreen({ route }) {
 
   function RecordButton() {
     return (
-      <Pressable style={styles.homeButton} onPress={() => setIsRecording(!isRecording)}>
-        <Text style={styles.btnText}>{isRecording ? "Recording..." : "Record Log"}</Text>
+      <Pressable
+        style={styles.homeButton}
+        onPress={() => setIsRecording(!isRecording)}
+      >
+        <Text style={styles.btnText}>
+          {isRecording ? "Recording..." : "Record Log"}
+        </Text>
       </Pressable>
     );
   }
@@ -409,7 +424,10 @@ export default function ActiveScreen({ route }) {
               {
                 //Yes then it will open the modal using openLogger
                 text: "Yes please",
-                onPress: () => {setEndSession(true); openLogger()},
+                onPress: () => {
+                  setEndSession(true);
+                  openLogger();
+                },
               },
               {
                 //Will send the user back to the project screen, but it will still save how many minutes they worked.
@@ -454,31 +472,47 @@ export default function ActiveScreen({ route }) {
   return (
     <SafeAreaView style={styles.container}>
       <CustomHeader screenName={"...Working"} />
-      <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
-        <RoomView projectID={projectID}/>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        nestedScrollEnabled={true}
+      >
+        <RoomView projectID={projectID} />
         {showModal ? (
           <View
-            style={{ flex: 1, flexDirection: "column", gap: 20, padding: 50, backgroundColor:"white", borderRadius: 20 }}
+            style={{
+              flex: 1,
+              flexDirection: "column",
+              gap: 20,
+              padding: 50,
+              backgroundColor: "white",
+              borderRadius: 20,
+            }}
           >
-            <Text>Write your Notes here</Text>
+            <Text style={styles.logHeader}>
+              Take an image, record notes and write notes!
+            </Text>
             <CameraButton />
             <RecordButton />
             <TextInput
-              style={[styles.input, {marginBottom: 0}]}
+              style={[styles.input, { marginBottom: 0 }]}
               placeholder="Today I..."
               value={text}
               onChangeText={onChangeText}
               multiline={true}
               maxLength={240}
             />
-            <Text style={{maxWidth: '60%', alignSelf: 'center', marginTop: 0}}>{text.length}/240</Text>
+            <Text
+              style={{ maxWidth: "60%", alignSelf: "center", marginTop: 0 }}
+            >
+              {text.length}/240
+            </Text>
             {(isRecording || photoMode) && (
               <Text>
                 Stop recording or finish taking a photo before saving.
               </Text>
             )}
 
-            <Pressable 
+            <Pressable
               style={styles.homeButton}
               onPress={
                 isRecording
@@ -487,21 +521,52 @@ export default function ActiveScreen({ route }) {
                       setCurrentProj(
                         saveLog(new Log(new Date(), text), currentProject),
                       );
-                      if(endSession) navigation.goBack();
+                      if (endSession) navigation.goBack();
                     }
               }
             >
-              <Text style={styles.btnText}>{endSession? "Save and Exit" : "Save"}</Text>
+              <Text style={styles.btnText}>
+                {endSession ? "Save and Exit" : "Save"}
+              </Text>
             </Pressable>
-  
-            <Pressable style={styles.homeButton} onPress={() => {setShowModal(false); if(endSession) navigation.goBack();}}>
+
+            <Pressable
+              style={styles.homeButton}
+              onPress={() => {
+                setShowModal(false);
+                if (endSession) navigation.goBack();
+              }}
+            >
               <Text style={styles.btnText}>Dismiss</Text>
             </Pressable>
           </View>
         ) : (
-          <View style={{flex:1, padding: 20, backgroundColor:"white", borderRadius: 20, width:"90%", maxWidth: '90%', alignSelf: 'center', gap: 20}}>
+          <View
+            style={{
+              flex: 1,
+              padding: 20,
+              backgroundColor: "white",
+              borderRadius: 20,
+              width: "90%",
+              maxWidth: "90%",
+              alignSelf: "center",
+              gap: 20,
+            }}
+          >
             {/*Text to display the stopwatch for the user*/}
-            <Text style={{fontSize: 24, alignSelf: "center", backgroundColor:"#70a1e4", color:"white", paddingVertical: 10, paddingHorizontal: 20, borderRadius: 20, minWidth: 120, textAlign: "center"}}>
+            <Text
+              style={{
+                fontSize: 24,
+                alignSelf: "center",
+                backgroundColor: "#70a1e4",
+                color: "white",
+                paddingVertical: 10,
+                paddingHorizontal: 20,
+                borderRadius: 20,
+                minWidth: 120,
+                textAlign: "center",
+              }}
+            >
               {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:
               {time % 60 < 10 ? `0${time % 60}` : time % 60}
             </Text>
@@ -510,22 +575,16 @@ export default function ActiveScreen({ route }) {
             {running ? (
               <View>
                 <Text>Working...</Text>
-                <Pressable
-                  onPress={pauseStopWatch}
-                  style={styles.homeButton}
-                >
+                <Pressable onPress={pauseStopWatch} style={styles.homeButton}>
                   <Text style={styles.btnText}>Pause</Text>
                 </Pressable>
               </View>
             ) : (
               <>
-                <Pressable
-                  onPress={endStopWatch}
-                  style={styles.homeButton}
-                >
+                <Pressable onPress={endStopWatch} style={styles.homeButton}>
                   <Text style={styles.btnText}>End Session</Text>
                 </Pressable>
-                
+
                 <Pressable
                   onPress={() => openLogger()}
                   style={styles.homeButton}
@@ -542,18 +601,24 @@ export default function ActiveScreen({ route }) {
                 <Text style={styles.btnText}>Resume</Text>
               </TouchableOpacity>
             )}
-            <View style = {{backgroundColor: '#f5edff', padding: 10, borderRadius: 10}}>
+            <View
+              style={{
+                backgroundColor: "#f5edff",
+                padding: 10,
+                borderRadius: 10,
+              }}
+            >
               <Text>Logs</Text>
-              <LogView projectID={projectID} autoReload={true}/>
+              <LogView projectID={projectID} autoReload={true} />
             </View>
           </View>
         )}
       </ScrollView>
 
       {/* CLOUDS */}
-      <View style = {[styles.cloud, {top: -50, left: -90}]}></View>
-      <View style = {[styles.cloud, {top: -90, left: 50}]}></View>
-      <View style = {[styles.cloud, {top: -120, left: 100}]}></View>
+      <View style={[styles.cloud, { top: -50, left: -90 }]}></View>
+      <View style={[styles.cloud, { top: -90, left: 50 }]}></View>
+      <View style={[styles.cloud, { top: -120, left: 100 }]}></View>
     </SafeAreaView>
   );
 }
