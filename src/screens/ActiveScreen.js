@@ -454,7 +454,7 @@ export default function ActiveScreen({ route }) {
   return (
     <SafeAreaView style={styles.container}>
       <CustomHeader screenName={"...Working"} />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
         <RoomView projectID={projectID}/>
         {showModal ? (
           <View
@@ -464,11 +464,14 @@ export default function ActiveScreen({ route }) {
             <CameraButton />
             <RecordButton />
             <TextInput
-              style={styles.input}
+              style={[styles.input, {marginBottom: 0}]}
               placeholder="Today I..."
               value={text}
               onChangeText={onChangeText}
+              multiline={true}
+              maxLength={240}
             />
+            <Text style={{maxWidth: '60%', alignSelf: 'center', marginTop: 0}}>{text.length}/240</Text>
             {(isRecording || photoMode) && (
               <Text>
                 Stop recording or finish taking a photo before saving.

@@ -120,7 +120,7 @@ export default function SelectedProjectScreen({route}) {
         <SafeAreaView style={styles.container}>
             <CustomHeader screenName={currentProject != undefined? currentProject.name : "Loading"} navigation={navigation}></CustomHeader>
 
-            <ScrollView style={{width:"90%", alignSelf: "center"}} showsVerticalScrollIndicator={false}>
+            <ScrollView style={{width:"90%", alignSelf: "center"}} showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
                 {roomEditorOpen && (
                     <View style={styles.popupView}>
                         <Text style={{fontSize:22, color:"#5A53BF", paddingHorizontal: 40, paddingVertical: 10, borderRadius: 20, backgroundColor: "white", marginTop:10}}>Your Items</Text>

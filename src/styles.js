@@ -199,6 +199,7 @@ export const styles = StyleSheet.create({
 
     padding: 15,
     width: '80%',
+    maxWidth: '80%',
 
     backgroundColor: 'white',
     alignSelf:"center"

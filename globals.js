@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity, Pressable, FlatList, Alert } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, Pressable, FlatList, Alert, ScrollView } from 'react-native';
 import * as React from 'react';
 import { styles } from "./src/styles";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -222,13 +222,15 @@ export function LogView({projectID, autoReload = false}){
                 data={projectLogs.slice().reverse()}
                 keyExtractor={item => item.date}
                 renderItem={({item}) => (
-                    <View style={{flex: 1, flexDirection: "row", gap: 10, marginRight: 20}}>
+                    <View style={{flex: 1, flexDirection: "row", gap: 20, marginRight: 10, width: 270, padding: 15, borderRadius: 20, backgroundColor:"#5A53BF"}}>
                         {item.image != '' ? (<Image 
                             style={{width: 100, height: 100, backgroundColor: "#656565"}}
-                            source={{uri: item.image}}/>) : (<View style={{width:100, height:100, backgroundColor:"white"}}/>)}
-                        <View>
-                            <Text>{item.date}</Text>
-                            <Text>{item.text}</Text>
+                            source={{uri: item.image}}/>) : (<View style={{width:100, height:100, backgroundColor:"#656565"}}/>)}
+                        <View style={{width:'80%', maxHeight: 100}}>
+                            <Text style={{color:'white'}}>{item.date}</Text>
+                            <ScrollView style={{maxWidth:110}} nestedScrollEnabled={true}>
+                                <Text style={{color:'white'}}>{item.text}</Text>
+                            </ScrollView>
                             {item.recordingURI != '' && (
                             <Pressable onPress={() => playRecording(item.recordingURI)}>
                                 <Text>Play</Text>
@@ -249,7 +251,6 @@ export function LogView({projectID, autoReload = false}){
                     </View>
                 )}
                 horizontal
-                
             />
         </View>
     )
