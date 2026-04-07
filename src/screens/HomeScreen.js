@@ -3,12 +3,42 @@ import { useState, useEffect } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {styles} from '../styles';
 import { useNavigation } from '@react-navigation/native';
-import { auth } from '../firebaseConfig';
+import { db, auth } from '../firebaseConfig';
+
+import { collection, getDocs, setDoc, doc } from 'firebase/firestore';
+import { Project } from './ProjectsScreen';
+import { CustomHeader, ProjectDetails } from '../../globals';
 
 export default function HomeScreen() {
     const navigation = useNavigation();
     const fbAuth = auth;
     const user = fbAuth.currentUser;
+
+    const [recentProj, setRecentProj] = useState(null);
+
+    useEffect(() => {
+        const fetchRecentProj = async() => {
+
+            try {
+                const querySnapshot = await getDocs(collection(db, user.email));
+
+                let allDocs = [];
+                querySnapshot.forEach((doc) => {
+                    allDocs.push({
+                        ...doc.data(),
+                        id: doc.id,
+                        });
+                    });
+
+                    setRecentProj(allDocs[0]);
+            } catch (error) {
+                console.error("Error fetching recent project: ", error);
+                setRecentProj(null);
+            }
+        };
+        fetchRecentProj();
+    }, []);
+            
 
     return(
         <SafeAreaView style={{ zIndex: -1, flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#EDDEFF'}}>
@@ -34,19 +64,15 @@ export default function HomeScreen() {
 
             <View>
                 <Text style = {[styles.headerText, { fontSize: 20, alignSelf: 'flex-start'}]}>Jump back in!</Text>
-                <View></View>
+                <View style = {{width: 300, borderColor: 'black', borderWidth: 1, marginBottom: 5}}></View>
             </View>
 
-            <Pressable style={[styles.homeButton, { margin: 5 }]}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={[styles.headerText, { color: 'white', fontSize: 18, textAlign: 'center', textTransform: 'none'}]}>Title</Text>
-                    <Text style={[styles.btnText, { fontSize: 14, textTransform: 'none' }]}>Time</Text>
-                </View>
-                <View style={{ alignSelf: 'center' }}>
-                    <Image style={{ margin: 5, width: 270, height: 150 }} source={require('../images/home/phBlock.png')} />
-                </View>
-                <View>
-                    <Text style={[styles.btnText, { textAlign: 'left' }]}>Note</Text>
+            <Pressable style={[styles.homeButton, { margin: 5 }]}
+                data={recentProj}
+                onPress={() => navigation.navigate("selectedProject", {projectID: recentProj?.id})}>
+                <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                    <Text style={[styles.headerText, { color: 'white', fontSize: 24, textAlign: 'center', textTransform: 'none'}]}>{recentProj?.name}</Text>
+                    <Text style={[styles.btnText, { fontSize: 14, textTransform: 'none' }]}>Time: {recentProj?.totalMinutes || 'Not specified'} minutes</Text>
                 </View>
             </Pressable>
 

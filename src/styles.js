@@ -97,9 +97,8 @@ export const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
 
-    maxWidth: '80%',
+    maxWidth: '40%',
     alignSelf: 'center',
-    marginBottom: 5,
   },
   shopList: {
     height: '70%',
@@ -183,8 +182,9 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
 
+    backgroundColor: '#D95635',
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 25,
     margin: 10,
 
     alignContent: 'center',
@@ -238,7 +238,7 @@ export const styles = StyleSheet.create({
     borderRadius: 100,
     width: 200,
     height: 200,
-    zIndex: -1
+    zIndex: -2
   },
 
   smallHome: {

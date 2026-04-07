@@ -101,6 +101,7 @@ export default function SelectedProjectScreen({route}) {
         switch (type){
             case "wallpaper": {
                 currentProject.roomSetup.wallpaper = item;
+                break;
             }
             case "flooring": {
                 currentProject.roomSetup.flooring = item;
@@ -122,41 +123,38 @@ export default function SelectedProjectScreen({route}) {
 
             <ScrollView style={{width:"90%", alignSelf: "center"}} showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
                 {roomEditorOpen && (
-                    <View style={styles.popupView}>
-                        <Text style={{fontSize:22, color:"#5A53BF", paddingHorizontal: 40, paddingVertical: 10, borderRadius: 20, backgroundColor: "white", marginTop:10}}>Your Items</Text>
-                        <Text style={{fontSize:20, color:"white", paddingHorizontal: 20, paddingVertical: 5, borderRadius: 10}}>- Walls -</Text>
+                    <View style={[styles.popupView, {backgroundColor: '#623be343'}]}>
+                        <Text style = {{textDecorationLine: 'underline', fontSize: 18, fontWeight: 'bold', color: 'white', padding: 10, borderRadius: 10, marginBottom: 10}}>Walls</Text>
                         <FlatList 
                             data={currentProject != undefined ? currentProject.ownedItems.filter((item) => {return item.type == "wallpaper";}) : null}
                             keyExtractor={item => item.id}
                             renderItem={({item}) => (
-                                <Pressable onPress={() => editRoomSetup("wallpaper", item)}>
-                                    <Text>{item.name}</Text>
-                                </Pressable>
+                                <TouchableOpacity style = {{backgroundColor: '#ba53bf', maxWidth: '100%', padding: 10, margin: 5, borderRadius: 10}} onPress={() => editRoomSetup("wallpaper", item)}>
+                                    <Text style = {styles.btnText}>{item.name}</Text>
+                                </TouchableOpacity>
                             )}
                             horizontal={true}
                         />
-                        <Text style={{fontSize:20, color:"white", paddingHorizontal: 20, paddingVertical: 5, borderRadius: 10}}>- Floors -</Text>
+                        <Text style = {{textDecorationLine: 'underline', fontSize: 18, fontWeight: 'bold', color: 'white', padding: 10, borderRadius: 10, marginBottom: 10}}>Floors</Text>
                         <FlatList 
                             data={currentProject != undefined ? currentProject.ownedItems.filter((item) => {return item.type == "flooring";}) : null}
                             keyExtractor={item => item.id}
                             renderItem={({item}) => (
-                                <Pressable onPress={() => editRoomSetup("flooring", item)}>
-                                    <Text>{item.name}</Text>
-                                </Pressable>
+                                <TouchableOpacity style = {{backgroundColor: '#ba53bf', maxWidth: '100%', padding: 10, margin: 5, borderRadius: 10}} onPress={() => editRoomSetup("flooring", item)}>
+                                    <Text style = {styles.btnText}>{item.name}</Text>
+                                </TouchableOpacity>
                             )}
                             horizontal={true}
                         />
-                        
-                        <Pressable style={[styles.homeButton, {backgroundColor:"#5A53BF"}]} onPress={() => setRoomEditorOpen(false)}>
-                            <Text style={[styles.btnText]}>Close</Text>
-                        </Pressable>
-                        <Text style={{color:"white", width: "80%", marginBottom: 15}}>Please be patient as it may take a second for your room to update.</Text>
+                        <TouchableOpacity style = {[styles.homeButton, {backgroundColor: '#5A53BF'}]} onPress={() => setRoomEditorOpen(false)}>
+                            <Text style = {styles.btnText}>Close</Text>
+                        </TouchableOpacity>
                     </View>
                 )}
 
                 <RoomView projectID={projectID} autoReload={true}/>
 
-                <View style={{flex:1, padding: 20, backgroundColor:"white", borderRadius: 20}}>
+                <View style={{flex:1, padding: 20, backgroundColor:"#ffc7fb", borderRadius: 20}}>
                     <Pressable style={styles.homeButton} onPress={() => navigation.navigate("active", { projectID: projectID })}>
                         <Text style={styles.btnText}>Start Working</Text>
                     </Pressable>
@@ -169,9 +167,10 @@ export default function SelectedProjectScreen({route}) {
                         <Text style={styles.btnText}>Shop</Text>
                     </Pressable>
                     
-
-                    <Text>Logs</Text>
-                    <LogView projectID={projectID}/>
+                    <View style = {{backgroundColor: '#f5edff', padding: 10, borderRadius: 10, marginBottom: 10}}>
+                        <Text>Logs</Text>
+                        <LogView projectID={projectID}/>
+                    </View>
 
                     <Pressable style={[styles.homeButton, {backgroundColor:"red"}]} onPress={() => Alert.alert("Are you sure you want to delete this project", "There is no restoring it once deleted", [
                         {
@@ -186,6 +185,11 @@ export default function SelectedProjectScreen({route}) {
                     </Pressable>
                 </View>
             </ScrollView>
+
+            {/* CLOUDS */}
+            <View style = {[styles.cloud, {top: -50, right: -50}]}></View>
+            <View style = {[styles.cloud, {top: -50, right: 50}]}></View>
+            <View style = {[styles.cloud, {top: -120, right: 100}]}></View>
         </SafeAreaView>
     );
 }

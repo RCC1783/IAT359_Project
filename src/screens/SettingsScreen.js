@@ -82,18 +82,19 @@ export default function SettingsScreen() {
 
     const navigation = useNavigation();
     return(
-        <SafeAreaView style = {[styles.container, {justifyContent: 'center', alignItems: 'center'}]}>
+        <SafeAreaView style = {[styles.container, {justifyContent: 'center', alignItems: 'center', margin: 5}]}>
             <CustomHeader screenName={"Settings"} navigation={navigation}/>
             <Text style = {styles.headerText}>Settings</Text>
 
-            <Text style = {[styles.btnText, { color: 'black' }]}>{ user ? `Logged in as: ${user.email}` : 'Not Loogged in... how...?'}</Text>
-
-            <Text></Text>
+            <Text style = {[styles.btnText, { backgroundColor: '#ada7ff', borderRadius: 25, padding: 15 }]}>{ user ? `Logged in as: ${user.email}` : 'Not Loogged in... how...?'}</Text>
 
             <View style = {styles.setSwitch}>
-                <Text>TEST SETTING</Text>
-                <Switch value = {testSetting} onValueChange = {setTestSetting}/>
+                <Text style = {styles.btnText}>TEST SETTING</Text>
+                <Switch style = {{backgroundColor: '#5A53BF', marginLeft: 10, borderRadius: 10}} value = {testSetting} onValueChange = {setTestSetting}/>
             </View>
+
+            
+
             <Pressable style = {styles.homeButton} onPress = {signOut}>
                 <Text style = {styles.btnText}>Sign Out</Text>
             </Pressable> 
@@ -105,6 +106,18 @@ export default function SettingsScreen() {
             <Pressable style = {[styles.homeButton, { backgroundColor: 'red' }]} onPress = {deleteUserData}>
                 <Text style = {styles.btnText}>DELETE LOCAL USER DATA</Text>
             </Pressable>  
+
+            {/* CLOUDS */}
+            <View style = {[styles.cloud, {zIndex: -1, top: -100, left: -20, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {top: -50, left: -50}]}></View>
+            <View style = {[styles.cloud, {top: -120, left: 80}]}></View>
+
+            <View style = {[styles.cloud, {top: 200, right: -100}]}></View>
+            <View style = {[styles.cloud, {top: 75, right: -160}]}></View>
+
+            <View style = {[styles.cloud, {zIndex: -1, bottom: -50, right: -100, width: 200, height: 175, borderRadius: 175, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {bottom: -100, right: -150, width: 300, height: 300, borderRadius: 150}]}></View>
+            <View style = {[styles.cloud, {bottom: -120, right: 50, width: 250, height: 250, borderRadius: 125}]}></View>
         </SafeAreaView>
     );
 }
