@@ -69,10 +69,10 @@ export default function HomeScreen() {
 
             <Pressable style={[styles.homeButton, { margin: 5 }]}
                 data={recentProj}
-                onPress={() => navigation.navigate("selectedProject", {projectID: recentProj.id})}>
+                onPress={() => navigation.navigate("selectedProject", {projectID: recentProj?.id})}>
                 <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-                    <Text style={[styles.headerText, { color: 'white', fontSize: 24, textAlign: 'center', textTransform: 'none'}]}>{recentProj.name}</Text>
-                    <Text style={[styles.btnText, { fontSize: 14, textTransform: 'none' }]}>Time: {recentProj.totalMinutes || 'Not specified'} minutes</Text>
+                    <Text style={[styles.headerText, { color: 'white', fontSize: 24, textAlign: 'center', textTransform: 'none'}]}>{recentProj?.name}</Text>
+                    <Text style={[styles.btnText, { fontSize: 14, textTransform: 'none' }]}>Time: {recentProj?.totalMinutes || 'Not specified'} minutes</Text>
                 </View>
             </Pressable>
 
