@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, TextInput, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context'
 import { doc, setDoc } from "firebase/firestore";
 import { useState } from 'react';
@@ -73,36 +73,38 @@ export default function LoginScreen({navigation}) {
  
     return (
         <SafeAreaView style = {[styles.container, {justifyContent: 'center'}]}>
-            <Text style = {styles.headerText}>Log In</Text>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                <Text style = {styles.headerText}>Log In</Text>
 
-            <TextInput
-                style = {styles.input}
-                placeholder="Email"
-                placeholderTextColor={'#D95635'}
-                keyboardType="email-address"
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-            />
+                <TextInput
+                    style = {styles.input}
+                    placeholder="Email"
+                    placeholderTextColor={'#D95635'}
+                    keyboardType="email-address"
+                    value={email}
+                    onChangeText={setEmail}
+                    autoCapitalize="none"
+                />
 
-            <TextInput
-                style = {styles.input}
-                placeholder="Password"
-                placeholderTextColor={'#D95635'}
-                secureTextEntry={true}
-                value={password}
-                onChangeText={setPassword}
-                autoCapitalize='none'
-            />
+                <TextInput
+                    style = {styles.input}
+                    placeholder="Password"
+                    placeholderTextColor={'#D95635'}
+                    secureTextEntry={true}
+                    value={password}
+                    onChangeText={setPassword}
+                    autoCapitalize='none'
+                />
 
-            <Pressable style = {styles.homeButton} onPress={signIn}>
-                <Text style = {styles.btnText}>Sign In</Text>
-            </Pressable>
+                <Pressable style = {[styles.homeButton, {minWidth: "80%"}]} onPress={signIn}>
+                    <Text style = {styles.btnText}>Sign In</Text>
+                </Pressable>
 
-            <Text>Don't have an account?</Text>
-            <Pressable style = {[styles.homeButton, { backgroundColor: "#5A53BF" }]} onPress={signUp}>
-                <Text style = {styles.btnText}>Sign Up</Text>
-            </Pressable>
+                <Text style={{textAlign: 'center'}}>Don't have an account?</Text>
+                <Pressable style = {[styles.homeButton, { backgroundColor: "#5A53BF", minWidth: "80%"}]} onPress={signUp}>
+                    <Text style = {styles.btnText}>Sign Up</Text>
+                </Pressable>
+            </KeyboardAvoidingView>
 
             {/* CLOUDS */}
             <View style = {[styles.cloud, {width: 175, height: 175, top: -100, left: 25, zIndex: 0, backgroundColor: '#B6BCFB'}]}></View>

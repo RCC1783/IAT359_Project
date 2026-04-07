@@ -10,6 +10,8 @@ import {
   Image,
   FlatList,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -472,152 +474,156 @@ export default function ActiveScreen({ route }) {
   return (
     <SafeAreaView style={styles.container}>
       <CustomHeader screenName={"...Working"} />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled={true}
-      >
-        <RoomView projectID={projectID} />
-        {showModal ? (
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              gap: 20,
-              padding: 50,
-              backgroundColor: "white",
-              borderRadius: 20,
-              maxWidth: '90%',
-              width: '90%',
-              alignSelf:'center',
-              alignItems: 'center'
-            }}
-          >
-            <Text style={styles.logHeader}>
-              Take an image, record notes and write notes!
-            </Text>
-            <CameraButton />
-            <RecordButton />
-            <TextInput
-              style={[styles.input, { marginBottom: 0 }]}
-              placeholder="Today I..."
-              value={text}
-              onChangeText={onChangeText}
-              multiline={true}
-              maxLength={240}
-            />
-            <Text
-              style={{ maxWidth: "60%", alignSelf: "center", marginTop: 0 }}
-            >
-              {text.length}/240
-            </Text>
-            {(isRecording || photoMode) && (
-              <Text>
-                Stop recording or finish taking a photo before saving.
-              </Text>
-            )}
-
-            <Pressable
-              style={styles.homeButton}
-              onPress={
-                isRecording
-                  ? null
-                  : () => {
-                      setCurrentProj(
-                        saveLog(new Log(new Date(), text), currentProject),
-                      );
-                      if (endSession) navigation.goBack();
-                    }
-              }
-            >
-              <Text style={styles.btnText}>
-                {endSession ? "Save and Exit" : "Save"}
-              </Text>
-            </Pressable>
-
-            <Pressable
-              style={styles.homeButton}
-              onPress={() => {
-                setShowModal(false);
-                if (endSession) navigation.goBack();
-              }}
-            >
-              <Text style={styles.btnText}>Dismiss</Text>
-            </Pressable>
-          </View>
-        ) : (
-          <View
-            style={{
-              flex: 1,
-              padding: 20,
-              backgroundColor: "white",
-              borderRadius: 20,
-              width: "90%",
-              maxWidth: "90%",
-              alignSelf: "center",
-              gap: 20,
-            }}
-          >
-            {/*Text to display the stopwatch for the user*/}
-            <Text
-              style={{
-                fontSize: 24,
-                alignSelf: "center",
-                backgroundColor: "#70a1e4",
-                color: "white",
-                paddingVertical: 10,
-                paddingHorizontal: 20,
-                borderRadius: 20,
-                minWidth: 120,
-                textAlign: "center",
-              }}
-            >
-              {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:
-              {time % 60 < 10 ? `0${time % 60}` : time % 60}
-            </Text>
-
-            {/*check if the stopwatch is running*/}
-            {running ? (
-              <View>
-                <Text>Working...</Text>
-                <Pressable onPress={pauseStopWatch} style={styles.homeButton}>
-                  <Text style={styles.btnText}>Pause</Text>
-                </Pressable>
-              </View>
-            ) : (
-              <>
-                <Pressable onPress={endStopWatch} style={styles.homeButton}>
-                  <Text style={styles.btnText}>End Session</Text>
-                </Pressable>
-
-                <Pressable
-                  onPress={() => openLogger()}
-                  style={styles.homeButton}
-                >
-                  <Text style={styles.btnText}>Create a Log</Text>
-                </Pressable>
-              </>
-            )}
-            {!running && (
-              <TouchableOpacity
-                onPress={resumeStopWatch}
-                style={styles.homeButton}
-              >
-                <Text style={styles.btnText}>Resume</Text>
-              </TouchableOpacity>
-            )}
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          nestedScrollEnabled={true}
+        >
+          <RoomView projectID={projectID} />
+          {showModal ? (
             <View
               style={{
-                backgroundColor: "#f5edff",
-                padding: 10,
-                borderRadius: 10,
+                flex: 1,
+                flexDirection: "column",
+                gap: 20,
+                padding: 50,
+                backgroundColor: "white",
+                borderRadius: 20,
+                maxWidth: '90%',
+                width: '90%',
+                alignSelf:'center',
+                alignItems: 'center'
               }}
             >
-              <Text>Logs</Text>
-              <LogView projectID={projectID} autoReload={true} />
+              <Text style={styles.logHeader}>
+                Take an image, record notes and write notes!
+              </Text>
+              <CameraButton />
+              <RecordButton />
+              
+              <TextInput
+                style={[styles.input, { marginBottom: 0 }]}
+                placeholder="Today I..."
+                value={text}
+                onChangeText={onChangeText}
+                multiline={true}
+                maxLength={240}
+              />
+              
+              <Text
+                style={{ maxWidth: "60%", alignSelf: "center", marginTop: 0 }}
+              >
+                {text.length}/240
+              </Text>
+              {(isRecording || photoMode) && (
+                <Text>
+                  Stop recording or finish taking a photo before saving.
+                </Text>
+              )}
+
+              <Pressable
+                style={styles.homeButton}
+                onPress={
+                  isRecording
+                    ? null
+                    : () => {
+                        setCurrentProj(
+                          saveLog(new Log(new Date(), text), currentProject),
+                        );
+                        if (endSession) navigation.goBack();
+                      }
+                }
+              >
+                <Text style={styles.btnText}>
+                  {endSession ? "Save and Exit" : "Save"}
+                </Text>
+              </Pressable>
+
+              <Pressable
+                style={styles.homeButton}
+                onPress={() => {
+                  setShowModal(false);
+                  if (endSession) navigation.goBack();
+                }}
+              >
+                <Text style={styles.btnText}>Dismiss</Text>
+              </Pressable>
             </View>
-          </View>
-        )}
-      </ScrollView>
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                padding: 20,
+                backgroundColor: "white",
+                borderRadius: 20,
+                width: "90%",
+                maxWidth: "90%",
+                alignSelf: "center",
+                gap: 20,
+              }}
+            >
+              {/*Text to display the stopwatch for the user*/}
+              <Text
+                style={{
+                  fontSize: 24,
+                  alignSelf: "center",
+                  backgroundColor: "#70a1e4",
+                  color: "white",
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  borderRadius: 20,
+                  minWidth: 120,
+                  textAlign: "center",
+                }}
+              >
+                {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:
+                {time % 60 < 10 ? `0${time % 60}` : time % 60}
+              </Text>
+
+              {/*check if the stopwatch is running*/}
+              {running ? (
+                <View>
+                  <Text>Working...</Text>
+                  <Pressable onPress={pauseStopWatch} style={styles.homeButton}>
+                    <Text style={styles.btnText}>Pause</Text>
+                  </Pressable>
+                </View>
+              ) : (
+                <>
+                  <Pressable onPress={endStopWatch} style={styles.homeButton}>
+                    <Text style={styles.btnText}>End Session</Text>
+                  </Pressable>
+
+                  <Pressable
+                    onPress={() => openLogger()}
+                    style={styles.homeButton}
+                  >
+                    <Text style={styles.btnText}>Create a Log</Text>
+                  </Pressable>
+                </>
+              )}
+              {!running && (
+                <TouchableOpacity
+                  onPress={resumeStopWatch}
+                  style={styles.homeButton}
+                >
+                  <Text style={styles.btnText}>Resume</Text>
+                </TouchableOpacity>
+              )}
+              <View
+                style={{
+                  backgroundColor: "#f5edff",
+                  padding: 10,
+                  borderRadius: 10,
+                }}
+              >
+                <Text>Logs</Text>
+                <LogView projectID={projectID} autoReload={true} />
+              </View>
+            </View>
+          )}
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       {/* CLOUDS */}
       <View style={[styles.cloud, { top: -50, left: -90 }]}></View>

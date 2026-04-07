@@ -197,7 +197,7 @@ export const styles = StyleSheet.create({
     borderRadius: 25,
 
     padding: 15,
-    width: "80%",
+    minWidth: "80%",
     maxWidth: "80%",
 
     backgroundColor: "white",
