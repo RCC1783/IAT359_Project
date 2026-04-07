@@ -100,6 +100,7 @@ export default function SelectedProjectScreen({route}) {
         switch (type){
             case "wallpaper": {
                 currentProject.roomSetup.wallpaper = item;
+                break;
             }
             case "flooring": {
                 currentProject.roomSetup.flooring = item;
@@ -122,23 +123,23 @@ export default function SelectedProjectScreen({route}) {
             <ScrollView style={{width:"90%", alignSelf: "center"}} showsVerticalScrollIndicator={false}>
                 {roomEditorOpen && (
                     <View style={[styles.popupView, {backgroundColor: '#623be343'}]}>
-                        <Text style = {{textDecorationLine: 'underline', fontWeight: 'bold', color: 'white', padding: 10, borderRadius: 10, marginBottom: 10}}>Walls</Text>
+                        <Text style = {{textDecorationLine: 'underline', fontSize: 18, fontWeight: 'bold', color: 'white', padding: 10, borderRadius: 10, marginBottom: 10}}>Walls</Text>
                         <FlatList 
                             data={currentProject != undefined ? currentProject.ownedItems.filter((item) => {return item.type == "wallpaper";}) : null}
                             keyExtractor={item => item.id}
                             renderItem={({item}) => (
-                                <TouchableOpacity style = {{backgroundColor: '#5A53BF', maxWidth: '100%', padding: 10, borderRadius: 10}} onPress={() => editRoomSetup("wallpaper", item)}>
+                                <TouchableOpacity style = {{backgroundColor: '#ba53bf', maxWidth: '100%', padding: 10, margin: 5, borderRadius: 10}} onPress={() => editRoomSetup("wallpaper", item)}>
                                     <Text style = {styles.btnText}>{item.name}</Text>
                                 </TouchableOpacity>
                             )}
                             horizontal={true}
                         />
-                        <Text style = {{textDecorationLine: 'underline', fontWeight: 'bold', color: 'white', padding: 10, borderRadius: 10, marginBottom: 10}}>Floors</Text>
+                        <Text style = {{textDecorationLine: 'underline', fontSize: 18, fontWeight: 'bold', color: 'white', padding: 10, borderRadius: 10, marginBottom: 10}}>Floors</Text>
                         <FlatList 
                             data={currentProject != undefined ? currentProject.ownedItems.filter((item) => {return item.type == "flooring";}) : null}
                             keyExtractor={item => item.id}
                             renderItem={({item}) => (
-                                <TouchableOpacity style = {{backgroundColor: '#5A53BF', maxWidth: '100%', padding: 10, margin: 5, borderRadius: 10}} onPress={() => editRoomSetup("flooring", item)}>
+                                <TouchableOpacity style = {{backgroundColor: '#ba53bf', maxWidth: '100%', padding: 10, margin: 5, borderRadius: 10}} onPress={() => editRoomSetup("flooring", item)}>
                                     <Text style = {styles.btnText}>{item.name}</Text>
                                 </TouchableOpacity>
                             )}

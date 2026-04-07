@@ -110,6 +110,16 @@ export default function ProjectsScreen() {
                     </TouchableOpacity>
                 </View>
             )}
+
+        
+                {/* CLOUDS */}
+                <View style = {[styles.cloud, {top: -50, left: 50}]}></View>
+                <View style = {[styles.cloud, {top: -120, left: 100}]}></View>
+                <View style = {[styles.cloud, {top: -90, left: -50}]}></View>
+
+            <View style = {[styles.cloud, {bottom: -50, right: -100, width: 200, height: 175, borderRadius: 175, zIndex: -1, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {bottom: -100, right: -150, width: 300, height: 300, borderRadius: 150}]}></View>
+            <View style = {[styles.cloud, {bottom: -120, left: 90, width: 250, height: 250, borderRadius: 125}]}></View>
         </SafeAreaView>
     );
 }

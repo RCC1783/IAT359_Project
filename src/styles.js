@@ -228,7 +228,7 @@ export const styles = StyleSheet.create({
     borderRadius: 100,
     width: 200,
     height: 200,
-    zIndex: -1
+    zIndex: -2
   },
 
   smallHome: {

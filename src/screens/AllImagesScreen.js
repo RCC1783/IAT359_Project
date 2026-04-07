@@ -139,7 +139,7 @@ export default function AllImagesScreen() {
             >
                 <SafeAreaView style = {styles.container}>
                     <Pressable onPress={() => setFullscreenImage(false)} style={styles.homeButton}>
-                        <Text style={{fontSize: 18}}>Close</Text>
+                        <Text style={{color: 'white', fontSize: 18}}>Close</Text>
                     </Pressable>
                     <Image
                         style={{width: '90%', height: '60%', objectFit: "contain"}}
@@ -180,7 +180,7 @@ export default function AllImagesScreen() {
                             ]
                         )}>
                             <Image 
-                                style={{width: 100, height: 100}}
+                                style={{width: 100, height: 100, borderRadius: 15, borderColor: '#3b355b', borderWidth: 3}}
                                 source={item.type == "unsplash" ? {uri: item.urls.thumb} : {uri: item.uri}}
                             />
                         </Pressable>
@@ -248,6 +248,13 @@ export default function AllImagesScreen() {
                     </View>
                 </View>
             )}
+            {/* CLOUDS */}
+            <View style = {[styles.cloud, {top: -50, left: -50}]}></View>
+            <View style = {[styles.cloud, {top: -120, left: 80}]}></View>
+
+            <View style = {[styles.cloud, {bottom: -50, right: -100, width: 200, height: 175, borderRadius: 175, zIndex: 1, backgroundColor: '#B6BCFB'}]}></View>
+            <View style = {[styles.cloud, {bottom: -100, right: -150, width: 300, height: 300, borderRadius: 150}]}></View>
+            <View style = {[styles.cloud, {bottom: -120, right: 50, width: 250, height: 250, borderRadius: 125}]}></View>
         </SafeAreaView>
     );
 }
