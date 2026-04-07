@@ -499,7 +499,7 @@ export default function ActiveScreen({ route }) {
             </Pressable>
           </View>
         ) : (
-          <View style={{flex:1, padding: 20, backgroundColor:"#ffc7fb", borderRadius: 20, maxWidth: '90%', alignSelf: 'center', gap: 20}}>
+          <View style={{flex:1, padding: 20, backgroundColor:"white", borderRadius: 20, width:"90%", maxWidth: '90%', alignSelf: 'center', gap: 20}}>
             {/*Text to display the stopwatch for the user*/}
             <Text style={{fontSize: 24, alignSelf: "center", backgroundColor:"#70a1e4", color:"white", paddingVertical: 10, paddingHorizontal: 20, borderRadius: 20, minWidth: 120, textAlign: "center"}}>
               {minutesToAdd < 10 ? `0${minutesToAdd}` : minutesToAdd}:

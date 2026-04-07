@@ -154,7 +154,7 @@ export default function SelectedProjectScreen({route}) {
 
                 <RoomView projectID={projectID} autoReload={true}/>
 
-                <View style={{flex:1, padding: 20, backgroundColor:"#ffc7fb", borderRadius: 20}}>
+                <View style={{flex:1, padding: 20, backgroundColor:"white", borderRadius: 20}}>
                     <Pressable style={styles.homeButton} onPress={() => navigation.navigate("active", { projectID: projectID })}>
                         <Text style={styles.btnText}>Start Working</Text>
                     </Pressable>
@@ -167,7 +167,7 @@ export default function SelectedProjectScreen({route}) {
                         <Text style={styles.btnText}>Shop</Text>
                     </Pressable>
                     
-                    <View style = {{backgroundColor: '#f5edff', padding: 10, borderRadius: 10, marginBottom: 10}}>
+                    <View style = {{backgroundColor: '#f5edff', padding: 10, borderRadius: 10, marginBottom: 10, marginTop: 10}}>
                         <Text>Logs</Text>
                         <LogView projectID={projectID}/>
                     </View>
