@@ -1,8 +1,15 @@
 import { StyleSheet } from 'react-native';
 import { shopList } from './shopItems';
 
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+// const insets = useSafeAreaInsets();
 export const styles = StyleSheet.create({
   container: {
+    // paddingTop: insets.top,
+    // paddingBottom: insets.bottom,
+    // paddingLeft: insets.left,
+    // paddingRight: insets.right,
     flex: 1,
     flexDirection: "column",
     justifyContent: "flex-start",
@@ -29,12 +36,13 @@ export const styles = StyleSheet.create({
     paddingRight: 30,
     paddingTop: 7,
     paddingBottom: 10,
-    borderTopStartRadius: 10,
-    borderBottomStartRadius: 30,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 30,
     textAlignVertical: 'top',
     textAlign:'right',
     fontSize: 18,
     fontWeight: 'bold',
+    overflow: 'hidden',
   },
   backButton: {
     paddingVertical: 5,
@@ -43,7 +51,8 @@ export const styles = StyleSheet.create({
     fontSize: 22,
     backgroundColor: '#5A53BF',
     color: '#FFF',
-    textAlignVertical:"top" 
+    textAlignVertical:"top" ,
+    overflow: 'hidden'
   },
 
   projHeader: {
@@ -190,6 +199,7 @@ export const styles = StyleSheet.create({
 
     padding: 15,
     width: '80%',
+    maxWidth: '80%',
 
     backgroundColor: 'white',
     alignSelf:"center"

@@ -2,7 +2,6 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
   Button,
   TouchableOpacity,
   Alert,
@@ -13,7 +12,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useState, useRef, useEffect, useCallback } from "react";
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from "../styles";
 import {
   CommonActions,
@@ -154,7 +153,7 @@ export default function ActiveScreen({ route }) {
     if (!cameraPermission.granted) {
       return (
         <View>
-          <Text>You fool! You must allow the camera to be used!</Text>
+          <Text>You must allow the camera to be used! Please press the button below for a prompt or enable permissions in your settings.</Text>
           <Button title="Allow Camera" onPress={setCameraPermission} />
         </View>
       );
@@ -185,8 +184,8 @@ export default function ActiveScreen({ route }) {
           <Text>{`${String.fromCodePoint("0x2193")} Press to take a photo ${String.fromCodePoint("0x2193")}`}</Text>
           <Pressable
             style={{
-              height: 150,
-              width: 150,
+              height: 300,
+              width: 300,
               borderRadius: 20,
               overflow: "hidden",
               backgroundColor: "#656565",
@@ -372,6 +371,7 @@ export default function ActiveScreen({ route }) {
     }
   }
 
+  const [endSession, setEndSession] = useState(false);
   const openLogger = () => {
     //set showModal to true to check if it should display the new popup
     setShowModal(true);
@@ -404,16 +404,16 @@ export default function ActiveScreen({ route }) {
           //Prompt the user with a second alert to check if they would like to log anything
           Alert.alert(
             "Update Your Progress",
-            "Would you like to log any progress or add an image?",
+            "Would you like to create a project log?",
             [
               {
                 //Yes then it will open the modal using openLogger
-                text: "Yes",
-                onPress: () => openLogger(),
+                text: "Yes please",
+                onPress: () => {setEndSession(true); openLogger()},
               },
               {
                 //Will send the user back to the project screen, but it will still save how many minutes they worked.
-                text: "Maybe, Next Time",
+                text: "No thanks!",
                 onPress: () => {
                   clearInterval(intervalRef.current);
                   // setTime(0);
@@ -454,7 +454,7 @@ export default function ActiveScreen({ route }) {
   return (
     <SafeAreaView style={styles.container}>
       <CustomHeader screenName={"...Working"} />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
         <RoomView projectID={projectID}/>
         {showModal ? (
           <View
@@ -464,11 +464,14 @@ export default function ActiveScreen({ route }) {
             <CameraButton />
             <RecordButton />
             <TextInput
-              style={styles.input}
+              style={[styles.input, {marginBottom: 0}]}
               placeholder="Today I..."
               value={text}
               onChangeText={onChangeText}
+              multiline={true}
+              maxLength={240}
             />
+            <Text style={{maxWidth: '60%', alignSelf: 'center', marginTop: 0}}>{text.length}/240</Text>
             {(isRecording || photoMode) && (
               <Text>
                 Stop recording or finish taking a photo before saving.
@@ -480,16 +483,18 @@ export default function ActiveScreen({ route }) {
               onPress={
                 isRecording
                   ? null
-                  : () =>
+                  : () => {
                       setCurrentProj(
                         saveLog(new Log(new Date(), text), currentProject),
-                      )
+                      );
+                      if(endSession) navigation.goBack();
+                    }
               }
             >
-              <Text style={styles.btnText}>Save</Text>
+              <Text style={styles.btnText}>{endSession? "Save and Exit" : "Save"}</Text>
             </Pressable>
   
-            <Pressable style={styles.homeButton} onPress={() => setShowModal(false)}>
+            <Pressable style={styles.homeButton} onPress={() => {setShowModal(false); if(endSession) navigation.goBack();}}>
               <Text style={styles.btnText}>Dismiss</Text>
             </Pressable>
           </View>
@@ -514,12 +519,19 @@ export default function ActiveScreen({ route }) {
               </View>
             ) : (
               <>
-                <TouchableOpacity
+                <Pressable
                   onPress={endStopWatch}
                   style={styles.homeButton}
                 >
                   <Text style={styles.btnText}>End Session</Text>
-                </TouchableOpacity>
+                </Pressable>
+                
+                <Pressable
+                  onPress={() => openLogger()}
+                  style={styles.homeButton}
+                >
+                  <Text style={styles.btnText}>Create a Log</Text>
+                </Pressable>
               </>
             )}
             {!running && (

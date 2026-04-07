@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View, SafeAreaView, Button, Image, TouchableOpacity, ScrollView, Pressable, Alert } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, ScrollView, Pressable, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 import { and, collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
 
@@ -120,7 +121,7 @@ export default function SelectedProjectScreen({route}) {
         <SafeAreaView style={styles.container}>
             <CustomHeader screenName={currentProject != undefined? currentProject.name : "Loading"} navigation={navigation}></CustomHeader>
 
-            <ScrollView style={{width:"90%", alignSelf: "center"}} showsVerticalScrollIndicator={false}>
+            <ScrollView style={{width:"90%", alignSelf: "center"}} showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
                 {roomEditorOpen && (
                     <View style={[styles.popupView, {backgroundColor: '#623be343'}]}>
                         <Text style = {{textDecorationLine: 'underline', fontSize: 18, fontWeight: 'bold', color: 'white', padding: 10, borderRadius: 10, marginBottom: 10}}>Walls</Text>
@@ -155,7 +156,7 @@ export default function SelectedProjectScreen({route}) {
 
                 <View style={{flex:1, padding: 20, backgroundColor:"#ffc7fb", borderRadius: 20}}>
                     <Pressable style={styles.homeButton} onPress={() => navigation.navigate("active", { projectID: projectID })}>
-                        <Text style={styles.btnText}>Jump Back In!</Text>
+                        <Text style={styles.btnText}>Start Working</Text>
                     </Pressable>
 
                     <Pressable style={styles.homeButton} onPress={() => setRoomEditorOpen(true)}>
