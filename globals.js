@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import * as FileSystem from 'expo-file-system/legacy';
 import { Audio } from "expo-av";
 import { useFocusEffect } from '@react-navigation/native';
+import { roomItems } from './src/shopItems';
 
 
 export const CustomHeader =({screenName, navigation}) => {
@@ -113,6 +114,8 @@ export function ProjectDetails({projectID, projectName}){
 export function RoomView({projectID, autoReload = false}){
     if(projectID == null) return;
     const [currentProject, setCurrentProj] = useState();
+    const [wallpaper, setWallpaper] = useState(null);
+    const [flooring, setFlooring] = useState(null);
     
     const fetchProject = async() => {
         try{
@@ -123,11 +126,24 @@ export function RoomView({projectID, autoReload = false}){
             const project = await getDoc(projectRef);
             
             setCurrentProj(project.data());
+
             // console.log("Updated room view");
         } catch (e){
             console.error("Failed to fetch project", e);
         }
     }
+
+    useEffect(() => {
+        if(currentProject == undefined) return;
+        roomItems.forEach((item) => {
+            if(item.id == currentProject.roomSetup.wallpaper.id){
+                setWallpaper(item.imgSrc)
+            }
+            if(item.id == currentProject.roomSetup.flooring.id){
+                setFlooring(item.imgSrc)
+            }
+        })
+    }, [currentProject])
 
     // https://reactnavigation.org/docs/function-after-focusing-screen/#triggering-an-action-with-a-focus-event-listener
     useFocusEffect(
@@ -147,10 +163,10 @@ export function RoomView({projectID, autoReload = false}){
             )}
             <Image 
                 style={styles.roomImage}
-                source={currentProject != undefined ? currentProject.roomSetup.wallpaper.imgSrc : null}/>
+                source={wallpaper != null ? wallpaper : null}/>
             <Image 
                 style={styles.roomImage}
-                source={currentProject != undefined ? currentProject.roomSetup.flooring.imgSrc : null}/>
+                source={flooring != null ? flooring : null}/>
             
         </View>
     )

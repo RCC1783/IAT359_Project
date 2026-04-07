@@ -32,6 +32,13 @@ const rainbow_floors = {
     imgSrc: require("./images/room_items/rainbow_floor.png")
 }
 
+export const roomItems = [
+    default_walls, 
+    wood_floors,
+    blue_walls,
+    rainbow_floors
+]
+
 export const shopList = [
     // {owned: false, cost: 2, item: default_walls},
     // {owned: false, cost: 2, item: wood_floors},
