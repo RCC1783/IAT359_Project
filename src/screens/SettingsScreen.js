@@ -53,7 +53,14 @@ export default function SettingsScreen() {
 
         try {
             const audioDirectory = FileSystem.documentDirectory + 'audio/';
+            const directoryInfo = await FileSystem.getInfoAsync(audioDirectory);
+            console.log(directoryInfo);
+            if(directoryInfo.exists == false) {
+                console.log("directory does not exist - cancelling deletion as it is unneccesary.");
+                return;
+            }
             const audioFiles = await FileSystem.readDirectoryAsync(audioDirectory);
+            if (audioFiles == null) return;
             await Promise.all(audioFiles.map((fileName) => {
                 FileSystem.deleteAsync(audioDirectory + fileName, { idempotent: true })
             }));
