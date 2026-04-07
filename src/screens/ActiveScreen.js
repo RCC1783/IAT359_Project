@@ -486,6 +486,10 @@ export default function ActiveScreen({ route }) {
               padding: 50,
               backgroundColor: "white",
               borderRadius: 20,
+              maxWidth: '90%',
+              width: '90%',
+              alignSelf:'center',
+              alignItems: 'center'
             }}
           >
             <Text style={styles.logHeader}>
