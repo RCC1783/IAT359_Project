@@ -11,7 +11,7 @@ import {
   FlatList,
   ScrollView,
   KeyboardAvoidingView,
-  Platform
+  Platform,
 } from "react-native";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -84,13 +84,11 @@ export default function ActiveScreen({ route }) {
   const navigation = useNavigation();
 
   //For starting the stopwatch as soon as the user opens the active screen
-  useFocusEffect(
-    useCallback(() => {
-      startStopWatch();
+  useEffect(() => {
+    startStopWatch();
 
-      return () => {};
-    }, []),
-  );
+    return () => {};
+  }, []);
 
   // ###    Saving   ###
   function saveLog(newLog, project) {
@@ -474,7 +472,9 @@ export default function ActiveScreen({ route }) {
   return (
     <SafeAreaView style={styles.container}>
       <CustomHeader screenName={"...Working"} />
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <ScrollView
           showsVerticalScrollIndicator={false}
           nestedScrollEnabled={true}
@@ -489,10 +489,10 @@ export default function ActiveScreen({ route }) {
                 padding: 50,
                 backgroundColor: "white",
                 borderRadius: 20,
-                maxWidth: '90%',
-                width: '90%',
-                alignSelf:'center',
-                alignItems: 'center'
+                maxWidth: "90%",
+                width: "90%",
+                alignSelf: "center",
+                alignItems: "center",
               }}
             >
               <Text style={styles.logHeader}>
@@ -500,7 +500,7 @@ export default function ActiveScreen({ route }) {
               </Text>
               <CameraButton />
               <RecordButton />
-              
+
               <TextInput
                 style={[styles.input, { marginBottom: 0 }]}
                 placeholder="Today I..."
@@ -509,7 +509,7 @@ export default function ActiveScreen({ route }) {
                 multiline={true}
                 maxLength={240}
               />
-              
+
               <Text
                 style={{ maxWidth: "60%", alignSelf: "center", marginTop: 0 }}
               >
@@ -587,6 +587,12 @@ export default function ActiveScreen({ route }) {
                   <Pressable onPress={pauseStopWatch} style={styles.homeButton}>
                     <Text style={styles.btnText}>Pause</Text>
                   </Pressable>
+                  <Pressable
+                    style={styles.homeButton}
+                    onPress={() => navigation.navigate("allImages")}
+                  >
+                    <Text style={styles.btnText}>View References</Text>
+                  </Pressable>
                 </View>
               ) : (
                 <>
@@ -610,6 +616,7 @@ export default function ActiveScreen({ route }) {
                   <Text style={styles.btnText}>Resume</Text>
                 </TouchableOpacity>
               )}
+
               <View
                 style={{
                   backgroundColor: "#f5edff",
